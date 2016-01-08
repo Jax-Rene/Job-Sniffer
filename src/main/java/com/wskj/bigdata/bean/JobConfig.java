@@ -1,0 +1,107 @@
+package com.wskj.bigdata.bean;
+
+/**
+ * Created by zhuangjy on 2016/1/8.
+ */
+public class JobConfig {
+    String jobName;
+    String companyCity;
+    String companyName;
+    String workYear;
+    String salary;
+    String education;
+    String financeStage;
+    String industryField;
+    String companySize;
+
+
+    public JobConfig(String jobName,String companyCity, String companyName, String workYear, String salary, String education, String financeStage, String industryField, String companySize) {
+        this.jobName = jobName;
+        this.companyCity = companyCity;
+        this.companyName = companyName;
+        this.workYear = workYear;
+        this.salary = salary;
+        this.education = education;
+        this.financeStage = financeStage;
+        this.industryField = industryField;
+        this.companySize = companySize;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public String getCompanyCity() {
+        return companyCity;
+    }
+
+    public void setCompanyCity(String companyCity) {
+        this.companyCity = companyCity;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getWorkYear() {
+        return workYear;
+    }
+
+    public void setWorkYear(String workYear) {
+        this.workYear = workYear;
+    }
+
+    public String getSalary() {
+        return salary;
+    }
+
+    public void setSalary(String salary) {
+        this.salary = salary;
+    }
+
+    public String getEducation() {
+        return education;
+    }
+
+    public void setEducation(String education) {
+        this.education = education;
+    }
+
+    public String getFinanceStage() {
+        return financeStage;
+    }
+
+    public void setFinanceStage(String financeStage) {
+        this.financeStage = financeStage;
+    }
+
+    public String getIndustryField() {
+        return industryField;
+    }
+
+    public void setIndustryField(String industryField) {
+        this.industryField = industryField;
+    }
+
+    public String getCompanySize() {
+        return companySize;
+    }
+
+    public void setCompanySize(String companySize) {
+        this.companySize = companySize;
+    }
+
+    @Override
+    public String toString(){
+        return jobName + " " + companyCity + " " + companyName + " " + workYear + " " + salary + " " + education + " " +
+                financeStage + " " + industryField + " " + companySize + "\r\n";
+    }
+}
