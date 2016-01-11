@@ -11,7 +11,7 @@ public class Main {
             String city = "";
             List<String> jobs = JobName.returnAllJobName();
             for(String job:jobs){
-                new RobotWorker(job,city,"D:\\Project\\person\\bigdata\\jobs.txt").run();
+                new Thread(new RobotWorker(job,city,"/Users/johnny/Desktop/data.txt")).start();
             }
         } catch (Exception e) {
             e.printStackTrace();

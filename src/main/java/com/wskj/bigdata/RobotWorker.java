@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by zhuangjy on 2016/1/11.
@@ -34,15 +35,17 @@ public class RobotWorker implements Runnable {
     private String fileSrc;
 
     public RobotWorker(String job, String city, String fileSrc) {
+        System.out.println("新的线程创建!!!!!!!!!!!!!!!!!!!s");
         this.job = job;
         this.city = city;
         this.fileSrc = fileSrc;
-        url = "http://www.lagou.com/jobs/positionAjax.json?city=" + city + "&kd=" + job + "&pn=";
+        url = "http://120.132.69.172/jobs/positionAjax.json?city=" + city + "&kd=" + job + "&pn=";
     }
 
     @Override
     public void run() {
         try {
+            System.out.println("当前搜索 " + job + "线程");
             int totalPage = getPageCount();
             Map<String, Map<String, Map<String, Object>>> maps = null;
             List<JobConfig> list = new ArrayList<>();
