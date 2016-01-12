@@ -7,15 +7,15 @@ public class JobConfig {
     String jobName;
     String companyCity;
     String companyName;
-    String workYear;
-    String salary;
+    Float workYear;
+    Float salary;
     String education;
     String financeStage;
     String industryField;
-    String companySize;
+    Float companySize;
 
 
-    public JobConfig(String jobName,String companyCity, String companyName, String workYear, String salary, String education, String financeStage, String industryField, String companySize) {
+    public JobConfig(String jobName,String companyCity, String companyName, Float workYear, Float salary, String education, String financeStage, String industryField, Float companySize) {
         this.jobName = jobName;
         this.companyCity = companyCity;
         this.companyName = companyName;
@@ -51,19 +51,19 @@ public class JobConfig {
         this.companyName = companyName;
     }
 
-    public String getWorkYear() {
+    public Float getWorkYear() {
         return workYear;
     }
 
-    public void setWorkYear(String workYear) {
+    public void setWorkYear(Float workYear) {
         this.workYear = workYear;
     }
 
-    public String getSalary() {
+    public Float getSalary() {
         return salary;
     }
 
-    public void setSalary(String salary) {
+    public void setSalary(Float salary) {
         this.salary = salary;
     }
 
@@ -91,11 +91,11 @@ public class JobConfig {
         this.industryField = industryField;
     }
 
-    public String getCompanySize() {
+    public Float getCompanySize() {
         return companySize;
     }
 
-    public void setCompanySize(String companySize) {
+    public void setCompanySize(Float companySize) {
         this.companySize = companySize;
     }
 

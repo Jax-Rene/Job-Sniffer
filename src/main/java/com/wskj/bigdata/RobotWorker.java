@@ -16,6 +16,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by zhuangjy on 2016/1/11.
@@ -35,7 +37,6 @@ public class RobotWorker implements Runnable {
     private String fileSrc;
 
     public RobotWorker(String job, String city, String fileSrc) {
-        System.out.println("新的线程创建!!!!!!!!!!!!!!!!!!!s");
         this.job = job;
         this.city = city;
         this.fileSrc = fileSrc;
@@ -71,7 +72,7 @@ public class RobotWorker implements Runnable {
                     String financeStage = (String) map.get("financeStage");
                     String industryField = (String) map.get("industryField");
                     String companySize = (String) map.get("companySize");
-                    JobConfig jobConfig = new JobConfig(job, companyCity, companyName, workYear, salary, education, financeStage, industryField, companySize);
+                    JobConfig jobConfig = new JobConfig(job, companyCity, companyName, calcAvg(workYear), calcAvg(salary), education, financeStage, industryField, calcAvg(companySize));
                     list.add(jobConfig);
                 }
                 write(list);
@@ -98,4 +99,21 @@ public class RobotWorker implements Runnable {
         }
     }
 
+    /**
+     * 求一个字符串中所有数字的平均值
+     */
+    public float calcAvg(String str){
+        Pattern pattern = Pattern.compile("(\\d+)");
+        Matcher matcher = pattern.matcher(str);
+        float avg = 0.0f;
+        int i = 0;
+        while (matcher.find()){
+            i++;
+            avg += Float.parseFloat(matcher.group());
+        }
+        if(i!=0)
+            return avg / i;
+        else
+            return 0.0f;
+    }
 }
