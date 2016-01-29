@@ -1,9 +1,9 @@
-package com.wskj.bigdata.bean;
+package com.zhuangjy.bean;
 
 /**
  * Created by zhuangjy on 2016/1/8.
  */
-public class JobConfig {
+public class Job {
     String jobName;
     String companyCity;
     String companyName;
@@ -15,7 +15,7 @@ public class JobConfig {
     Float companySize;
 
 
-    public JobConfig(String jobName,String companyCity, String companyName, Float workYear, Float salary, String education, String financeStage, String industryField, Float companySize) {
+    public Job(String jobName, String companyCity, String companyName, Float workYear, Float salary, String education, String financeStage, String industryField, Float companySize) {
         this.jobName = jobName;
         this.companyCity = companyCity;
         this.companyName = companyName;

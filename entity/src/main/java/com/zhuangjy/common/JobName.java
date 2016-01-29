@@ -1,4 +1,4 @@
-package com.wskj.bigdata.common;
+package com.zhuangjy.common;
 
 import java.util.ArrayList;
 import java.util.List;

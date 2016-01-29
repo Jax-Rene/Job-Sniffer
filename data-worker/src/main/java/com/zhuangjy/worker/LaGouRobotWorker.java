@@ -1,6 +1,6 @@
-package com.wskj.bigdata;
+package com.zhuangjy.worker;
 
-import com.wskj.bigdata.bean.JobConfig;
+import com.zhuangjy.bean.Job;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jsoup.Jsoup;
@@ -15,14 +15,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Created by zhuangjy on 2016/1/11.
  */
-public class RobotWorker implements Runnable {
+public class LaGouRobotWorker implements Runnable {
     private static ObjectMapper objectMapper = new ObjectMapper();
     private static Calendar calendar = Calendar.getInstance();
 
@@ -36,7 +35,7 @@ public class RobotWorker implements Runnable {
     private String city;
     private String fileSrc;
 
-    public RobotWorker(String job, String city, String fileSrc) {
+    public LaGouRobotWorker(String job, String city, String fileSrc) {
         this.job = job;
         this.city = city;
         this.fileSrc = fileSrc;
@@ -49,7 +48,7 @@ public class RobotWorker implements Runnable {
             System.out.println("当前搜索 " + job + "线程");
             int totalPage = getPageCount();
             Map<String, Map<String, Map<String, Object>>> maps = null;
-            List<JobConfig> list = new ArrayList<>();
+            List<Job> list = new ArrayList<>();
             for (int i = 1; i <= totalPage; i++) {
                 Document doc = Jsoup.connect(url + i).ignoreContentType(true).timeout(1000000).get();
                 Element body = doc.body();
@@ -72,8 +71,8 @@ public class RobotWorker implements Runnable {
                     String financeStage = (String) map.get("financeStage");
                     String industryField = (String) map.get("industryField");
                     String companySize = (String) map.get("companySize");
-                    JobConfig jobConfig = new JobConfig(job, companyCity, companyName, calcAvg(workYear), calcAvg(salary), education, financeStage, industryField, calcAvg(companySize));
-                    list.add(jobConfig);
+                    Job job = new Job(this.job, companyCity, companyName, calcAvg(workYear), calcAvg(salary), education, financeStage, industryField, calcAvg(companySize));
+                    list.add(job);
                 }
                 write(list);
                 System.out.println("读取完第" + i + "页 一共有 " + totalPage + "页");
@@ -91,11 +90,11 @@ public class RobotWorker implements Runnable {
         return (Integer) maps.get("content").get("totalPageCount");
     }
 
-    public void write(List<JobConfig> list) throws Exception {
+    public void write(List<Job> list) throws Exception {
         File file = new File(fileSrc);
         BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
-        for (JobConfig jobConfig : list) {
-            writer.write(jobConfig.toString());
+        for (Job job : list) {
+            writer.write(job.toString());
         }
     }
 
