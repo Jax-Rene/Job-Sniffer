@@ -1,6 +1,8 @@
 package com.zhuangjy.worker;
 
-import com.zhuangjy.bean.Job;
+import com.zhuangjy.entity.Job;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jsoup.Jsoup;
@@ -22,6 +24,8 @@ import java.util.regex.Pattern;
  * Created by zhuangjy on 2016/1/11.
  */
 public class LaGouRobotWorker implements Runnable {
+    private static final Logger LOGGER = LogManager.getLogger(LaGouRobotWorker.class);
+
     private static ObjectMapper objectMapper = new ObjectMapper();
     private static Calendar calendar = Calendar.getInstance();
 
@@ -45,7 +49,7 @@ public class LaGouRobotWorker implements Runnable {
     @Override
     public void run() {
         try {
-            System.out.println("当前搜索 " + job + "线程");
+            LOGGER.info("Current Thread: " + job);
             int totalPage = getPageCount();
             Map<String, Map<String, Map<String, Object>>> maps = null;
             List<Job> list = new ArrayList<>();
@@ -75,10 +79,10 @@ public class LaGouRobotWorker implements Runnable {
                     list.add(job);
                 }
                 write(list);
-                System.out.println("读取完第" + i + "页 一共有 " + totalPage + "页");
+                LOGGER.debug("读取完第" + i + "页 一共有 " + totalPage + "页");
             }
         }catch (Exception e){
-            e.printStackTrace();
+            LOGGER.error(e);
         }
 
     }

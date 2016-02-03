@@ -1,18 +1,50 @@
-package com.zhuangjy.bean;
+package com.zhuangjy.entity;
+
+import org.hibernate.annotations.Columns;
+import org.hibernate.annotations.Proxy;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.persistence.*;
+import java.math.BigInteger;
 
 /**
  * Created by zhuangjy on 2016/1/8.
  */
+@Entity
+@Table(name = "JOB")
+@Proxy(lazy = false)
 public class Job {
-    String jobName;
-    String companyCity;
-    String companyName;
-    Float workYear;
-    Float salary;
-    String education;
-    String financeStage;
-    String industryField;
-    Float companySize;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private BigInteger id;
+
+    @Column(name= "job_name")
+    @NotBlank
+    private String jobName;
+
+    @Column(name="company_city")
+    private String companyCity;
+
+    @Column(name = "company_name")
+    private String companyName;
+
+    @Column(name ="work_year")
+    private Float workYear;
+
+    @Column(name = "salary")
+    private Float salary;
+
+    @Column(name = "education")
+    private String education;
+
+    @Column(name = "finance_stage")
+    private String financeStage;
+
+    @Column(name = "industry_field")
+    private String industryField;
+
+    @Column(name = "company_size")
+    private Float companySize;
 
 
     public Job(String jobName, String companyCity, String companyName, Float workYear, Float salary, String education, String financeStage, String industryField, Float companySize) {
