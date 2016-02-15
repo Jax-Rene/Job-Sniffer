@@ -29,9 +29,10 @@ public class WorkService {
     public void grepData(){
         LOGGER.info("start grep data...");
         try {
-            for(String job:workType.split(",")){
-                new Thread(new LaGouRobotWorker(job,laGouUrl,baseDao)).start();
-            }
+//            for(String job:workType.split(",")){
+//                new Thread(new LaGouRobotWorker(job,laGouUrl,baseDao)).start();
+//            }
+                new Thread(new LaGouRobotWorker("数据",laGouUrl,baseDao)).start();
         } catch (Exception e) {
             LOGGER.error(e);
         }

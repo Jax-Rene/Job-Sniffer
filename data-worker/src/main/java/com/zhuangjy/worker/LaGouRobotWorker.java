@@ -1,10 +1,14 @@
 package com.zhuangjy.worker;
 
 import com.zhuangjy.dao.BaseDao;
+import com.zhuangjy.entity.Job;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,16 +25,44 @@ public class LaGouRobotWorker extends BaseWorker{
         return orginUrl.replace("kd=","kd=" + jobName);
     }
 
-    @Override
-    public  Integer getPageCount() throws IOException {
-        Document doc = Jsoup.connect(url + 0).ignoreContentType(true).timeout(1000000).get();
-        Element body = doc.body();
-        Map<String, Map<String, Object>> maps = objectMapper.readValue(body.text(), Map.class);
-        return (Integer) maps.get("content").get("totalPageCount");
-    }
 
     @Override
     public void run() {
-        super.run();
+        try {
+            LOGGER.info("Current LaGouThread: " + jobName);
+            Map<String, Map<String, Map<String, Object>>> maps = null;
+            while (true){
+                int i = 1;
+                Document doc = Jsoup.connect(url + i++).ignoreContentType(true).timeout(1000000).post();
+                Element body = doc.body();
+                try {
+                    maps = objectMapper.readValue(body.text(), Map.class);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+                //如果result为空退出循环
+                List<Map<String, Object>> result = (List<Map<String, Object>>) maps.get("content").get("result");
+                if(result.isEmpty())
+                    break;
+                for (Map<String, Object> map : result) {
+                    //筛选不是今年的 以及不是全职的
+                    if (calendar.after(map.get("createTime")) || !map.get("jobNature").equals("全职"))
+                        continue;
+                    String companyCity = (String) map.get("city");
+                    String companyName = (String) map.get("companyName");
+                    String workYear = (String) map.get("workYear");
+                    String salary = (String) map.get("salary");
+                    String education = (String) map.get("education");
+                    String financeStage = (String) map.get("financeStage");
+                    String industryField = (String) map.get("industryField");
+                    String companySize = (String) map.get("companySize");
+                    Job job = new Job(jobName, companyCity, companyName, calcAvg(workYear), calcAvg(salary), education, financeStage, industryField, calcAvg(companySize));
+                    baseDao.save(job);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
     }
 }

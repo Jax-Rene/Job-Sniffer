@@ -12,6 +12,7 @@ import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -41,54 +42,6 @@ public abstract class BaseWorker implements Runnable {
 
     //构造动态构造url
     public abstract String constructUrl(String orginUrl);
-
-    @Override
-    public void run() {
-        try {
-            LOGGER.info("Current Thread: " + jobName);
-            int totalPage = getPageCount();
-            Map<String, Map<String, Map<String, Object>>> maps = null;
-            for (int i = 1; i <= totalPage; i++) {
-                Document doc = Jsoup.connect(url + i).ignoreContentType(true).timeout(1000000).get();
-                Element body = doc.body();
-                try {
-                    maps = objectMapper.readValue(body.text(), Map.class);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    continue;
-                }
-                List<Map<String, Object>> result = (List<Map<String, Object>>) maps.get("content").get("result");
-                for (Map<String, Object> map : result) {
-                    //筛选不是今年的 以及不是全职的
-                    if (calendar.after(map.get("createTime")) || !map.get("jobNature").equals("全职"))
-                        continue;
-                    String companyCity = (String) map.get("city");
-                    String companyName = (String) map.get("companyName");
-                    String workYear = (String) map.get("workYear");
-                    String salary = (String) map.get("salary");
-                    String education = (String) map.get("education");
-                    String financeStage = (String) map.get("financeStage");
-                    String industryField = (String) map.get("industryField");
-                    String companySize = (String) map.get("companySize");
-                    Job job = new Job(jobName, companyCity, companyName, calcAvg(workYear), calcAvg(salary), education, financeStage, industryField, calcAvg(companySize));
-                    baseDao.save(job);
-                }
-                LOGGER.debug("读取完第" + i + "页 一共有 " + totalPage + "页");
-            }
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-        }
-
-    }
-
-    /**
-     * 获取总页数
-     *
-     * @return
-     * @throws Exception
-     */
-    public abstract Integer getPageCount() throws IOException;
-
 
     /**
      * 求一个字符串中所有数字的平均值
