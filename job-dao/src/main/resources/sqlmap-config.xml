@@ -12,10 +12,6 @@
     <typeHandler jdbcType="CLOB" javaType="java.lang.String" callback="org.springframework.orm.ibatis.support.ClobStringTypeHandler"/>
     -->
    <!-- <sqlMap url="file:///c:/etc/eagle/ibatis/eagle-sqlmap.xml" />-->
-    <sqlMap resource="ibatis/eagle-sqlmap.xml"></sqlMap>
-    <sqlMap resource="ibatis/alarm-sqlmap.xml"></sqlMap>
-    <sqlMap resource="ibatis/data-sqlmap.xml"></sqlMap>
-    <sqlMap resource="ibatis/resource-sqlmap.xml"></sqlMap>
-    <sqlMap resource="ibatis/dna-sqlmap.xml"></sqlMap>
+    <sqlMap resource="ibatis/job.xml"></sqlMap>
 
 </sqlMapConfig>

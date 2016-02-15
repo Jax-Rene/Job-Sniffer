@@ -1,9 +1,7 @@
-import com.zhuangjy.common.JobName;
-import com.zhuangjy.worker.LaGouRobotWorker;
+import com.zhuangjy.framework.config.RestApplicationConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.List;
+import org.springframework.boot.SpringApplication;
 
 /**
  * Created by zhuangjy on 2016/1/8.
@@ -11,15 +9,31 @@ import java.util.List;
 public class WorkerMain {
     private static final Logger LOGGER = LogManager.getLogger(WorkerMain.class);
 
-    public static void main(String[] args) {
-        try {
-            String city = "";
-            List<String> jobs = JobName.returnAllJobName();
-            for(String job:jobs){
-                new Thread(new LaGouRobotWorker(job,city,"C:\\Users\\iamjo\\Desktop\\data.txt")).start();
-            }
-        } catch (Exception e) {
-            LOGGER.error(e);
-        }
+    public static void main(String[] args) throws Exception {
+        WorkerMain main = new WorkerMain();
+        main.start();
+    }
+
+    public void init() throws Exception {
+        LOGGER.info("execute init method!");
+    }
+
+    public void init(String[] args) throws Exception {
+        LOGGER.info("execute init(args) method!");
+    }
+
+    public void start() throws Exception {
+        SpringApplication.run(RestApplicationConfig.class);
+    }
+
+    public void stop() throws Exception {
+        LOGGER.info("execute stop method!");
+    }
+
+    public void destroy() throws Exception {
+        LOGGER.info("execute destroy method!");
+    }
+
+    public WorkerMain() {
     }
 }

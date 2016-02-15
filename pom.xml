@@ -13,6 +13,7 @@
         <module>portal</module>
         <module>entity</module>
         <module>job-dao</module>
+        <module>job-service</module>
     </modules>
 
 
@@ -31,8 +32,8 @@
         <jackson.version>2.3.2</jackson.version>
         <jstl.version>1.2</jstl.version>
         <ibatis.version>2.3.4.726</ibatis.version>
-        <portal.version>3.2.0</portal.version>
         <dna.version>1.2.2</dna.version>
+        <httpclient.version>4.3.4</httpclient.version>
         <zk.version>3.4.6</zk.version>
         <alibaba.fastjson.version>1.1.41</alibaba.fastjson.version>
         <logging.version>1.2</logging.version>
@@ -70,10 +71,7 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
-                    <excludes>
-                        <exclude>**/.svn/**</exclude>
-                        <exclude>**/deploy/**</exclude>
-                    </excludes>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>

@@ -11,7 +11,7 @@ import java.math.BigInteger;
  * Created by zhuangjy on 2016/1/8.
  */
 @Entity
-@Table(name = "JOB")
+@Table(name = "job")
 @Proxy(lazy = false)
 public class Job {
     @Id
@@ -135,5 +135,16 @@ public class Job {
     public String toString(){
         return jobName + " " + companyCity + " " + companyName + " " + workYear + " " + salary + " " + education + " " +
                 financeStage + " " + industryField + " " + companySize + "\r\n";
+    }
+
+    public Job() {
+    }
+
+    public BigInteger getId() {
+        return id;
+    }
+
+    public void setId(BigInteger id) {
+        this.id = id;
     }
 }

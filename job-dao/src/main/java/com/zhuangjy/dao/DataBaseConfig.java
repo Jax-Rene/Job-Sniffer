@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Configuration
 @EnableTransactionManagement
-@PropertySource(ignoreResourceNotFound = true, value = {"classpath:database.properties", "file:/etc/eagle/database.properties"})
+@PropertySource(ignoreResourceNotFound = true, value = {"classpath:database.properties", "file:/etc/job-analysis/database.properties"})
 public class DataBaseConfig implements TransactionManagementConfigurer {
 
 
@@ -98,7 +98,8 @@ public class DataBaseConfig implements TransactionManagementConfigurer {
     public LocalSessionFactoryBean sessionFactory() throws IOException {
         logger.info("gen sessionFactory start");
         LocalSessionFactoryBean session = new org.springframework.orm.hibernate4.LocalSessionFactoryBean();
-        session.setPackagesToScan(new String[]{"com.cnc.**.entity", "com.cnc.**.bean", "com.cnc.**.model"});
+        session.setPackagesToScan(new String[]{"com.zhuangjy.entity"});
+//        session.setPackagesToScan(new String[]{"com.cnc.**.entity", "com.cnc.**.bean", "com.cnc.**.model"});
         session.setDataSource(dataSource());
         InputStream cr = this.getClass().getResourceAsStream("/hibernate.properties");
         Properties hiberanteProperties = new Properties();
