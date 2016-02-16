@@ -1,4 +1,4 @@
-package com.zhuangjy.framework.service;
+package com.zhuangjy.service;
 
 import com.zhuangjy.dao.BaseDao;
 import com.zhuangjy.entity.Job;
@@ -27,6 +27,7 @@ public class WorkService {
     @Value("${work.type}")
     private String workType;
 
+    @Scheduled(cron="${scheduled.time}")
     @PostConstruct
     public void grepData(){
         LOGGER.info("start grep data...");
