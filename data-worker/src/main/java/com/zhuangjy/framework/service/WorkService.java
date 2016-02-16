@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+
 
 /**
  * Created by zhuangjy on 2016/2/15.
@@ -25,14 +27,13 @@ public class WorkService {
     @Value("${work.type}")
     private String workType;
 
-    @Scheduled(fixedDelay = 60*60*60 * 1000)
+    @PostConstruct
     public void grepData(){
         LOGGER.info("start grep data...");
         try {
-//            for(String job:workType.split(",")){
-//                new Thread(new LaGouRobotWorker(job,laGouUrl,baseDao)).start();
-//            }
-                new Thread(new LaGouRobotWorker("数据",laGouUrl,baseDao)).start();
+            for(String job:workType.split(",")){
+                new Thread(new LaGouRobotWorker(job,laGouUrl,baseDao)).start();
+            }
         } catch (Exception e) {
             LOGGER.error(e);
         }
