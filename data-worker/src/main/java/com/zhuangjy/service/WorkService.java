@@ -27,7 +27,7 @@ public class WorkService {
     @Value("${work.type}")
     private String workType;
 
-    @Scheduled(cron="${scheduled.time}")
+//    @Scheduled(cron="${scheduled.time}")
     @PostConstruct
     public void grepData(){
         LOGGER.info("start grep data...");
