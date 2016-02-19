@@ -22,6 +22,9 @@ public class Job {
     @NotBlank
     private String jobName;
 
+    @Column(name = "job_type")
+    private Integer jobType;
+
     @Column(name="company_city")
     private String companyCity;
 
@@ -47,8 +50,9 @@ public class Job {
     private Float companySize;
 
 
-    public Job(String jobName, String companyCity, String companyName, Float workYear, Float salary, String education, String financeStage, String industryField, Float companySize) {
+    public Job(String jobName, Integer jobType,String companyCity, String companyName, Float workYear, Float salary, String education, String financeStage, String industryField, Float companySize) {
         this.jobName = jobName;
+        this.jobType = jobType;
         this.companyCity = companyCity;
         this.companyName = companyName;
         this.workYear = workYear;
@@ -57,6 +61,14 @@ public class Job {
         this.financeStage = financeStage;
         this.industryField = industryField;
         this.companySize = companySize;
+    }
+
+    public Integer getJobType() {
+        return jobType;
+    }
+
+    public void setJobType(Integer jobType) {
+        this.jobType = jobType;
     }
 
     public String getJobName() {

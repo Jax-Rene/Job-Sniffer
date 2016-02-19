@@ -1,5 +1,6 @@
 package com.zhuangjy.service;
 
+import com.zhuangjy.common.JobType;
 import com.zhuangjy.dao.BaseDao;
 import com.zhuangjy.entity.Job;
 import com.zhuangjy.worker.LaGouRobotWorker;
@@ -11,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 
 
 /**
@@ -24,15 +26,13 @@ public class WorkService {
 
     @Value("${lagou.url}")
     private String laGouUrl;
-    @Value("${work.type}")
-    private String workType;
 
 //    @Scheduled(cron="${scheduled.time}")
     @PostConstruct
     public void grepData(){
         LOGGER.info("start grep data...");
         try {
-            for(String job:workType.split(",")){
+            for(String job: JobType.allJobs()){
                 new Thread(new LaGouRobotWorker(job,laGouUrl,baseDao)).start();
             }
         } catch (Exception e) {
