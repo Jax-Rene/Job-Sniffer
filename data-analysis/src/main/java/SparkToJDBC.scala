@@ -9,11 +9,13 @@ import org.apache.spark.rdd.JdbcRDD
 object SparkToJDBC {
   def main(args: Array[String]) {
     val conn_str = "jdbc:mysql://127.0.0.1:3306/jobs?user=root&password="
+    fasfda
     val sc = new SparkContext("local", "mysql")
     val section = loadSection(conn_str)
+    val min:Long = section(0).map
     val keyWords = JobType.keyWords()
-//    val count = generateJobCount(section(0),section(1),)
-//    println(count)
+    val res = calAreaCount(section(0),section(1),"北京",sc)
+    println(calAreaCount("北京"))
     sc.stop()
   }
 
@@ -34,6 +36,27 @@ object SparkToJDBC {
       res(1) = rs.getString("id")
     }
     res
+  }
+
+  /**
+    * 计算指定地区的工作需求量
+    * @param min
+    * @param max
+    * @param area
+    * @param sc
+    * @return
+    */
+  def calAreaCount(min: Long, max: Long, area: String,sc:SparkContext): Long = {
+    val rdd = new JdbcRDD(
+      sc,
+      ()=>{
+        Class.forName("com.mysql.jdbc.Driver").newInstance()
+        DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/jobs", "root", "")
+      },
+      "SELECT * FORM job WHERE id >=? AND id <= ?",
+      min,max,3,
+      r => r.getString(4)).cache()
+      rdd.filter(_.contains(area)).count()
   }
 
 
