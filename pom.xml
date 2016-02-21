@@ -13,7 +13,6 @@
         <module>portal</module>
         <module>entity</module>
         <module>job-dao</module>
-        <module>job-service</module>
         <module>data-analysis</module>
     </modules>
 
@@ -153,23 +152,23 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>  <!--执行器 mvn assembly:assembly -->
-                    <execution>
-                        <id>make-zip</id><!--名字任意 -->
-                        <phase>package</phase><!-- 绑定到package生命周期阶段上 -->
-                        <goals>
-                            <goal>single</goal><!-- 只运行一次 -->
-                        </goals>
-                        <configuration>
-                            <descriptors> <!--描述文件路径 -->
-                                <descriptor>src/main/assembly/assembly.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<artifactId>maven-assembly-plugin</artifactId>-->
+                <!--<executions>  &lt;!&ndash;执行器 mvn assembly:assembly &ndash;&gt;-->
+                    <!--<execution>-->
+                        <!--<id>make-zip</id>&lt;!&ndash;名字任意 &ndash;&gt;-->
+                        <!--<phase>package</phase>&lt;!&ndash; 绑定到package生命周期阶段上 &ndash;&gt;-->
+                        <!--<goals>-->
+                            <!--<goal>single</goal>&lt;!&ndash; 只运行一次 &ndash;&gt;-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--&lt;!&ndash;<descriptors> &lt;!&ndash;描述文件路径 &ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;<descriptor>src/main/assembly/asmbly.xml</descriptor>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</descriptors>&ndash;&gt;-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 

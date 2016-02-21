@@ -1,7 +1,9 @@
 import java.sql.{ResultSet, DriverManager}
 import com.zhuangjy.common.JobType
 import org.apache.spark.SparkContext
+import org.apache.spark.api.java.JavaRDD
 import org.apache.spark.rdd.JdbcRDD
+import com.zhuangjy.util.readProperties
 
 /**
   * Created by zhuangjy on 2016/2/17.
@@ -9,13 +11,19 @@ import org.apache.spark.rdd.JdbcRDD
 object SparkToJDBC {
   def main(args: Array[String]) {
     val conn_str = "jdbc:mysql://127.0.0.1:3306/jobs?user=root&password="
-    fasfda
     val sc = new SparkContext("local", "mysql")
     val section = loadSection(conn_str)
-    val min:Long = section(0).map
+    val min: Long = section(0)
+    val max: Long = section(1)
     val keyWords = JobType.keyWords()
-    val res = calAreaCount(section(0),section(1),"北京",sc)
-    println(calAreaCount("北京"))
+    var areaCountMap: Map[String, Long] = Map()
+    val areas: String = readProperties.readFromClassPath("analysis.properties", "area")
+    val rdd: JdbcRDD[String] = calAreaCount(min, max, sc)
+    for (s <- areas.split(",")) {
+      val count:Long = rdd.filter(_.contains(s)).count()
+      areaCountMap +=  (s -> count)
+    }
+    println(areaCountMap)
     sc.stop()
   }
 
@@ -24,39 +32,38 @@ object SparkToJDBC {
     */
   def loadSection(src: String) = {
     classOf[com.mysql.jdbc.Driver]
-    val res = new Array[Any](2)
+    val res = new Array[Long](2)
     val conn = DriverManager.getConnection(src)
     val statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)
     var rs = statement.executeQuery("select id from job ORDER BY id limit 1")
     if (rs.next()) {
-      res(0) = rs.getString("id");
+      res(0) = rs.getLong("id");
     }
     rs = statement.executeQuery("select id from job ORDER BY id desc limit 1")
     if (rs.next()) {
-      res(1) = rs.getString("id")
+      res(1) = rs.getLong("id")
     }
     res
   }
 
   /**
     * 计算指定地区的工作需求量
+    *
     * @param min
     * @param max
-    * @param area
-    * @param sc
     * @return
     */
-  def calAreaCount(min: Long, max: Long, area: String,sc:SparkContext): Long = {
+  def calAreaCount(min: Long, max: Long, sc: SparkContext): JdbcRDD[String] = {
     val rdd = new JdbcRDD(
       sc,
-      ()=>{
+      () => {
         Class.forName("com.mysql.jdbc.Driver").newInstance()
         DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/jobs", "root", "")
       },
-      "SELECT * FORM job WHERE id >=? AND id <= ?",
-      min,max,3,
+      "SELECT * FROM job WHERE id >=? AND id <= ?",
+      min, max, 3,
       r => r.getString(4)).cache()
-      rdd.filter(_.contains(area)).count()
+    rdd
   }
 
 
@@ -66,7 +73,6 @@ object SparkToJDBC {
     * @param min
     * @param max
     * @param jobName
-    * @param sc
     * @return
     */
   def generateJobCount(min: Int, max: Int, jobName: String, sc: SparkContext): Long = {
