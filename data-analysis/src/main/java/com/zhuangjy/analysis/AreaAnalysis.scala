@@ -1,29 +1,28 @@
-import java.sql.{ResultSet, DriverManager}
+package com.zhuangjy.analysis
+
+import java.sql.{DriverManager, ResultSet}
+
+import com.zhuangjy.bean.AreaAnalysis
 import com.zhuangjy.common.JobType
-import org.apache.spark.SparkContext
-import org.apache.spark.api.java.JavaRDD
-import org.apache.spark.rdd.JdbcRDD
 import com.zhuangjy.util.readProperties
+import org.apache.spark.SparkContext
+import org.apache.spark.rdd.JdbcRDD
 
 /**
   * Created by zhuangjy on 2016/2/17.
   */
-object SparkToJDBC {
+object AreaAnalysis {
   def main(args: Array[String]) {
     val conn_str = "jdbc:mysql://127.0.0.1:3306/jobs?user=root&password="
     val sc = new SparkContext("local", "mysql")
     val section = loadSection(conn_str)
-    val min: Long = section(0)
-    val max: Long = section(1)
-    val keyWords = JobType.keyWords()
-    var areaCountMap: Map[String, Long] = Map()
-    val areas: String = readProperties.readFromClassPath("analysis.properties", "area")
-    val rdd: JdbcRDD[String] = calAreaCount(min, max, sc)
-    for (s <- areas.split(",")) {
-      val count:Long = rdd.filter(_.contains(s)).count()
-      areaCountMap +=  (s -> count)
-    }
-    println(areaCountMap)
+    var areaMap:Map[String,AreaAnalysis] = Map()
+    val areas: Array[String] = readProperties.readFromClassPath("analysis.properties", "area").split(",")
+    //初始化地区分析Map
+    for(s <- areas)
+      areaMap += (s -> new AreaAnalysis(s))
+//    calcAreaCount(section(0),section(1),sc,areas,areaMap)
+    calcAreaSalary(section(0),section(1),sc,areas,areaMap)
     sc.stop()
   }
 
@@ -46,26 +45,39 @@ object SparkToJDBC {
     res
   }
 
-  /**
-    * 计算指定地区的工作需求量
-    *
-    * @param min
-    * @param max
-    * @return
-    */
-  def calAreaCount(min: Long, max: Long, sc: SparkContext): JdbcRDD[String] = {
+  def calcAreaNormal(min:Long,max:Long,sc:SparkContext,areas:Array[String],map:Map[String,AreaAnalysis]) : Map[String,AreaAnalysis] = {
     val rdd = new JdbcRDD(
       sc,
       () => {
         Class.forName("com.mysql.jdbc.Driver").newInstance()
         DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/jobs", "root", "")
       },
-      "SELECT * FROM job WHERE id >=? AND id <= ?",
+      "SELECT `job_name`,`job_type`,`company_city`,`salary`,`education`,`finance_stage`,`industry_field`,`company_size`" +
+        " FROM job WHERE id >= ? AND id <= ?",
       min, max, 3,
-      r => r.getString(4)).cache()
-    rdd
-  }
+      r => (r.getString("job_name"), r.getInt("job_type"), r.getString("company_city"), r.getFloat("salary"),
+        r.getString("education"), r.getString("finance_stage"), r.getString("industry_field"), r.getString("company_size"))
+    ).cache()
 
+    for (s <- areas) {
+      val specificAreaRdd = rdd.filter(line => line._3.contains(s)).cache()
+      //所有地区对比
+      //1.指定地区需求量
+      val count = specificAreaRdd.count()
+      map(s).setCount(count)
+      //2.指定地区平均薪水
+      //TODO 求平均值大数据会越界
+      val avgSalar = specificAreaRdd.map(line=>line._4).reduce((a,b) => (a + b))
+      map(s).setAvgSalary(avgSalar/count)
+
+      //具体地区内部对比
+      //1.指定工作类型的数量分布
+      val typeCollection = specificAreaRdd.map(line => (line._2,1)).reduceByKey((a, b) => a+b).collect()
+
+
+    }
+    map
+  }
 
   /**
     * 获取指定工作的数量
