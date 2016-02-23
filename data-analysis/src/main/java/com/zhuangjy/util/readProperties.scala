@@ -7,7 +7,7 @@ import java.util.Properties
 /**
   * Created by johnny on 16/2/21.
   */
-object readProperties {
+object ReadProperties {
   def readFromClassPath(fileName: String, property: String): String = {
     val prop = new Properties()
     prop.load(new InputStreamReader(ClassLoader.getSystemResourceAsStream(fileName),"UTF-8"))

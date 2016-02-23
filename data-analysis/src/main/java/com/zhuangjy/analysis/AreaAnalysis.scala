@@ -1,10 +1,12 @@
 package com.zhuangjy.analysis
 
+import java.io.{StringWriter}
 import java.sql.{DriverManager, ResultSet}
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.zhuangjy.bean.AreaAnalysis
-import com.zhuangjy.common.JobType
-import com.zhuangjy.util.readProperties
+import com.zhuangjy.util.ReadProperties
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.JdbcRDD
 
@@ -12,17 +14,20 @@ import org.apache.spark.rdd.JdbcRDD
   * Created by zhuangjy on 2016/2/17.
   */
 object AreaAnalysis {
+  val mapper = new ObjectMapper
+  mapper.registerModule(DefaultScalaModule)
+
   def main(args: Array[String]) {
     val conn_str = "jdbc:mysql://127.0.0.1:3306/jobs?user=root&password="
     val sc = new SparkContext("local", "mysql")
     val section = loadSection(conn_str)
-    var areaMap:Map[String,AreaAnalysis] = Map()
-    val areas: Array[String] = readProperties.readFromClassPath("analysis.properties", "area").split(",")
+    var areaMap: Map[String, AreaAnalysis] = Map()
+    val areas: Array[String] = ReadProperties.readFromClassPath("analysis.properties", "area").split(",")
+    val industryField: Array[String] = ReadProperties.readFromClassPath("analysis.properties", "company_type").split(",")
     //初始化地区分析Map
-    for(s <- areas)
+    for (s <- areas)
       areaMap += (s -> new AreaAnalysis(s))
-//    calcAreaCount(section(0),section(1),sc,areas,areaMap)
-    calcAreaSalary(section(0),section(1),sc,areas,areaMap)
+    calcAreaNormal(section(0), section(1), sc, areas, areaMap)
     sc.stop()
   }
 
@@ -45,7 +50,8 @@ object AreaAnalysis {
     res
   }
 
-  def calcAreaNormal(min:Long,max:Long,sc:SparkContext,areas:Array[String],map:Map[String,AreaAnalysis]) : Map[String,AreaAnalysis] = {
+  def calcAreaNormal(min: Long, max: Long, sc: SparkContext, areas: Array[String],
+                     industrys: Array[String], map: Map[String, AreaAnalysis]): Map[String, AreaAnalysis] = {
     val rdd = new JdbcRDD(
       sc,
       () => {
@@ -67,12 +73,23 @@ object AreaAnalysis {
       map(s).setCount(count)
       //2.指定地区平均薪水
       //TODO 求平均值大数据会越界
-      val avgSalar = specificAreaRdd.map(line=>line._4).reduce((a,b) => (a + b))
-      map(s).setAvgSalary(avgSalar/count)
+      val avgSalar = specificAreaRdd.map(line => line._4).reduce((a, b) => (a + b))
+      map(s).setAvgSalary(avgSalar / count)
 
       //具体地区内部对比
-      //1.指定工作类型的数量分布
-      val typeCollection = specificAreaRdd.map(line => (line._2,1)).reduceByKey((a, b) => a+b).collect()
+      //1.指定地区工作类型的数量分布
+      val typeCountMap = specificAreaRdd.map(line => (line._2, 1)).reduceByKey((a, b) => a + b).collect().toMap
+      var strWriter = new StringWriter
+      mapper.writeValue(strWriter, typeCountMap)
+      map(s).setJobTypeCount(strWriter.toString)
+      //2.指定地区工作类型平均薪水
+      val typeSalary = specificAreaRdd.map(line => (line._2, line._4)).reduceByKey((a, b) => a + b).collect()
+      typeSalary.iterator.foreach(i => (i._1, i._1 / typeCountMap(i._1)))
+      val typeSalaryMap = typeSalary.toMap
+      strWriter = new StringWriter
+      mapper.writeValue(strWriter, typeSalaryMap)
+      map(s).setJobTypeSalary(strWriter.toString)
+      //3.指定地区公司类型分布
 
 
     }
