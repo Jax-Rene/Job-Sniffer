@@ -13,17 +13,9 @@ import scala.io.Source
   * Created by zhuangjy on 2016/2/23.
   */
 object JsonExample extends App {
-  val lines = Source.fromFile("C:\\Users\\iamjo\\Desktop\\company.txt").getLines.toList
-  var res: Set[String] = HashSet()
-  for(line:String<-lines){
-    for(s:String <- line.split("·")){
-      res += s
-    }
-  }
-
-  res.iterator.foreach(
-    i => print(i + ",")
-  )
-
+  var map  = Map((1->2),(2->3))
+  println(map)
+  map += (1->5)
+  println(map)
 
 }
