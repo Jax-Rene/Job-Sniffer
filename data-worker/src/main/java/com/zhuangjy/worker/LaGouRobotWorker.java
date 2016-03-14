@@ -21,6 +21,7 @@ public class LaGouRobotWorker extends BaseWorker {
 
     private int jobType = 0;
     private int awaitTime = 0;
+    private String origin = "拉勾网";
 
     public LaGouRobotWorker(String jobName, String url, BaseDao baseDao) {
         super(jobName, baseDao);
@@ -45,7 +46,7 @@ public class LaGouRobotWorker extends BaseWorker {
         Map<String, Map<String, Map<String, Object>>> maps = null;
         int i = 1;
         while (true) {
-            Document doc = null;
+            Document doc;
             String dest = null;
             try {
                 dest = url + i;
@@ -69,7 +70,7 @@ public class LaGouRobotWorker extends BaseWorker {
                     String industryField = (String) map.get("industryField");
                     String companySize = (String) map.get("companySize");
                     String positionName = (String) map.get("positionName");
-                    Job job = new Job(positionName, jobType, companyCity, companyName, calcAvg(workYear), calcAvg(salary), education, financeStage, industryField, calcAvg(companySize));
+                    Job job = new Job(positionName, jobType, companyCity, companyName, calcAvg(workYear), calcAvg(salary), education, financeStage, industryField, calcAvg(companySize),origin);
                     baseDao.save(job);
                 }
                 i++;

@@ -25,14 +25,10 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Author:王旗
- * Date:2014/8/21 14:57
- * Description:
- */
 @Configuration
 @EnableTransactionManagement
-@PropertySource(ignoreResourceNotFound = true, value = {"classpath:database.properties", "file:/etc/job-analysis/database.properties"})
+//@PropertySource(ignoreResourceNotFound = true, value = {"classpath:database.properties", "file:/etc/job-analysis/database.properties"})
+@PropertySource(ignoreResourceNotFound = true, value = {"classpath:database.properties"})
 public class DataBaseConfig implements TransactionManagementConfigurer {
 
 
@@ -47,7 +43,9 @@ public class DataBaseConfig implements TransactionManagementConfigurer {
     private String c3p0_username;
     @Value("${c3p0.password}")
     private String c3p0_password;
-
+    //TODO Spring注入驱动信息
+//    @Value("${c3p0.driver}")
+//    private String c3p0_driver;
     @PostConstruct
     public void init() {
         logger.info("database-config:");
@@ -90,6 +88,8 @@ public class DataBaseConfig implements TransactionManagementConfigurer {
         config.setIdleMaxAge(5, TimeUnit.MINUTES);//mysql的wati_timeout默认为28800
         config.setIdleConnectionTestPeriod(1, TimeUnit.MINUTES);
         db = new BoneCPDataSource(config); // setup the connection pool
+//        System.out.println(c3p0_driver);
+        db.setDriverClass("com.mysql.jdbc.Driver");
         logger.info("gen data-source for url [" + c3p0_url + "] success");
         return db;
     }
@@ -97,7 +97,7 @@ public class DataBaseConfig implements TransactionManagementConfigurer {
     @Bean(name = "sessionFactory", destroyMethod = "destroy")
     public LocalSessionFactoryBean sessionFactory() throws IOException {
         logger.info("gen sessionFactory start");
-        LocalSessionFactoryBean session = new org.springframework.orm.hibernate4.LocalSessionFactoryBean();
+        LocalSessionFactoryBean session = new LocalSessionFactoryBean();
         session.setPackagesToScan(new String[]{"com.zhuangjy.entity"});
 //        session.setPackagesToScan(new String[]{"com.cnc.**.entity", "com.cnc.**.bean", "com.cnc.**.model"});
         session.setDataSource(dataSource());

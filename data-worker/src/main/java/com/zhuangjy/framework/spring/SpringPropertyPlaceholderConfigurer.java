@@ -15,7 +15,7 @@
 
 package com.zhuangjy.framework.spring;
 
-import com.zhuangjy.framework.utils.CryptoUtil;
+import com.zhuangjy.framework.config.CryptoUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
@@ -31,9 +31,6 @@ import java.util.Properties;
  * 替代 Spring 的 {@link PropertyPlaceholderConfigurer}，用于开放配置文件的参数访问接口，
  * 不再局限于spring context中访问，也可以在其他任意地方得到这些值（如非spring bean，tag，jsp）。
  * 
- * @author 刘圳
- * @version 1.0 2011-9-7
- * @since 2.0
  */
 public class SpringPropertyPlaceholderConfigurer extends PropertyPlaceholderConfigurer {
 

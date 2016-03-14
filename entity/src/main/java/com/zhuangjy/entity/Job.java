@@ -1,6 +1,5 @@
 package com.zhuangjy.entity;
 
-import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Proxy;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -49,8 +48,11 @@ public class Job {
     @Column(name = "company_size")
     private Float companySize;
 
+    @Column(name ="origin")
+    private String origin;
 
-    public Job(String jobName, Integer jobType,String companyCity, String companyName, Float workYear, Float salary, String education, String financeStage, String industryField, Float companySize) {
+
+    public Job(String jobName, Integer jobType,String companyCity, String companyName, Float workYear, Float salary, String education, String financeStage, String industryField, Float companySize,String origin) {
         this.jobName = jobName;
         this.jobType = jobType;
         this.companyCity = companyCity;
@@ -61,6 +63,15 @@ public class Job {
         this.financeStage = financeStage;
         this.industryField = industryField;
         this.companySize = companySize;
+        this.origin = origin;
+    }
+
+    public String getOrigin(){
+        return origin;
+    }
+
+    public void setOrigin(String origin){
+        this.origin = origin;
     }
 
     public Integer getJobType() {

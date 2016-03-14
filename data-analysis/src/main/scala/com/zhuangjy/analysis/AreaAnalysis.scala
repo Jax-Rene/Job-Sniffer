@@ -1,13 +1,10 @@
 package com.zhuangjy.analysis
 
 import java.io.{StringWriter}
-import java.sql.{DriverManager, ResultSet}
-import java.util
-import java.util.NoSuchElementException
-
+import java.sql.{DriverManager}
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.zhuangjy.bean.AreaAnalysis
+import com.zhuangjy.entity.Area
 import com.zhuangjy.common.JobType
 import com.zhuangjy.dao.AnalysisDao
 import com.zhuangjy.util.ReadProperties
@@ -26,14 +23,14 @@ object AreaAnalysis {
   def main(args: Array[String]) {
     val sc = new SparkContext("local", "mysql")
     val section = AnalysisDao.loadSection
-    var areaMap: Map[String, AreaAnalysis] = Map()
+    var areaMap: Map[String, Area] = Map()
     val classPathProperties = ReadProperties.readFromClassPathMultiplePro("analysis.properties", Array("area", "company_type", "finance_stage"))
     val areas: Array[String] = classPathProperties("area").split(",")
     val industryField: Array[String] = classPathProperties("company_type").split(",")
     val financeStage: Array[String] = classPathProperties("finance_stage").split(",")
     //初始化地区分析Map
     for (s <- areas)
-      areaMap += (s -> new AreaAnalysis(s))
+      areaMap += (s -> new Area(s))
     calcArea(section(0), section(1), sc, areas, industryField, financeStage, areaMap)
     for (s <- areaMap.values) {
       AnalysisDao.insertAreaAnalysis(s)
@@ -44,7 +41,7 @@ object AreaAnalysis {
 
   def calcArea(min: Long, max: Long, sc: SparkContext, areas: Array[String],
                industrys: Array[String], financeStage: Array[String],
-               map: Map[String, AreaAnalysis]): Map[String, AreaAnalysis] = {
+               map: Map[String, Area]): Map[String, Area] = {
     val rdd = new JdbcRDD(
       sc,
       () => {
@@ -59,12 +56,12 @@ object AreaAnalysis {
     ).cache()
 
     for (s <- areas) {
-      val specificAreaRdd = rdd.filter(line => line._3.contains(s)).cache()
+      val specificAreaRdd = rdd.filter(line => line._3.toUpperCase.contains(s.toUpperCase)).cache()
       //所有地区对比
-      //1.指定地区需求量
+      //1.所有地区需求量
       val count = specificAreaRdd.count()
       map(s).setCount(count)
-      //2.指定地区平均薪水
+      //2.所有地区平均薪水
       //TODO 求平均值大数据会越界
       val avgSalar = specificAreaRdd.map(line => line._4).reduce((a, b) => (a + b))
       map(s).setAvgSalary(avgSalar / count)
@@ -85,7 +82,7 @@ object AreaAnalysis {
       //3.指定地区公司类型分布
       var industryMap: Map[String, Long] = Map()
       for (s <- industrys) {
-        val count = specificAreaRdd.filter(_._7.contains(s)).count()
+        val count = specificAreaRdd.filter(_._7.toUpperCase.contains(s.toUpperCase)).count()
         industryMap += (s -> count)
       }
       strWriter = new StringWriter
@@ -94,7 +91,7 @@ object AreaAnalysis {
       //4.指定地区公司规模（投资轮)分布
       var financeStageMap: Map[String, Long] = Map()
       for (s <- financeStage) {
-        val count = specificAreaRdd.filter(_._6.contains(s)).count()
+        val count = specificAreaRdd.filter(_._6.toUpperCase.contains(s.toUpperCase)).count()
         financeStageMap += (s -> count)
       }
       strWriter = new StringWriter
@@ -103,7 +100,7 @@ object AreaAnalysis {
       //5.指定地区各个工作数量分布
       var jobDetailCountMap: Map[String, Long] = Map()
       for (s: String <- JobType.keyWords.asScala) {
-        val count = specificAreaRdd.filter(_._1.contains(s)).count()
+        val count = specificAreaRdd.filter(_._1.toUpperCase.contains(s.toUpperCase)).count()
         jobDetailCountMap += (s -> count)
       }
       strWriter = new StringWriter
