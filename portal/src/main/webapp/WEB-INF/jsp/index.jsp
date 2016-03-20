@@ -12,12 +12,12 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>欢迎来到Job Hunter</title>
+    <title>欢迎来到Job Sniffer</title>
     <meta name="generator" content="Bootply"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link href="${pageContext.request.contextPath}/css/bootstrap.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/styles.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/bootstrap-theme.css">
+    <link href="${pageContext.request.contextPath}/css/bootstrap-theme.css" rel="stylesheet">
 </head>
 <body>
 <div id="wrap">
@@ -62,7 +62,7 @@
             </div>
 
             <!-- 标题 -->
-            <div class="logo">Job Hunter</div>
+            <div class="logo">Job Sniffer</div>
             <!-- Controls -->
             <a class="left carousel-control" href="#myCarousel" data-slide="prev">
                 <span class="glyphicon glyphicon-chevron-left"></span>
@@ -73,7 +73,6 @@
         </div>
     </header>
 
-    <!-- Fixed navbar -->
     <div class="navbar navbar-custom navbar-inverse navbar-static-top" id="nav">
         <div class="container">
             <div class="navbar-header">
@@ -88,30 +87,8 @@
                     <li>
                         <a href="#section1">Home</a>
                     </li>
-                    <li class="dropdown">
-                        <a href="#section2" class="dropdown-toggle" data-toggle="dropdown">
-                            Function <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="#">Academic</a>
-                            </li>
-                            <li>
-                                <a href="#">Commercial</a>
-                            </li>
-                            <li>
-                                <a href="#">Financial</a>
-                            </li>
-                            <li>
-                                <a href="#">Interior Design</a>
-                            </li>
-                            <li>
-                                <a href="#">Medical</a>
-                            </li>
-                            <li>
-                                <a href="#">Religious</a>
-                            </li>
-                        </ul>
+                    <li>
+                        <a href="#section2">Function</a>
                     </li>
                     <li>
                         <a href="#section3">Setting</a>
@@ -121,11 +98,9 @@
                     </li>
                 </ul>
             </div>
-            <!--/.nav-collapse --> </div>
-        <!--/.container --> </div>
-    <!--/.navbar -->
+        </div>
+    </div>
 
-    <!-- Begin page content -->
     <div id="section1"></div>
     <div class="container">
         <div class="col-sm-10 col-sm-offset-1">
@@ -408,6 +383,9 @@
 
 
 <script type="text/javascript">
+    //轮播
+    $("#myCarousel").carousel('cycle');
+
     $('#contact').click(function () {
         parent.location.href = 'Mailto:johnny.zhuang@foxmail.com?Subject=' + $('#subject').val() + "&Body=" + $('#contents').val();
     });
@@ -420,19 +398,21 @@
                     var id = guid();
                     $('#job-count').append("<div class='panel-heading'> <h4 class='panel-title'> <a data-toggle='collapse' data-parent='#job-count' href='#" + id + "'>" + name + "<span class='badge'>" + value[0] + "</span></a> </h4> </div> <div id='" + id + "' class='panel-collapse collapse'> <div class='panel-body'></div></div>");
 
-                    $.each(value[1], function (name,value) {
+                    $.each(value[1], function (name, value) {
                         $('#' + id + ' > .panel-body').append(name + "&nbsp;<span class='badge'>" + value + "</span><br/><hr/>");
                     });
                 });
+                $('#total-detail').modal('toggle');
+            }else{
+                alert('网络加载失败!');
             }
-            $('#total-detail').modal('toggle');
         });
     });
 
 
     function guid() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
     }

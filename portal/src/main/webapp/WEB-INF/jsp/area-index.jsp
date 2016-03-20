@@ -10,440 +10,629 @@
 <html>
 <head>
     <title>地区分析</title>
-    <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
-    <script src="${pageContext.request.contextPath}/js/echarts.js"></script>
+    <link href="${pageContext.request.contextPath}/css/bootstrap.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/css/bootstrap-theme.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/css/styles.css" rel="stylesheet"/>
 </head>
 <body>
-<div id="area-count" style="width: 100%;height:50%;"></div>
-<div id="area-salary" style="width: 100%;height: 50%;"></div>
+
+<jsp:include page="head.jsp"></jsp:include>
+<div id="myCarousel" class="carousel slide" style="background-color: #404a59;height:100%">
+    <!-- 画廊游标 -->
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+    </ol>
+
+    <!-- 画廊图像 -->
+    <div class="carousel-inner" style="height: 100%;">
+        <div class="item active">
+            <div id="area-count" style="width: 100%;height: 100%;"></div>
+        </div>
+
+        <div class="item">
+            <div id="area-salary" style="width: 100%;height: 100%;"></div>
+        </div>
+
+        <div class="item" style="background-color: #404a59">
+            <div class="container">
+                <div class="row">
+                    <div class="text-center" style="margin-top: 4%;">
+                        <input type="text" id="detail-city" class="form-control" style="display:inline;width:40%"
+                               placeholder="请输入要查询的城市"/>&nbsp;
+                        <input type="button" id="search" class="btn btn-success" value="查询" style="display:inline"/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="divider"></div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-offset-3 col-md-6">
+                        <div id="preview" class="analysis">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th style="color: #FFFFFF;text-align: center">城市</th>
+                                    <th style="color: #FFFFFF;text-align: center">需求数量(份)</th>
+                                    <th style="color: #FFFFFF;text-align: center">平均薪水(k/月)</th>
+                                </tr>
+                                </thead>
+                                <tbody id="preview-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="divider"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-5">
+                        <div id="job-type-count" style="width: 100%;height: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
+</div>
+<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.js"></script>
+<script src="${pageContext.request.contextPath}/js/echarts.js"></script>
 <script type="text/javascript">
-    //区域名:数量 键值对
-    var countData = [
-        <c:forEach items="${areas}" var="area" varStatus="stat">
-        <c:choose>
+    $(document).ready(function () {
+        //区域名:数量 键值对
+        var countData = [
+            <c:forEach items="${areas}" var="area" varStatus="stat">
+            <c:choose>
             <c:when test="${!stat.last}">
-        {name: '${area.area}', value: ${area.count}},
+            {name: '${area.area}', value: ${area.count}},
             </c:when>
-            <c:otherwise>{
-            name: '${area.area}', value: ${area.count}}
-        </c:otherwise>
-        </c:choose>
-        </c:forEach>
-    ]
-
-    //区域名:平均薪水 键值对
-    var salaryData = [
-        <c:forEach items="${areas}" var="area" varStatus="stat">
-        <c:choose>
-        <c:when test="${!stat.last}">
-        {name: '${area.area}', value: ${area.avgSalary}},
-        </c:when>
-            <c:otherwise>{
-            name: '${area.area}', value: ${area.avgSalary}}
-        </c:otherwise>
-        </c:choose>
-        </c:forEach>
-    ]
-
-//    TODO:检查取与是否完整
-    var geoCoordMap = {
-        '海门': [121.15, 31.89],
-        '鄂尔多斯': [109.781327, 39.608266],
-        '招远': [120.38, 37.35],
-        '舟山': [122.207216, 29.985295],
-        '齐齐哈尔': [123.97, 47.33],
-        '盐城': [120.13, 33.38],
-        '赤峰': [118.87, 42.28],
-        '青岛': [120.33, 36.07],
-        '乳山': [121.52, 36.89],
-        '金昌': [102.188043, 38.520089],
-        '泉州': [118.58, 24.93],
-        '莱西': [120.53, 36.86],
-        '日照': [119.46, 35.42],
-        '胶南': [119.97, 35.88],
-        '南通': [121.05, 32.08],
-        '拉萨': [91.11, 29.97],
-        '云浮': [112.02, 22.93],
-        '梅州': [116.1, 24.55],
-        '文登': [122.05, 37.2],
-        '上海': [121.48, 31.22],
-        '攀枝花': [101.718637, 26.582347],
-        '威海': [122.1, 37.5],
-        '承德': [117.93, 40.97],
-        '厦门': [118.1, 24.46],
-        '汕尾': [115.375279, 22.786211],
-        '潮州': [116.63, 23.68],
-        '丹东': [124.37, 40.13],
-        '太仓': [121.1, 31.45],
-        '曲靖': [103.79, 25.51],
-        '烟台': [121.39, 37.52],
-        '福州': [119.3, 26.08],
-        '瓦房店': [121.979603, 39.627114],
-        '即墨': [120.45, 36.38],
-        '抚顺': [123.97, 41.97],
-        '玉溪': [102.52, 24.35],
-        '张家口': [114.87, 40.82],
-        '阳泉': [113.57, 37.85],
-        '莱州': [119.942327, 37.177017],
-        '湖州': [120.1, 30.86],
-        '汕头': [116.69, 23.39],
-        '昆山': [120.95, 31.39],
-        '宁波': [121.56, 29.86],
-        '湛江': [110.359377, 21.270708],
-        '揭阳': [116.35, 23.55],
-        '荣成': [122.41, 37.16],
-        '连云港': [119.16, 34.59],
-        '葫芦岛': [120.836932, 40.711052],
-        '常熟': [120.74, 31.64],
-        '东莞': [113.75, 23.04],
-        '河源': [114.68, 23.73],
-        '淮安': [119.15, 33.5],
-        '泰州': [119.9, 32.49],
-        '南宁': [108.33, 22.84],
-        '营口': [122.18, 40.65],
-        '惠州': [114.4, 23.09],
-        '江阴': [120.26, 31.91],
-        '蓬莱': [120.75, 37.8],
-        '韶关': [113.62, 24.84],
-        '嘉峪关': [98.289152, 39.77313],
-        '广州': [113.23, 23.16],
-        '延安': [109.47, 36.6],
-        '太原': [112.53, 37.87],
-        '清远': [113.01, 23.7],
-        '中山': [113.38, 22.52],
-        '昆明': [102.73, 25.04],
-        '寿光': [118.73, 36.86],
-        '盘锦': [122.070714, 41.119997],
-        '长治': [113.08, 36.18],
-        '深圳': [114.07, 22.62],
-        '珠海': [113.52, 22.3],
-        '宿迁': [118.3, 33.96],
-        '咸阳': [108.72, 34.36],
-        '铜川': [109.11, 35.09],
-        '平度': [119.97, 36.77],
-        '佛山': [113.11, 23.05],
-        '海口': [110.35, 20.02],
-        '江门': [113.06, 22.61],
-        '章丘': [117.53, 36.72],
-        '肇庆': [112.44, 23.05],
-        '大连': [121.62, 38.92],
-        '临汾': [111.5, 36.08],
-        '吴江': [120.63, 31.16],
-        '石嘴山': [106.39, 39.04],
-        '沈阳': [123.38, 41.8],
-        '苏州': [120.62, 31.32],
-        '茂名': [110.88, 21.68],
-        '嘉兴': [120.76, 30.77],
-        '长春': [125.35, 43.88],
-        '胶州': [120.03336, 36.264622],
-        '银川': [106.27, 38.47],
-        '张家港': [120.555821, 31.875428],
-        '三门峡': [111.19, 34.76],
-        '锦州': [121.15, 41.13],
-        '南昌': [115.89, 28.68],
-        '柳州': [109.4, 24.33],
-        '三亚': [109.511909, 18.252847],
-        '自贡': [104.778442, 29.33903],
-        '吉林': [126.57, 43.87],
-        '阳江': [111.95, 21.85],
-        '泸州': [105.39, 28.91],
-        '西宁': [101.74, 36.56],
-        '宜宾': [104.56, 29.77],
-        '呼和浩特': [111.65, 40.82],
-        '成都': [104.06, 30.67],
-        '大同': [113.3, 40.12],
-        '镇江': [119.44, 32.2],
-        '桂林': [110.28, 25.29],
-        '张家界': [110.479191, 29.117096],
-        '宜兴': [119.82, 31.36],
-        '北海': [109.12, 21.49],
-        '西安': [108.95, 34.27],
-        '金坛': [119.56, 31.74],
-        '东营': [118.49, 37.46],
-        '牡丹江': [129.58, 44.6],
-        '遵义': [106.9, 27.7],
-        '绍兴': [120.58, 30.01],
-        '扬州': [119.42, 32.39],
-        '常州': [119.95, 31.79],
-        '潍坊': [119.1, 36.62],
-        '重庆': [106.54, 29.59],
-        '台州': [121.420757, 28.656386],
-        '南京': [118.78, 32.04],
-        '滨州': [118.03, 37.36],
-        '贵阳': [106.71, 26.57],
-        '无锡': [120.29, 31.59],
-        '本溪': [123.73, 41.3],
-        '克拉玛依': [84.77, 45.59],
-        '渭南': [109.5, 34.52],
-        '马鞍山': [118.48, 31.56],
-        '宝鸡': [107.15, 34.38],
-        '焦作': [113.21, 35.24],
-        '句容': [119.16, 31.95],
-        '北京': [116.46, 39.92],
-        '徐州': [117.2, 34.26],
-        '衡水': [115.72, 37.72],
-        '包头': [110, 40.58],
-        '绵阳': [104.73, 31.48],
-        '乌鲁木齐': [87.68, 43.77],
-        '枣庄': [117.57, 34.86],
-        '杭州': [120.19, 30.26],
-        '淄博': [118.05, 36.78],
-        '鞍山': [122.85, 41.12],
-        '溧阳': [119.48, 31.43],
-        '库尔勒': [86.06, 41.68],
-        '安阳': [114.35, 36.1],
-        '开封': [114.35, 34.79],
-        '济南': [117, 36.65],
-        '德阳': [104.37, 31.13],
-        '温州': [120.65, 28.01],
-        '九江': [115.97, 29.71],
-        '邯郸': [114.47, 36.6],
-        '临安': [119.72, 30.23],
-        '兰州': [103.73, 36.03],
-        '沧州': [116.83, 38.33],
-        '临沂': [118.35, 35.05],
-        '南充': [106.110698, 30.837793],
-        '天津': [117.2, 39.13],
-        '富阳': [119.95, 30.07],
-        '泰安': [117.13, 36.18],
-        '诸暨': [120.23, 29.71],
-        '郑州': [113.65, 34.76],
-        '哈尔滨': [126.63, 45.75],
-        '聊城': [115.97, 36.45],
-        '芜湖': [118.38, 31.33],
-        '唐山': [118.02, 39.63],
-        '平顶山': [113.29, 33.75],
-        '邢台': [114.48, 37.05],
-        '德州': [116.29, 37.45],
-        '济宁': [116.59, 35.38],
-        '荆州': [112.239741, 30.335165],
-        '宜昌': [111.3, 30.7],
-        '义乌': [120.06, 29.32],
-        '丽水': [119.92, 28.45],
-        '洛阳': [112.44, 34.7],
-        '秦皇岛': [119.57, 39.95],
-        '株洲': [113.16, 27.83],
-        '石家庄': [114.48, 38.03],
-        '莱芜': [117.67, 36.19],
-        '常德': [111.69, 29.05],
-        '保定': [115.48, 38.85],
-        '湘潭': [112.91, 27.87],
-        '金华': [119.64, 29.12],
-        '岳阳': [113.09, 29.37],
-        '长沙': [113, 28.21],
-        '衢州': [118.88, 28.97],
-        '廊坊': [116.7, 39.53],
-        '菏泽': [115.480656, 35.23375],
-        '合肥': [117.27, 31.86],
-        '武汉': [114.31, 30.52],
-        '大庆': [125.03, 46.58]
-    };
-
-    var convertData = function (data) {
-        var res = [];
-        for (var i = 0; i < data.length; i++) {
-            var geoCoord = geoCoordMap[data[i].name];
-            if (geoCoord) {
-                res.push({
-                    name: data[i].name,
-                    value: geoCoord.concat(data[i].value)
-                });
+                <c:otherwise>{
+                name: '${area.area}', value: ${area.count}
             }
+            </c:otherwise>
+            </c:choose>
+            </c:forEach>
+        ]
+
+        //区域名:平均薪水 键值对
+        var salaryData = [
+            <c:forEach items="${areas}" var="area" varStatus="stat">
+            <c:choose>
+            <c:when test="${!stat.last}">
+            {name: '${area.area}', value: ${area.avgSalary}},
+            </c:when>
+                <c:otherwise>{
+                name: '${area.area}', value: ${area.avgSalary}
+            }
+            </c:otherwise>
+            </c:choose>
+            </c:forEach>
+        ]
+
+        //    TODO:检查取与是否完整
+        var geoCoordMap = {
+            '海门': [121.15, 31.89],
+            '鄂尔多斯': [109.781327, 39.608266],
+            '招远': [120.38, 37.35],
+            '舟山': [122.207216, 29.985295],
+            '齐齐哈尔': [123.97, 47.33],
+            '盐城': [120.13, 33.38],
+            '赤峰': [118.87, 42.28],
+            '青岛': [120.33, 36.07],
+            '乳山': [121.52, 36.89],
+            '金昌': [102.188043, 38.520089],
+            '泉州': [118.58, 24.93],
+            '莱西': [120.53, 36.86],
+            '日照': [119.46, 35.42],
+            '胶南': [119.97, 35.88],
+            '南通': [121.05, 32.08],
+            '拉萨': [91.11, 29.97],
+            '云浮': [112.02, 22.93],
+            '梅州': [116.1, 24.55],
+            '文登': [122.05, 37.2],
+            '上海': [121.48, 31.22],
+            '攀枝花': [101.718637, 26.582347],
+            '威海': [122.1, 37.5],
+            '承德': [117.93, 40.97],
+            '厦门': [118.1, 24.46],
+            '汕尾': [115.375279, 22.786211],
+            '潮州': [116.63, 23.68],
+            '丹东': [124.37, 40.13],
+            '太仓': [121.1, 31.45],
+            '曲靖': [103.79, 25.51],
+            '烟台': [121.39, 37.52],
+            '福州': [119.3, 26.08],
+            '瓦房店': [121.979603, 39.627114],
+            '即墨': [120.45, 36.38],
+            '抚顺': [123.97, 41.97],
+            '玉溪': [102.52, 24.35],
+            '张家口': [114.87, 40.82],
+            '阳泉': [113.57, 37.85],
+            '莱州': [119.942327, 37.177017],
+            '湖州': [120.1, 30.86],
+            '汕头': [116.69, 23.39],
+            '昆山': [120.95, 31.39],
+            '宁波': [121.56, 29.86],
+            '湛江': [110.359377, 21.270708],
+            '揭阳': [116.35, 23.55],
+            '荣成': [122.41, 37.16],
+            '连云港': [119.16, 34.59],
+            '葫芦岛': [120.836932, 40.711052],
+            '常熟': [120.74, 31.64],
+            '东莞': [113.75, 23.04],
+            '河源': [114.68, 23.73],
+            '淮安': [119.15, 33.5],
+            '泰州': [119.9, 32.49],
+            '南宁': [108.33, 22.84],
+            '营口': [122.18, 40.65],
+            '惠州': [114.4, 23.09],
+            '江阴': [120.26, 31.91],
+            '蓬莱': [120.75, 37.8],
+            '韶关': [113.62, 24.84],
+            '嘉峪关': [98.289152, 39.77313],
+            '广州': [113.23, 23.16],
+            '延安': [109.47, 36.6],
+            '太原': [112.53, 37.87],
+            '清远': [113.01, 23.7],
+            '中山': [113.38, 22.52],
+            '昆明': [102.73, 25.04],
+            '寿光': [118.73, 36.86],
+            '盘锦': [122.070714, 41.119997],
+            '长治': [113.08, 36.18],
+            '深圳': [114.07, 22.62],
+            '珠海': [113.52, 22.3],
+            '宿迁': [118.3, 33.96],
+            '咸阳': [108.72, 34.36],
+            '铜川': [109.11, 35.09],
+            '平度': [119.97, 36.77],
+            '佛山': [113.11, 23.05],
+            '海口': [110.35, 20.02],
+            '江门': [113.06, 22.61],
+            '章丘': [117.53, 36.72],
+            '肇庆': [112.44, 23.05],
+            '大连': [121.62, 38.92],
+            '临汾': [111.5, 36.08],
+            '吴江': [120.63, 31.16],
+            '石嘴山': [106.39, 39.04],
+            '沈阳': [123.38, 41.8],
+            '苏州': [120.62, 31.32],
+            '茂名': [110.88, 21.68],
+            '嘉兴': [120.76, 30.77],
+            '长春': [125.35, 43.88],
+            '胶州': [120.03336, 36.264622],
+            '银川': [106.27, 38.47],
+            '张家港': [120.555821, 31.875428],
+            '三门峡': [111.19, 34.76],
+            '锦州': [121.15, 41.13],
+            '南昌': [115.89, 28.68],
+            '柳州': [109.4, 24.33],
+            '三亚': [109.511909, 18.252847],
+            '自贡': [104.778442, 29.33903],
+            '吉林': [126.57, 43.87],
+            '阳江': [111.95, 21.85],
+            '泸州': [105.39, 28.91],
+            '西宁': [101.74, 36.56],
+            '宜宾': [104.56, 29.77],
+            '呼和浩特': [111.65, 40.82],
+            '成都': [104.06, 30.67],
+            '大同': [113.3, 40.12],
+            '镇江': [119.44, 32.2],
+            '桂林': [110.28, 25.29],
+            '张家界': [110.479191, 29.117096],
+            '宜兴': [119.82, 31.36],
+            '北海': [109.12, 21.49],
+            '西安': [108.95, 34.27],
+            '金坛': [119.56, 31.74],
+            '东营': [118.49, 37.46],
+            '牡丹江': [129.58, 44.6],
+            '遵义': [106.9, 27.7],
+            '绍兴': [120.58, 30.01],
+            '扬州': [119.42, 32.39],
+            '常州': [119.95, 31.79],
+            '潍坊': [119.1, 36.62],
+            '重庆': [106.54, 29.59],
+            '台州': [121.420757, 28.656386],
+            '南京': [118.78, 32.04],
+            '滨州': [118.03, 37.36],
+            '贵阳': [106.71, 26.57],
+            '无锡': [120.29, 31.59],
+            '本溪': [123.73, 41.3],
+            '克拉玛依': [84.77, 45.59],
+            '渭南': [109.5, 34.52],
+            '马鞍山': [118.48, 31.56],
+            '宝鸡': [107.15, 34.38],
+            '焦作': [113.21, 35.24],
+            '句容': [119.16, 31.95],
+            '北京': [116.46, 39.92],
+            '徐州': [117.2, 34.26],
+            '衡水': [115.72, 37.72],
+            '包头': [110, 40.58],
+            '绵阳': [104.73, 31.48],
+            '乌鲁木齐': [87.68, 43.77],
+            '枣庄': [117.57, 34.86],
+            '杭州': [120.19, 30.26],
+            '淄博': [118.05, 36.78],
+            '鞍山': [122.85, 41.12],
+            '溧阳': [119.48, 31.43],
+            '库尔勒': [86.06, 41.68],
+            '安阳': [114.35, 36.1],
+            '开封': [114.35, 34.79],
+            '济南': [117, 36.65],
+            '德阳': [104.37, 31.13],
+            '温州': [120.65, 28.01],
+            '九江': [115.97, 29.71],
+            '邯郸': [114.47, 36.6],
+            '临安': [119.72, 30.23],
+            '兰州': [103.73, 36.03],
+            '沧州': [116.83, 38.33],
+            '临沂': [118.35, 35.05],
+            '南充': [106.110698, 30.837793],
+            '天津': [117.2, 39.13],
+            '富阳': [119.95, 30.07],
+            '泰安': [117.13, 36.18],
+            '诸暨': [120.23, 29.71],
+            '郑州': [113.65, 34.76],
+            '哈尔滨': [126.63, 45.75],
+            '聊城': [115.97, 36.45],
+            '芜湖': [118.38, 31.33],
+            '唐山': [118.02, 39.63],
+            '平顶山': [113.29, 33.75],
+            '邢台': [114.48, 37.05],
+            '德州': [116.29, 37.45],
+            '济宁': [116.59, 35.38],
+            '荆州': [112.239741, 30.335165],
+            '宜昌': [111.3, 30.7],
+            '义乌': [120.06, 29.32],
+            '丽水': [119.92, 28.45],
+            '洛阳': [112.44, 34.7],
+            '秦皇岛': [119.57, 39.95],
+            '株洲': [113.16, 27.83],
+            '石家庄': [114.48, 38.03],
+            '莱芜': [117.67, 36.19],
+            '常德': [111.69, 29.05],
+            '保定': [115.48, 38.85],
+            '湘潭': [112.91, 27.87],
+            '金华': [119.64, 29.12],
+            '岳阳': [113.09, 29.37],
+            '长沙': [113, 28.21],
+            '衢州': [118.88, 28.97],
+            '廊坊': [116.7, 39.53],
+            '菏泽': [115.480656, 35.23375],
+            '合肥': [117.27, 31.86],
+            '武汉': [114.31, 30.52],
+            '大庆': [125.03, 46.58]
+        };
+
+        var convertData = function (data) {
+            var res = [];
+            for (var i = 0; i < data.length; i++) {
+                var geoCoord = geoCoordMap[data[i].name];
+                if (geoCoord) {
+                    res.push({
+                        name: data[i].name,
+                        value: geoCoord.concat(data[i].value)
+                    });
+                }
+            }
+            return res;
+        };
+
+        countOption = {
+            backgroundColor: '#404a59',
+            title: {
+                text: '全国就业需求分布散点图',
+                subtext: 'data from Job Sniffer',
+                sublink: '${pageContext.request.contextPath}',
+                left: 'center',
+                top: '7%',
+                textStyle: {
+                    fontSize: '20',
+                    color: '#fff',
+                    fontFamily: 'monospace'
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: function (params, ticket, callback) {
+                    var str = params.value.toString().split(',');
+                    return params.seriesName + "<br/> " + params.name + ": " + str[2] + "份";
+                }
+            },
+            legend: {
+                orient: 'vertical',
+                y: '90%',
+                x: '77%',
+                data: ['需求量'],
+                textStyle: {
+                    color: '#fff'
+                }
+            },
+            geo: {
+                map: 'china',
+                label: {
+                    emphasis: {
+                        show: false
+                    }
+                },
+                roam: true,
+                itemStyle: {
+                    normal: {
+                        areaColor: '#323c48',
+                        borderColor: '#111'
+                    },
+                    emphasis: {
+                        areaColor: '#2a333d'
+                    }
+                }
+            },
+            series: [
+                {
+                    name: '需求量',
+                    type: 'scatter',
+                    coordinateSystem: 'geo',
+                    data: convertData(countData),
+                    symbolSize: function (val) {
+                        return val[2] < 4500 ? 5 : val[2] / 900;
+                    },
+                    label: {
+                        normal: {
+                            formatter: '{b}',
+                            position: 'right',
+                            show: false
+                        },
+                        emphasis: {
+                            show: true
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: '#ddb926'
+                        }
+                    }
+                },
+                {
+                    name: 'Top 5',
+                    type: 'effectScatter',
+                    coordinateSystem: 'geo',
+                    data: convertData(countData.sort(function (a, b) {
+                        return b.value - a.value;
+                    }).slice(0, 5)),
+                    symbolSize: function (val) {
+                        return val[2] / 800;
+                    },
+                    showEffectOn: 'render',
+                    rippleEffect: {
+                        brushType: 'stroke'
+                    },
+                    hoverAnimation: true,
+                    label: {
+                        normal: {
+                            formatter: '{b}',
+                            position: 'right',
+                            show: true
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: '#f4e925',
+                            shadowBlur: 10,
+                            shadowColor: '#333'
+                        }
+                    },
+                    zlevel: 1
+                }
+            ]
+        };
+
+
+        salaryOption = {
+            backgroundColor: '#404a59',
+            title: {
+                text: '全国平均薪水分布',
+                subtext: 'data from Job Sniffer',
+                sublink: '${pageContext.request.contextPath}',
+                left: 'center',
+                top: '7%',
+                textStyle: {
+                    fontSize: '20',
+                    color: '#fff',
+                    fontFamily: 'monospace'
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: function (params) {
+                    return params.name + ' : ' + params.value[2] + " k/月";
+                }
+            },
+            legend: {
+                orient: 'vertical',
+                y: '90%',
+                x: '77%',
+                data: ['平均薪水'],
+                textStyle: {
+                    color: '#fff'
+                }
+            },
+            dataRange: {
+                y: '64%',
+                x: '17%',
+                min: 0,
+                max: 20,
+                calculable: true,
+                color: ['#d94e5d', '#eac736', '#50a3ba'],
+                textStyle: {
+                    color: '#fff'
+                }
+            },
+            geo: {
+                map: 'china',
+                label: {
+                    emphasis: {
+                        show: false
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        areaColor: '#323c48',
+                        borderColor: '#111'
+                    },
+                    emphasis: {
+                        areaColor: '#2a333d'
+                    }
+                }
+            },
+            series: [
+                {
+                    name: '平均薪水',
+                    type: 'scatter',
+                    coordinateSystem: 'geo',
+                    data: convertData(salaryData),
+                    symbolSize: 12,
+                    label: {
+                        normal: {
+                            show: false
+                        },
+                        emphasis: {
+                            show: false
+                        }
+                    },
+                    itemStyle: {
+                        emphasis: {
+                            borderColor: '#fff',
+                            borderWidth: 1
+                        }
+                    }
+                }
+            ]
         }
-        return res;
-    };
 
-    countOption = {
-        backgroundColor: '#404a59',
-        title: {
-            text: '全国就业需求分布散点图',
-            subtext: 'data from ',
-            sublink: 'http://www.pm25.in',
-            left: 'center',
-            textStyle: {
-                color: '#fff'
-            }
-        },
-        tooltip: {
-            trigger: 'item',
-            formatter: function (params, ticket, callback) {
-                var str = params.value.toString().split(',');
-                return params.seriesName + "<br/> " + params.name + ": " + str[2] + "份";
-            }
-        },
-        legend: {
-            orient: 'vertical',
-            y: 'bottom',
-            x: 'right',
-            data: ['需求量'],
-            textStyle: {
-                color: '#fff'
-            }
-        },
-        geo: {
-            map: 'china',
-            label: {
-                emphasis: {
-                    show: false
+        countChart = undefined;
+        salaryChart = undefined;
+        jobTypeCountChart = undefined;
+        // 基于准备好的dom，初始化echarts实例
+        $.get('${pageContext.request.contextPath}/js/china.json', function (chinaJson) {
+            echarts.registerMap('china', chinaJson);
+            countChart = echarts.init(document.getElementById('area-count'));
+            countChart.setOption(countOption);
+            salaryChart = echarts.init(document.getElementById('area-salary'));
+            salaryChart.setOption(salaryOption);
+
+            /**
+             * 初始化.必须进行resize否则echarts会出现大小问题
+             */
+            $("#myCarousel").carousel('pause');
+            $("#myCarousel").carousel('next');
+            salaryChart.resize();
+            $("#myCarousel").carousel('next');
+        });
+
+
+        /**
+         *   具体城市查询
+         *   1.工作类别的需求（饼图）
+         */
+
+        jobTypeCountOption = {
+            backgroundColor: '#404a59',
+            title: {
+                text: '工作类型需求分布',
+                left: 'center',
+                top: 40,
+                textStyle: {
+                    color: '#ccc'
                 }
             },
-            roam: true,
-            itemStyle: {
-                normal: {
-                    areaColor: '#323c48',
-                    borderColor: '#111'
-                },
-                emphasis: {
-                    areaColor: '#2a333d'
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            visualMap: {
+                show: false,
+                min: 80,
+                max: 600,
+                inRange: {
+                    colorLightness: [0, 1]
                 }
-            }
-        },
-        series: [
-            {
-                name: '需求量',
-                type: 'scatter',
-                coordinateSystem: 'geo',
-                data: convertData(countData),
-                symbolSize: function (val) {
-                    return val[2] < 4500 ? 5 : val[2] / 900;
-                },
-                label: {
-                    normal: {
-                        formatter: '{b}',
-                        position: 'right',
-                        show: false
+            },
+            series: [
+                {
+                    name: '需求数量',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '50%'],
+                    data: [],
+                    roseType: 'angle',
+                    label: {
+                        normal: {
+                            textStyle: {
+                                color: 'rgba(255, 255, 255, 0.3)'
+                            }
+                        }
                     },
-                    emphasis: {
-                        show: true
-                    }
-                },
-                itemStyle: {
-                    normal: {
-                        color: '#ddb926'
-                    }
-                }
-            },
-            {
-                name: 'Top 5',
-                type: 'effectScatter',
-                coordinateSystem: 'geo',
-                data: convertData(countData.sort(function (a, b) {
-                    return b.value - a.value;
-                }).slice(0, 5)),
-                symbolSize: function (val) {
-                    return val[2] / 800;
-                },
-                showEffectOn: 'render',
-                rippleEffect: {
-                    brushType: 'stroke'
-                },
-                hoverAnimation: true,
-                label: {
-                    normal: {
-                        formatter: '{b}',
-                        position: 'right',
-                        show: true
-                    }
-                },
-                itemStyle: {
-                    normal: {
-                        color: '#f4e925',
-                        shadowBlur: 10,
-                        shadowColor: '#333'
-                    }
-                },
-                zlevel: 1
-            }
-        ]
-    };
-
-
-    salaryOption = {
-        backgroundColor: '#404a59',
-        title: {
-            text: '全国平均薪水分布',
-            subtext: '数据来源:各大主流招聘网站',
-            sublink: 'http://www.pm25.in',
-            x:'center',
-            textStyle: {
-                color: '#fff'
-            }
-        },
-        tooltip: {
-            trigger: 'item',
-            formatter: function (params) {
-                return params.name + ' : ' + params.value[2] + " k/月";
-            }
-        },
-        legend: {
-            orient: 'vertical',
-            y: 'bottom',
-            x:'right',
-            data:['平均薪水'],
-            textStyle: {
-                color: '#fff'
-            }
-        },
-        dataRange: {
-            min: 0,
-            max: 20,
-            calculable: true,
-            color: ['#d94e5d','#eac736','#50a3ba'],
-            textStyle: {
-                color: '#fff'
-            }
-        },
-        geo: {
-            map: 'china',
-            label: {
-                emphasis: {
-                    show: false
-                }
-            },
-            itemStyle: {
-                normal: {
-                    areaColor: '#323c48',
-                    borderColor: '#111'
-                },
-                emphasis: {
-                    areaColor: '#2a333d'
-                }
-            }
-        },
-        series: [
-            {
-                name: '平均薪水',
-                type: 'scatter',
-                coordinateSystem: 'geo',
-                data: convertData(salaryData),
-                symbolSize: 12,
-                label: {
-                    normal: {
-                        show: false
+                    labelLine: {
+                        normal: {
+                            lineStyle: {
+                                color: 'rgba(255, 255, 255, 0.3)'
+                            },
+                            smooth: 0.2,
+                            length: 10,
+                            length2: 20
+                        }
                     },
-                    emphasis: {
-                        show: false
-                    }
-                },
-                itemStyle: {
-                    emphasis: {
-                        borderColor: '#fff',
-                        borderWidth: 1
+                    itemStyle: {
+                        normal: {
+                            color: '#c23531',
+                            shadowBlur: 200,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
                     }
                 }
-            }
-        ]
-    }
+            ]
+        };
 
 
+        $('#search').click(function () {
+            $.get("${pageContext.request.contextPath}/area/detail/" + $('#detail-city').val(), function (data, status) {
+                $('#preview-body').html('');
+                if (status) {
+                    if (data) {
+                        $('#preview-body').append('<tr><td class="success text-center">' + data.area + '</td><td class="warning text-center">' + data.count + '</td><td class="danger text-center">' + data.avgSalary + '</td></tr>');
 
-    // 基于准备好的dom，初始化echarts实例
-    $.get('${pageContext.request.contextPath}/js/china.json', function (chinaJson) {
-        echarts.registerMap('china', chinaJson);
-        var countChart = echarts.init(document.getElementById('area-count'));
-        countChart.setOption(countOption);
-        var salaryChart = echarts.init(document.getElementById('area-salary'));
-        salaryChart.setOption(salaryOption);
+                        jobTypeCountChart = echarts.init(document.getElementById('job-type-count'));
+                        var datas = new Array();
+                        $.each(JSON.parse(data.jobTypeCount), function (name, val) {
+                            datas.push({'value':val,'name': name});
+                        });
+                        jobTypeCountOption.series.data = datas.sort(function (a, b) {
+                            return a.value - b.value;
+                        });
+
+                        console.log(jobTypeCountOption.series.data.toString());
+                        jobTypeCountChart.setOption(jobTypeCountOption);
+                    }
+                } else {
+                    alert('网络加载失败');
+                }
+            });
+        });
+
+
     });
 </script>
 </body>
