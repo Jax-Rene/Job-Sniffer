@@ -33,6 +33,16 @@ public enum JobType {
         this.keyWord = keyWord;
     }
 
+
+    public static String getJobTypeName(int index){
+        for(JobType jobType:JobType.values()){
+            if(jobType.getIndex() == index){
+                return jobType.getTypeName();
+            }
+        }
+        return null;
+    }
+
     public static List<String> allJobs() {
         List<String> types = new ArrayList<>();
         for (JobType type : JobType.values()) {

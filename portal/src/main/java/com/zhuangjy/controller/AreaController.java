@@ -17,7 +17,10 @@ public class AreaController {
     private AreaService areaService;
 
     @RequestMapping("/detail/{city}")
-    public Area detailAreaInfo(@PathVariable String city){
-        return areaService.loadByName(city);
+    public Area detailAreaInfo(@PathVariable String city) {
+        Area area = areaService.loadByName(city);
+        area.setJobTypeCount(areaService.mapJobType(area.getJobTypeCount()));
+        area.setJobTypeSalary(areaService.mapJobType(area.getJobTypeSalary()));
+        return area;
     }
 }
