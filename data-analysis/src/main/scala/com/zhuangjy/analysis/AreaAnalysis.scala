@@ -74,8 +74,7 @@ object AreaAnalysis {
       map(s).setJobTypeCount(strWriter.toString)
       //2.指定地区工作类型平均薪水
       val typeSalary = specificAreaRdd.map(line => (line._2, line._4)).reduceByKey((a, b) => a + b).collect()
-      typeSalary.iterator.foreach(i => (i._1, i._2 / typeCountMap(i._1)))
-      val typeSalaryMap = typeSalary.toMap
+      val typeSalaryMap = typeSalary.map(i=>(i._1,i._2 / typeCountMap(i._1))).toMap
       strWriter = new StringWriter
       mapper.writeValue(strWriter, typeSalaryMap)
       map(s).setJobTypeSalary(strWriter.toString)
@@ -109,9 +108,7 @@ object AreaAnalysis {
       //5.指定地区各个工作平均薪水
       val jobDetailSalary = specificAreaRdd.map(line => (JobType.getKeyWordsByName(line._1), line._4))
         .reduceByKey((a, b) => a + b).collect()
-      jobDetailSalary.iterator.foreach(i => (i._1, i._2 / jobDetailCountMap(i._1)))
-
-      val jobDetailSalaryMap = jobDetailSalary.toMap
+      val jobDetailSalaryMap = jobDetailSalary.map(i => (i._1, i._2 / jobDetailCountMap(i._1))).toMap
       strWriter = new StringWriter
       mapper.writeValue(strWriter, jobDetailSalaryMap)
       map(s).setJobDetailSalary(strWriter.toString)

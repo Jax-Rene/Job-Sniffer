@@ -5,6 +5,8 @@ package com.zhuangjy
   */
 object Main {
   def main(args: Array[String]) {
-    print("he22llo")
+    var map = Map(1->2,3->4)
+    map = map.map(i=>(i._1 *10 -> i._2 *20))
+    print(map)
   }
 }
