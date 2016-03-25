@@ -2,6 +2,7 @@ package com.zhuangjy.analysis
 
 import java.io.{StringWriter}
 import java.sql.{DriverManager}
+import java.util.NoSuchElementException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.zhuangjy.entity.Area
@@ -74,7 +75,7 @@ object AreaAnalysis {
       map(s).setJobTypeCount(strWriter.toString)
       //2.指定地区工作类型平均薪水
       val typeSalary = specificAreaRdd.map(line => (line._2, line._4)).reduceByKey((a, b) => a + b).collect()
-      val typeSalaryMap = typeSalary.map(i=>(i._1,i._2 / typeCountMap(i._1))).toMap
+      val typeSalaryMap = typeSalary.map(i => (i._1, i._2 / typeCountMap(i._1))).toMap
       strWriter = new StringWriter
       mapper.writeValue(strWriter, typeSalaryMap)
       map(s).setJobTypeSalary(strWriter.toString)
@@ -96,22 +97,27 @@ object AreaAnalysis {
       strWriter = new StringWriter
       mapper.writeValue(strWriter, financeStageMap)
       map(s).setFinanceStage(strWriter.toString)
+
       //5.指定地区各个工作数量分布
-      var jobDetailCountMap: Map[String, Long] = Map()
-      for (s: String <- JobType.keyWords.asScala) {
-        val count = specificAreaRdd.filter(_._1.toUpperCase.contains(s.toUpperCase)).count()
-        jobDetailCountMap += (s -> count)
+      var jobDetailCountMap: Map[Integer, Map[String, Long]] = Map()
+      var jobDetailSalaryMap: Map[Integer, Map[String, Float]] = Map()
+      for (typeIndex: Integer <- JobType.getAllTypeIndex.asScala) {
+        var jobDetailCount: Map[String, Long] = Map()
+        val jobTypeRdd = specificAreaRdd.filter(_._2.equals(typeIndex))
+        for (s: String <- JobType.keyWords(typeIndex).asScala) {
+          val count = jobTypeRdd.filter(_._1.toUpperCase.contains(s.toUpperCase)).count()
+          jobDetailCount += (s -> count)
+        }
+        jobDetailCountMap += (typeIndex -> jobDetailCount)
+        strWriter = new StringWriter
+        mapper.writeValue(strWriter, jobDetailCountMap)
+        map(s).setJobDetailCount(strWriter.toString)
+        val jobDetailSalary = jobTypeRdd.map(line => (JobType.getKeyWordsByName(line._1), line._4)).reduceByKey((a, b) => a + b).collect().filter((key: (String, Float)) => jobDetailCount.contains(key._1))
+        jobDetailSalaryMap += (typeIndex -> jobDetailSalary.map(i => (i._1, i._2 / jobDetailCount(i._1))).toMap)
+        strWriter = new StringWriter
+        mapper.writeValue(strWriter, jobDetailSalaryMap)
+        map(s).setJobDetailSalary(strWriter.toString)
       }
-      strWriter = new StringWriter
-      mapper.writeValue(strWriter, jobDetailCountMap)
-      map(s).setJobDetailCount(strWriter.toString)
-      //5.指定地区各个工作平均薪水
-      val jobDetailSalary = specificAreaRdd.map(line => (JobType.getKeyWordsByName(line._1), line._4))
-        .reduceByKey((a, b) => a + b).collect()
-      val jobDetailSalaryMap = jobDetailSalary.map(i => (i._1, i._2 / jobDetailCountMap(i._1))).toMap
-      strWriter = new StringWriter
-      mapper.writeValue(strWriter, jobDetailSalaryMap)
-      map(s).setJobDetailSalary(strWriter.toString)
     }
     map
   }

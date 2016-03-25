@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by johnny on 16/3/20.
  */
@@ -19,6 +23,8 @@ public class AreaController {
     @RequestMapping("/detail/{city}")
     public Area detailAreaInfo(@PathVariable String city) {
         Area area = areaService.loadByName(city);
+        if(area == null)
+            return null;
         area.setJobTypeCount(areaService.mapJobType(area.getJobTypeCount()));
         area.setJobTypeSalary(areaService.mapJobType(area.getJobTypeSalary()));
         return area;

@@ -69,6 +69,18 @@ public enum JobType {
         return keyWords;
     }
 
+
+    public static List<String> keyWords(Integer index){
+        List<String> keyWords = new ArrayList<>();
+        for(JobType type:JobType.values()){
+            if(type.getIndex() != index)
+                continue;
+            for(String s:type.keyWord.split(","))
+                keyWords.add(s);
+        }
+        return keyWords;
+    }
+
     public static String getKeyWordsByName(String name, int jobType) {
         for (JobType type : JobType.values()) {
             if (jobType == type.index) {
@@ -120,6 +132,14 @@ public enum JobType {
         return null;
     }
 
+    public static List<Integer> getAllTypeIndex(){
+        List<Integer> list = new ArrayList<>();
+        for(JobType s:JobType.values()){
+            list.add(s.getIndex());
+        }
+        return list;
+    }
+
 
     public int getIndex() {
         return index;
@@ -138,6 +158,6 @@ public enum JobType {
     }
 
     public static void main(String[] args) {
-        System.out.println(getJobNameByKeyWords("前端开发"));
+        System.out.println(getKeyWordsByName("运维开发工程师"));
     }
 }

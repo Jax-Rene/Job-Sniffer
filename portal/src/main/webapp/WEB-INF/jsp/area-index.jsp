@@ -41,7 +41,7 @@
                     <div class="text-center" style="margin-top: 4%;">
                         <input type="text" id="detail-city" class="form-control" style="display:inline;width:40%"
                                placeholder="请输入要查询的城市"/>&nbsp;
-                        <input type="button" id="search" class="btn btn-success" value="查询" style="display:inline"/>
+                        <input type="button" id="search" class="btn analysis-btn" value="查询" style="display:inline"/>
                     </div>
                 </div>
 
@@ -69,18 +69,42 @@
                     </div>
                 </div>
 
-                <div class="row" id="detail-job-preview"></div>
+                <div class="row" id="city-analysis-preview"></div>
 
                 <div class="row">
                     <div class="col-md-5">
                         <div id="finance" style="width: 100%;height: 100%;"></div>
                     </div>
+
+                    <div class="col-md-7">
+                        <div id="industry" style="width: 100%;height:100%;"></div>
+                    </div>
+                </div>
+
+                <div class="row" id="detail-job-preview"></div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="detail-job" style="width: 100%;height: 100%;"></div>
+                    </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-7">
-                        <div id="industry" style="width: 100%;height: 100%;"></div>
+                    <div id="tip" class="col-md-12"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div id="detail-job-count" style="width: 100%;height: 100%;"></div>
                     </div>
+                    <div class="col-md-6">
+                        <div id="detail-job-salary" style="width: 100%;height: 100%;"></div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="divider"></div>
                 </div>
             </div>
         </div>
@@ -94,7 +118,8 @@
         <span class="glyphicon glyphicon-chevron-right"></span>
     </a>
 </div>
-</div>
+
+
 <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.js"></script>
 <script src="${pageContext.request.contextPath}/js/echarts.js"></script>
@@ -311,6 +336,9 @@
         jobTypeCountChart = undefined;
         jobTypeSalaryChart = undefined;
         financeChart = undefined;
+        detailJobChart = undefined;
+        detailJobCountChart = undefined;
+        detailJobSalaryChart = undefined;
 
 // 基于准备好的dom，初始化echarts实例
         $.get('${pageContext.request.contextPath}/js/china.json', function (chinaJson) {
@@ -442,20 +470,23 @@
         financeOption = {
             title: {
                 text: '公司规模分布',
-                left:'center',
-                textStyle:{
-                    color:'#FFFFFF'
+                left: 'center',
+                textStyle: {
+                    color: '#FFFFFF'
                 }
             },
             tooltip: {
-                show : true,
+                show: true,
                 trigger: 'axis',
                 formatter: function (params) {
                     return "公司数: " + params[0].data;
                 }
             },
             polar: [{    //极坐标
-                indicator: [{'max':1096,'text':"成熟型"},{'max': 1096,'text': "成熟型"},{'max': 1096,'text': "成熟型"},{'max': 1096,'text': "成熟型"}],
+                indicator: [{'max': 1096, 'text': "成熟型"}, {'max': 1096, 'text': "成熟型"}, {
+                    'max': 1096,
+                    'text': "成熟型"
+                }, {'max': 1096, 'text': "成熟型"}],
                 radius: 100,
                 startAngle: 120,
                 axisLine: {            // 坐标轴线
@@ -485,6 +516,178 @@
             }]
         };
 
+        industryOption = {
+            title: {
+                text: '公司类型分布',
+                left: 'center',
+                textStyle: {
+                    color: '#FFFFFF'
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data: []
+            },
+            series: [
+                {
+                    name: '公司类型',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '30',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: []
+                }
+            ]
+        };
+
+        detailJobOption = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data: []
+            },
+            series: [
+                {
+                    name: '岗位数量',
+                    type: 'pie',
+                    radius: ['56%', '70%'],
+                    center: ['70%', '40%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '30',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: []
+                }
+            ]
+        };
+
+        detailJobCountOption = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data:[]
+            },
+            series: [
+                {
+                    name:'工作数量',
+                    type:'pie',
+                    selectedMode: 'single',
+                    radius: [0, '30%'],
+
+                    label: {
+                        normal: {
+                            position: 'inner'
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data:[]
+                },
+                {
+                    name:'工作数量',
+                    type:'pie',
+                    radius: ['40%', '55%'],
+
+                    data:[]
+                }
+            ]
+        };
+
+
+        detailJobSalaryOption = {
+            title : {
+                text: '某地区蒸发量和降水量',
+            },
+            tooltip : {
+                trigger: 'axis'
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            calculable : true,
+            xAxis : [
+                {
+                    type : 'category',
+                    data : []
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            series : [
+                {
+                    name:'平均工资',
+                    type:'bar',
+                    data:[],
+                    markPoint : {
+                        data : []
+                    },
+                    markLine : {
+                        data : [
+                            {type : 'average', name : '平均值'}
+                        ]
+                    }
+                }
+            ]
+        };
+
+
 
         $('#search').click(function () {
             $.get("${pageContext.request.contextPath}/area/detail/" + $('#detail-city').val(), function (data, status) {
@@ -494,7 +697,7 @@
                         jobTypeSalaryChart = echarts.init(document.getElementById('job-type-salary'), 'dark');
                         //preview
                         $('#preview').html('<table class="table table-bordered"><thead><tr><th style="color: #FFFFFF;text-align: center">城市</th> <th style="color: #FFFFFF;text-align: center">需求数量(份)</th> <th style="color: #FFFFFF;text-align: center">平均薪水(k/月)</th> </tr> </thead> <tbody id="preview-body"> </tbody> </table>');
-                        $('#preview-body').html('<tr><td class="success text-center">' + data.area + '</td><td class="warning text-center">' + data.count + '</td><td class="danger text-center">' + data.avgSalary + '</td></tr>');
+                        $('#preview-body').html('<tr><td class="text-center" style="background: rgb(111,30,27);color: #FFFFFF;">' + data.area + '</td><td class="text-center" style="background: rgb(174,47,43);color: #FFFFFF;">' + data.count + '</td><td class="text-center" style="background: #DD6B66;color: #FFFFFF;">' + data.avgSalary + '</td></tr>');
                         //标题渲染
                         $('#job-type-preview').html('<h1 class="analysis-h1">工作类型分析 <small>JOB TYPE ANALYSIS</small></h1> <hr/>');
                         //工作类型数量分布
@@ -514,7 +717,7 @@
                         jobTypeSalaryChart.setOption(jobTypeSalaryOption);
 
                         //标题渲染
-                        $('#detail-job-preview').html('<h1 class="analysis-h1">城市产业分析 <small>CITY ANALYSIS</small></h1> <hr/>');
+                        $('#city-analysis-preview').html('<h1 class="analysis-h1">城市产业分析 <small>CITY ANALYSIS</small></h1> <hr/>');
 
                         //公司投资轮分布
                         financeChart = echarts.init(document.getElementById('finance'), 'dark');
@@ -532,11 +735,113 @@
                         for (var i = 0; i < names.length; i++) {
                             indicators.push({'text': names[i], 'max': max});
                         }
-
-                        debugger;
                         financeOption.polar[0].indicator = indicators;
                         financeOption.series[0].data[0].value = datas;
                         financeChart.setOption(financeOption, true);
+
+                        //公司类型分布
+                        industryChart = echarts.init(document.getElementById('industry'), 'dark');
+                        industryOption.legend.data = [];
+                        industryOption.series[0].data = [];
+                        $.each(JSON.parse(data.industryField), function (name, val) {
+                            industryOption.legend.data.push(name);
+                            industryOption.series[0].data.push({'value': val, 'name': name});
+                        });
+                        industryChart.setOption(industryOption);
+
+                        //标题渲染
+                        $('#detail-job-preview').html('<h1 class="analysis-h1">指定岗位分析 <small>DETAIL JOB ANALYSIS</small></h1> <hr/>');
+
+                        //所有工作预览
+                        detailJobChart = echarts.init(document.getElementById('detail-job'), 'dark');
+                        $.each(JSON.parse(data.jobDetailCount), function (name, val) {
+                            $.each(val, function (name, val) {
+                                detailJobOption.legend.data.push(name);
+                                detailJobOption.series[0].data.push({'value': val, 'name': name});
+                            });
+                        });
+                        $('#tip').html('<p class="text-center" style="color: #ffffff;">tip:&nbsp;点击图中岗位可以查看具体岗位信息</p>');
+                        detailJobChart.setOption(detailJobOption);
+                        detailJobChart.on('click', function (params) {
+                            detailJobCountChart = echarts.init(document.getElementById('detail-job-count'),'dark');
+                            detailJobSalaryChart = echarts.init(document.getElementById('detail-job-salary'),'dark');
+
+                            //工作数目
+                            $.each(JSON.parse(data.jobDetailCount), function (name, val) {
+                                var flag = false;
+                                var data = undefined;
+                                $.each(val, function (n1, v1) {
+                                    data = new Array();
+                                    $.each(val, function (n2, v2) {
+                                        data.push({'value':v2,'name':n2});
+                                        if (n2 == params.name)
+                                            flag = true;
+                                    });
+                                    if (flag)
+                                        return false;
+                                });
+                                detailJobCountOption.legend.data = [];
+                                detailJobCountOption.series[0].data = [];
+                                detailJobCountOption.series[1].data = [];
+                                if(flag){
+                                    var count = 0;
+                                    for(var i in data){
+                                        detailJobCountOption.legend.data.push(data[i].name);
+                                        if(data[i].name == params.name){
+                                            detailJobCountOption.series[1].data.push({'value':data[i].value,'name':data[i].name,'selected':true});
+                                            detailJobCountOption.series[0].data.push(data[i]);
+                                        }else{
+                                            detailJobCountOption.series[1].data.push(data[i]);
+                                            count += data[i].value;
+                                        }
+                                    }
+                                    detailJobCountOption.series[0].data.push({'name':'其他','value':count});
+                                    return false;
+                                }
+                            });
+
+                            //平均薪水
+                            $.each(JSON.parse(data.jobDetailSalary), function (name, val) {
+                                var flag = false;
+                                var data = undefined;
+                                $.each(val, function (n1, v1) {
+                                    data = new Array();
+                                    $.each(val, function (n2, v2) {
+                                        data.push({'value':v2,'name':n2});
+                                        if (n2 == params.name)
+                                            flag = true;
+                                    });
+                                    if (flag)
+                                        return false;
+                                });
+                                detailJobSalaryOption.xAxis[0].data = [];
+                                detailJobSalaryOption.series[0].data = [];
+                                detailJobSalaryOption.series[0].markPoint.data = [];
+                                if(flag){
+                                    var max = data[0];
+                                    var min = data[0];
+                                    var maxIndex = 0;
+                                    var minIndex = 0;
+                                    for(var i in data){
+                                        if(max < data[i].value){
+                                            max = data[i].value;
+                                            maxIndex = i;
+                                        }
+                                        if(min > data[i].value){
+                                            min = data[i].value;
+                                            minIndex = i;
+                                        }
+                                        detailJobSalaryOption.xAxis[0].data.push(data[i].name);
+                                        detailJobSalaryOption.series[0].data.push(data[i].value);
+                                    }
+                                    detailJobSalaryOption.series[0].markPoint.data.push({'name' : '最高', value : max, xAxis: maxIndex, yAxis: Math.round(max)});
+                                    detailJobSalaryOption.series[0].markPoint.data.push({'name' : '最低', value : min, xAxis: minIndex, yAxis: Math.round(min)});
+                                    return false;
+                                }
+                            });
+                            detailJobSalaryChart.setOption(detailJobSalaryOption);
+                            detailJobCountChart.setOption(detailJobCountOption);
+                        });
                     }
                 } else {
                     alert('网络加载失败');

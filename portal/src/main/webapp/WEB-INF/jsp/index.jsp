@@ -377,7 +377,7 @@
     </div>
 </div>
 
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.12.1.js"></script>
+<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.js"></script>
 <script src="${pageContext.request.contextPath}/js/scripts.js"></script>
 
