@@ -158,6 +158,10 @@ public enum JobType {
     }
 
     public static void main(String[] args) {
-        System.out.println(getKeyWordsByName("运维开发工程师"));
+        for(JobType type:JobType.values()){
+            for(String s:type.getType().split(",")){
+                System.out.println(s + " : " + getKeyWordsByName(s));
+            }
+        }
     }
 }
