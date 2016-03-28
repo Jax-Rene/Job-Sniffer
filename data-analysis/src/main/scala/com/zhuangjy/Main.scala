@@ -5,8 +5,12 @@ package com.zhuangjy
   */
 object Main {
   def main(args: Array[String]): Unit = {
-    val map = Map(1->2,3->4);
-    println(map.contains(1))
+    var map = Map(1->2,2->3)
+    var count = 0
+    map.iterator.foreach(i=>{
+      count += i._1
+    })
+    print(map)
 
   }
 }

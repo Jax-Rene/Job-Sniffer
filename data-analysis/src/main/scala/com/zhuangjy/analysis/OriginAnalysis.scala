@@ -2,13 +2,15 @@ package com.zhuangjy.analysis
 
 import java.io.StringWriter
 import java.sql.DriverManager
+
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.zhuangjy.common.JobType
+import com.zhuangjy.common.{JobEnum, JobType}
 import com.zhuangjy.entity.Origin
 import com.zhuangjy.dao.AnalysisDao
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.JdbcRDD
+
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.JavaConverters._
 
@@ -78,10 +80,10 @@ object OriginAnalysis {
           //考虑其他情况
           if(s.getTypeName.indexOf(key) == -1) {
             val detailCount = specificTypeRdd.filter(_._1.toUpperCase.contains(key.toUpperCase)).count
-            jobMap += (JobType.getJobNameByKeyWords(key) -> detailCount)
+            jobMap += (JobEnum.getJobNameByKeyWords(key) -> detailCount)
             count += detailCount
           }else{
-            other = JobType.getJobNameByKeyWords(key)
+            other = JobEnum.getJobNameByKeyWords(key)
           }
         }
         count = totalCount - count

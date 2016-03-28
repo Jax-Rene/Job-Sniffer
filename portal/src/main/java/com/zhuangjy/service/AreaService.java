@@ -1,6 +1,8 @@
 package com.zhuangjy.service;
 
+import com.zhuangjy.common.JobEnum;
 import com.zhuangjy.common.JobType;
+import com.zhuangjy.common.JobTypeMap;
 import com.zhuangjy.dao.BaseDao;
 import com.zhuangjy.entity.Area;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +44,8 @@ public class AreaService {
             Map<String, Object> map = objectMapper.readValue(jobType, Map.class);
             Map<String, Object> res = new HashMap<>();
             for (Map.Entry<String, Object> entry : map.entrySet()) {
-                res.put(JobType.getJobTypeName(Integer.parseInt(entry.getKey())), entry.getValue());
+                res.put(JobTypeMap.getJobTypeName(Integer.parseInt(entry.getKey())), entry.getValue());
+                res.put(JobTypeMap.getJobTypeName(Integer.parseInt(entry.getKey())), entry.getValue());
             }
             StringWriter stringWriter = new StringWriter();
             objectMapper.writeValue(stringWriter, res);

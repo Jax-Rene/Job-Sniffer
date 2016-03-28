@@ -1,16 +1,17 @@
 package com.zhuangjy.analysis
 
-import java.io.{StringWriter}
-import java.sql.{DriverManager}
+import java.io.StringWriter
+import java.sql.DriverManager
 import java.util.NoSuchElementException
+
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.zhuangjy.entity.Area
-import com.zhuangjy.common.JobType
+import com.zhuangjy.common.{JobEnum, JobType}
 import com.zhuangjy.dao.AnalysisDao
 import com.zhuangjy.util.ReadProperties
 import org.apache.spark.SparkContext
-import org.apache.spark.rdd.JdbcRDD
+import org.apache.spark.rdd.{JdbcRDD, RDD}
 
 import scala.collection.JavaConverters._
 
@@ -101,19 +102,37 @@ object AreaAnalysis {
       //5.指定地区各个工作数量分布
       var jobDetailCountMap: Map[Integer, Map[String, Long]] = Map()
       var jobDetailSalaryMap: Map[Integer, Map[String, Float]] = Map()
-      for (typeIndex: Integer <- JobType.getAllTypeIndex.asScala) {
+      for (typeIndex: Integer <- JobEnum.listAllTypeIndex().asScala) {
         var jobDetailCount: Map[String, Long] = Map()
         val jobTypeRdd = specificAreaRdd.filter(_._2.equals(typeIndex))
-        for (s: String <- JobType.keyWords(typeIndex).asScala) {
-          val count = jobTypeRdd.filter(_._1.toUpperCase.contains(s.toUpperCase)).count()
-          jobDetailCount += (s -> count)
+        var sum = jobTypeRdd.count()
+        var other = "";
+        for (s: String <- JobEnum.listKeyWords(typeIndex).asScala) {
+          if (JobEnum.getJobNameByKeyWords(s).indexOf("其他") == -1) {
+            val count = jobTypeRdd.filter(_._1.toUpperCase.contains(s.toUpperCase)).count()
+            jobDetailCount += (JobEnum.getJobNameByKeyWords(s) -> count)
+            sum -= count;
+          } else {
+            other = s;
+          }
         }
+        jobDetailCount += (JobEnum.getJobNameByKeyWords(other) -> sum)
         jobDetailCountMap += (typeIndex -> jobDetailCount)
         strWriter = new StringWriter
         mapper.writeValue(strWriter, jobDetailCountMap)
         map(s).setJobDetailCount(strWriter.toString)
-        val jobDetailSalary = jobTypeRdd.map(line => (JobType.getKeyWordsByName(line._1), line._4)).reduceByKey((a, b) => a + b).collect().filter((key: (String, Float)) => jobDetailCount.contains(key._1))
-        jobDetailSalaryMap += (typeIndex -> jobDetailSalary.map(i => (i._1, i._2 / jobDetailCount(i._1))).toMap)
+        val jobDetailSalary = jobTypeRdd.map(line => (JobEnum.getKeyWordsByName(line._1,typeIndex), line._4)).reduceByKey((a, b) => a + b).collect().map(i => (JobEnum.getJobNameByKeyWords(i._1), i._2)).filter((key: (String, Float)) => jobDetailCount.contains(key._1) && !key._1.contains("其他"))
+        var jobDetailSalaryTemp = jobDetailSalary.map(i => (i._1, i._2 / jobDetailCount(i._1))).toMap
+        var total:Float = 0.0f
+        var c = 0
+        jobDetailSalaryTemp.foreach(i => {
+          total += i._2
+          c += 1
+        })
+        if(typeSalaryMap.contains(typeIndex)) {
+          jobDetailSalaryTemp += (JobEnum.getOther(typeIndex) -> (typeSalaryMap(typeIndex) * (c + 1) - total))
+        }
+        jobDetailSalaryMap += (typeIndex -> jobDetailSalaryTemp)
         strWriter = new StringWriter
         mapper.writeValue(strWriter, jobDetailSalaryMap)
         map(s).setJobDetailSalary(strWriter.toString)

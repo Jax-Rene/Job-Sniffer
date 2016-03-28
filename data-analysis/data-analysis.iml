@@ -161,7 +161,6 @@
     <orderEntry type="library" name="Maven: org.apache.ivy:ivy:2.4.0" level="project" />
     <orderEntry type="library" name="Maven: oro:oro:2.0.8" level="project" />
     <orderEntry type="library" name="Maven: org.tachyonproject:tachyon-client:0.8.2" level="project" />
-    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.4" level="project" />
     <orderEntry type="library" name="Maven: org.tachyonproject:tachyon-underfs-hdfs:0.8.2" level="project" />
     <orderEntry type="library" name="Maven: org.tachyonproject:tachyon-underfs-s3:0.8.2" level="project" />
     <orderEntry type="library" name="Maven: org.tachyonproject:tachyon-underfs-local:0.8.2" level="project" />
@@ -184,5 +183,6 @@
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.4.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.4.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.4.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
   </component>
 </module>

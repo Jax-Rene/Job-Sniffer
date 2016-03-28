@@ -1,5 +1,6 @@
 package com.zhuangjy.service;
 
+import com.zhuangjy.common.JobEnum;
 import com.zhuangjy.common.JobType;
 import com.zhuangjy.dao.BaseDao;
 import com.zhuangjy.entity.Job;
@@ -29,7 +30,7 @@ public class WorkService {
     public void grepData(){
         LOGGER.info("start grep data...");
         try {
-            for(String job: JobType.allJobs()){
+            for(String job: JobEnum.listAllJobs()){
                 new Thread(new LaGouRobotWorker(job,laGouUrl,baseDao)).start();
             }
         } catch (Exception e) {

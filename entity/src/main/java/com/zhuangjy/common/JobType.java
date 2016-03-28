@@ -158,10 +158,5 @@ public enum JobType {
     }
 
     public static void main(String[] args) {
-        for(JobType type:JobType.values()){
-            for(String s:type.getType().split(",")){
-                System.out.println(s + " : " + getKeyWordsByName(s));
-            }
-        }
     }
 }

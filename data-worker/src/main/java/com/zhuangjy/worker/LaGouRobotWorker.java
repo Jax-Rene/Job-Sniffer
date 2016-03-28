@@ -1,5 +1,7 @@
 package com.zhuangjy.worker;
 
+import com.zhuangjy.common.JobEnum;
+import com.zhuangjy.common.JobTypeMap;
 import org.codehaus.jackson.JsonParseException;
 import com.zhuangjy.common.JobType;
 import com.zhuangjy.dao.BaseDao;
@@ -26,7 +28,7 @@ public class LaGouRobotWorker extends BaseWorker {
     public LaGouRobotWorker(String jobName, String url, BaseDao baseDao) {
         super(jobName, baseDao);
         this.url = constructUrl(url);
-        this.jobType = JobType.judgeType(jobName);
+        this.jobType = JobEnum.getTypeByName(jobName);
     }
 
     @Override
