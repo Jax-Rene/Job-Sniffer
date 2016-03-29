@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "area_analysis")
 @Proxy(lazy = false)
-public class Area {
+public class AreaAnalysis {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -33,7 +33,7 @@ public class Area {
     @Column(name="finance_stage")
     private String financeStage;
 
-    public Area(String area, Long count, Float avgSalary, String industryField, String jobTypeSalary, String jobTypeCount, String jobDetailCount, String jobDetailSalary,String financeStage) {
+    public AreaAnalysis(String area, Long count, Float avgSalary, String industryField, String jobTypeSalary, String jobTypeCount, String jobDetailCount, String jobDetailSalary, String financeStage) {
         this.area = area;
         this.count = count;
         this.avgSalary = avgSalary;
@@ -45,10 +45,10 @@ public class Area {
         this.financeStage = financeStage;
     }
 
-    public Area() {
+    public AreaAnalysis() {
     }
 
-    public Area(String area){
+    public AreaAnalysis(String area){
         this.area = area;
     }
 

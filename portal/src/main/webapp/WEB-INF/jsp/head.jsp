@@ -14,7 +14,7 @@
                     FUNCTION <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="${pageContext.request.contextPath}/area-index">地区纬度分析</a></li>
+                    <li><a href="${pageContext.request.contextPath}/areaAnalysis-index">地区纬度分析</a></li>
                     <li><a href="${pageContext.request.contextPath}/job-index">具体工作纬度分析</a></li>
                     <li><a href="${pageContext.request.contextPath}/relation-index">关系分析</a></li>
                     <li><a href="${pageContext.request.contextPath}/trend-index">趋势分析</a></li>

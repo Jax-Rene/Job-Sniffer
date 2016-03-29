@@ -1,6 +1,6 @@
 package com.zhuangjy.controller;
 
-import com.zhuangjy.entity.Area;
+import com.zhuangjy.entity.AreaAnalysis;
 import com.zhuangjy.entity.Origin;
 import com.zhuangjy.service.AreaService;
 import com.zhuangjy.service.OriginService;
@@ -49,8 +49,8 @@ public class IndexController {
 
     @RequestMapping(value = "/area-index")
     public String areaIndex(Model model){
-        List<Area> areas = areaService.currentAreaResult();
-        model.addAttribute("areas",areas);
+        List<AreaAnalysis> areaAnalysises = areaService.currentAreaResult();
+        model.addAttribute("areas", areaAnalysises);
         return "area-index";
     }
 
@@ -65,6 +65,11 @@ public class IndexController {
             LOGGER.error(e);
             return null;
         }
+    }
+
+    @RequestMapping("/job-index")
+    public String jobIndex(Model model){
+        return "job-index";
     }
 
 }

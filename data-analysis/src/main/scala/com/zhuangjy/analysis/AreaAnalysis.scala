@@ -2,11 +2,10 @@ package com.zhuangjy.analysis
 
 import java.io.StringWriter
 import java.sql.DriverManager
-import java.util.NoSuchElementException
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.zhuangjy.entity.Area
+import com.zhuangjy.entity.AreaAnalysis
 import com.zhuangjy.common.{JobEnum, JobType}
 import com.zhuangjy.dao.AnalysisDao
 import com.zhuangjy.util.ReadProperties
@@ -25,14 +24,14 @@ object AreaAnalysis {
   def main(args: Array[String]) {
     val sc = new SparkContext("local", "mysql")
     val section = AnalysisDao.loadSection
-    var areaMap: Map[String, Area] = Map()
+    var areaMap: Map[String, AreaAnalysis] = Map()
     val classPathProperties = ReadProperties.readFromClassPathMultiplePro("analysis.properties", Array("area", "company_type", "finance_stage"))
     val areas: Array[String] = classPathProperties("area").split(",")
     val industryField: Array[String] = classPathProperties("company_type").split(",")
     val financeStage: Array[String] = classPathProperties("finance_stage").split(",")
     //初始化地区分析Map
     for (s <- areas)
-      areaMap += (s -> new Area(s))
+      areaMap += (s -> new AreaAnalysis(s))
     calcArea(section(0), section(1), sc, areas, industryField, financeStage, areaMap)
     for (s <- areaMap.values) {
       AnalysisDao.insertAreaAnalysis(s)
@@ -43,18 +42,18 @@ object AreaAnalysis {
 
   def calcArea(min: Long, max: Long, sc: SparkContext, areas: Array[String],
                industrys: Array[String], financeStage: Array[String],
-               map: Map[String, Area]): Map[String, Area] = {
+               map: Map[String, AreaAnalysis]): Map[String, AreaAnalysis] = {
     val rdd = new JdbcRDD(
       sc,
       () => {
         Class.forName("com.mysql.jdbc.Driver").newInstance()
         DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/jobs", "root", "")
       },
-      "SELECT `job_name`,`job_type`,`company_city`,`salary`,`education`,`finance_stage`,`industry_field`,`company_size`" +
+      "SELECT `job_name`,`job_type`,`company_city`,`salary`,`education`,`finance_stage`,`industry_field`" +
         " FROM job WHERE id >= ? AND id <= ?",
       min, max, 3,
       r => (r.getString("job_name"), r.getInt("job_type"), r.getString("company_city"), r.getFloat("salary"),
-        r.getString("education"), r.getString("finance_stage"), r.getString("industry_field"), r.getString("company_size"))
+        r.getString("education"), r.getString("finance_stage"), r.getString("industry_field"))
     ).cache()
 
     for (s <- areas) {
@@ -106,14 +105,14 @@ object AreaAnalysis {
         var jobDetailCount: Map[String, Long] = Map()
         val jobTypeRdd = specificAreaRdd.filter(_._2.equals(typeIndex))
         var sum = jobTypeRdd.count()
-        var other = "";
+        var other = ""
         for (s: String <- JobEnum.listKeyWords(typeIndex).asScala) {
           if (JobEnum.getJobNameByKeyWords(s).indexOf("其他") == -1) {
             val count = jobTypeRdd.filter(_._1.toUpperCase.contains(s.toUpperCase)).count()
             jobDetailCount += (JobEnum.getJobNameByKeyWords(s) -> count)
-            sum -= count;
+            sum -= count
           } else {
-            other = s;
+            other = s
           }
         }
         jobDetailCount += (JobEnum.getJobNameByKeyWords(other) -> sum)

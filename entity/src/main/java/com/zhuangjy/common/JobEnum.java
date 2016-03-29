@@ -2,6 +2,7 @@ package com.zhuangjy.common;
 
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.orm.jpa.persistenceunit.PersistenceUnitManager;
 
 import java.util.*;
 
@@ -43,7 +44,7 @@ public enum JobEnum {
     COCOS2D("COCOS2D-X", 3, "COCOS2D-X"),
     FONT_OTHER("前端开发其他", 3, "前端"),
 
-    TEST_ENG("测试工程师", 4, "测试"),
+    TEST_ENG("测试工程师", 4, "测试工程师"),
     TEST_AUTO("自动化测试", 4, "自动化测试"),
     FUNC_TEST("功能测试", 4, "功能测试"),
     PERFORMTEST("性能测试", 4, "性能测试"),
@@ -241,12 +242,6 @@ public enum JobEnum {
         return new ArrayList<>(set);
     }
 
-
-    /**
-     * 获取对应类型的其他选项
-     * @param index
-     * @return
-     */
     public static String getOther(int index){
         for (JobEnum j:JobEnum.values()){
             if(j.typeIndex != index)
@@ -257,7 +252,29 @@ public enum JobEnum {
         return null;
     }
 
+
+    public static List<String> listJobNames(){
+        List<String> list = new ArrayList<>();
+        for(JobEnum j:JobEnum.values()){
+            list.add(j.name);
+        }
+        return list;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getTypeIndex() {
+        return typeIndex;
+    }
+
+    public String getKeyWord() {
+        return keyWord;
+    }
+
     public static void main(String[] args) {
-        System.out.println(listKeyWords(1));
+        System.out.println(getKeyWordsByName("功能测试".toUpperCase()));
     }
 }

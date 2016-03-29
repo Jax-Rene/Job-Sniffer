@@ -1,15 +1,11 @@
 package com.zhuangjy.controller;
 
-import com.zhuangjy.entity.Area;
+import com.zhuangjy.entity.AreaAnalysis;
 import com.zhuangjy.service.AreaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by johnny on 16/3/20.
@@ -21,12 +17,12 @@ public class AreaController {
     private AreaService areaService;
 
     @RequestMapping("/detail/{city}")
-    public Area detailAreaInfo(@PathVariable String city) {
-        Area area = areaService.loadByName(city);
-        if(area == null)
+    public AreaAnalysis detailAreaInfo(@PathVariable String city) {
+        AreaAnalysis areaAnalysis = areaService.loadByName(city);
+        if(areaAnalysis == null)
             return null;
-        area.setJobTypeCount(areaService.mapJobType(area.getJobTypeCount()));
-        area.setJobTypeSalary(areaService.mapJobType(area.getJobTypeSalary()));
-        return area;
+        areaAnalysis.setJobTypeCount(areaService.mapJobType(areaAnalysis.getJobTypeCount()));
+        areaAnalysis.setJobTypeSalary(areaService.mapJobType(areaAnalysis.getJobTypeSalary()));
+        return areaAnalysis;
     }
 }

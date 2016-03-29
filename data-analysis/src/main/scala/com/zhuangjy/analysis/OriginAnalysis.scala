@@ -5,7 +5,7 @@ import java.sql.DriverManager
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.zhuangjy.common.{JobEnum, JobType}
+import com.zhuangjy.common.{JobEnum, JobType, JobTypeMap}
 import com.zhuangjy.entity.Origin
 import com.zhuangjy.dao.AnalysisDao
 import org.apache.spark.SparkContext
@@ -69,16 +69,16 @@ object OriginAnalysis {
       var jobTypeMap: Map[String, (Long, Map[String, Long])] = Map()
       val specificRdd = rdd.filter(_._2.toUpperCase.contains(origin.getOrigin.toUpperCase))
 
-      for (s: JobType <- JobType.values) {
-        val specificTypeRdd = specificRdd.filter(_._3.==(s.getIndex))
+      for (s: Int <- JobEnum.listAllTypeIndex()) {
+        val specificTypeRdd = specificRdd.filter(_._3.==(s))
         val totalCount = specificTypeRdd.count
         var count:Long = 0
         var jobMap: Map[String, Long] = Map()
         var other:String = null
         //FIXME: 其他工作选项 后端其他归纳进去
-        for (key:String <- s.getKeyWord.split(",")) {
+        for (key:String <- JobEnum.listKeyWords(s)){
           //考虑其他情况
-          if(s.getTypeName.indexOf(key) == -1) {
+          if(JobEnum.getJobNameByKeyWords(key).indexOf("其他") != -1){
             val detailCount = specificTypeRdd.filter(_._1.toUpperCase.contains(key.toUpperCase)).count
             jobMap += (JobEnum.getJobNameByKeyWords(key) -> detailCount)
             count += detailCount
@@ -88,7 +88,7 @@ object OriginAnalysis {
         }
         count = totalCount - count
         jobMap += (other -> count)
-        jobTypeMap += (s.getTypeName -> (totalCount -> jobMap))
+        jobTypeMap += (JobTypeMap.getJobTypeName(s) -> (totalCount -> jobMap))
       }
       val strWriter = new StringWriter
       mapper.writeValue(strWriter, jobTypeMap)

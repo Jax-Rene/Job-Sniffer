@@ -158,7 +158,7 @@
 
                     <div class="panel panel-default">
                         <div>
-                            <a href="${pageContext.request.contextPath}/area-index" title="地区分析">
+                            <a href="${pageContext.request.contextPath}/areaAnalysis-index" title="地区分析">
                                 <img src="${pageContext.request.contextPath}/img/chengshi.jpg"
                                      class="img-responsive"/></a>
                         </div>
@@ -175,7 +175,7 @@
 
                     <div class="panel panel-default">
                         <div>
-                            <a href="${pageContext.request.contextPath}/area-index" title="工作分析">
+                            <a href="${pageContext.request.contextPath}/job-index" title="工作分析">
                                 <img src="${pageContext.request.contextPath}/img/gongzuo.jpg"
                                      class="img-responsive"></a>
                         </div>

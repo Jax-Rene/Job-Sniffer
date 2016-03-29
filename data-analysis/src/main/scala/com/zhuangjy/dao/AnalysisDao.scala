@@ -1,8 +1,8 @@
 package com.zhuangjy.dao
 
-import java.sql.{ResultSet, DriverManager}
+import java.sql.{DriverManager, ResultSet}
 
-import com.zhuangjy.entity.{Area, Origin}
+import com.zhuangjy.entity.{AreaAnalysis, JobAnalysis, Origin}
 import com.zhuangjy.util.ReadProperties
 
 
@@ -14,7 +14,7 @@ object AnalysisDao {
   val conn = DriverManager.getConnection(ReadProperties.readFromClassPath("database.properties", "url"))
 
 
-  def insertAreaAnalysis(areaAnalysis: Area): Unit = {
+  def insertAreaAnalysis(areaAnalysis: AreaAnalysis): Unit = {
     val sql = "INSERT INTO `area_analysis` (`area`,`count`,`avg_salary`,`industry_field`,`job_type_salary`,`job_type_count`,`job_detail_count`,`job_detail_salary`,`finance_stage`) VALUES (?,?,?,?,?,?,?,?,?)"
     val pstmt = conn.prepareStatement(sql)
     pstmt.setString(1, areaAnalysis.getArea)
@@ -26,6 +26,22 @@ object AnalysisDao {
     pstmt.setString(7, areaAnalysis.getJobDetailCount)
     pstmt.setString(8, areaAnalysis.getJobDetailSalary)
     pstmt.setString(9,areaAnalysis.getFinanceStage)
+    println(pstmt.toString)
+    pstmt.execute()
+  }
+
+
+  def insertJobAnalysis(jobAnalysis: JobAnalysis):Unit={
+    val sql = "INSERT INTO `job_analysis` (`job_name`,`count`,`avg_salary`,`education`,`work_year`,`industry_field`,`finance_stage`,`company_size`) VALUES(?,?,?,?,?,?,?)"
+    val pstmt = conn.prepareStatement(sql)
+    pstmt.setString(1,jobAnalysis.getJobName)
+    pstmt.setLong(2,jobAnalysis.getCount)
+    pstmt.setFloat(3,jobAnalysis.getAvgSalary)
+    pstmt.setString(4,jobAnalysis.getEducation)
+    pstmt.setString(5,jobAnalysis.getWorkYear)
+    pstmt.setString(6,jobAnalysis.getIndustryField)
+    pstmt.setString(7,jobAnalysis.getFinanceStage)
+    pstmt.setString(8,jobAnalysis.getCompanySize)
     println(pstmt.toString)
     pstmt.execute()
   }
@@ -56,6 +72,17 @@ object AnalysisDao {
     if (rs.next()) {
       res(1) = rs.getLong("id")
     }
+    res
+  }
+
+  def loadAreaAnalysis(area:String):AreaAnalysis = {
+    val pstmt = conn.prepareStatement("SELECT * FROM `area_analysis` WHERE `area` = ?")
+    pstmt.setString(1,area)
+    val rs = pstmt.executeQuery()
+    var res:AreaAnalysis = null
+    if(rs.next())
+      res = new AreaAnalysis(rs.getString("area"),rs.getLong("count"),rs.getFloat("avg_salary"),rs.getString("industry_field"),
+        rs.getString("job_type_salary"),rs.getString("job_type_count"),rs.getString("job_detail_count"),rs.getString("job_detail_salary"),rs.getString("finance_stage"))
     res
   }
 }

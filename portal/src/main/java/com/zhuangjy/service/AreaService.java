@@ -1,10 +1,8 @@
 package com.zhuangjy.service;
 
-import com.zhuangjy.common.JobEnum;
-import com.zhuangjy.common.JobType;
 import com.zhuangjy.common.JobTypeMap;
 import com.zhuangjy.dao.BaseDao;
-import com.zhuangjy.entity.Area;
+import com.zhuangjy.entity.AreaAnalysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -23,19 +21,19 @@ import java.util.Map;
 @Service
 public class AreaService {
     @Autowired
-    private BaseDao<Area> baseDao;
+    private BaseDao<AreaAnalysis> baseDao;
     private static ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger LOGGER = LogManager.getLogger(AreaService.class);
-    public List<Area> currentAreaResult(){
-        String hql = "FROM Area";
+    public List<AreaAnalysis> currentAreaResult(){
+        String hql = "FROM AreaAnalysis";
         return baseDao.query(hql);
     }
 
-    public Area loadByName(String city){
-        String hql = "FROM Area Where area=:area";
+    public AreaAnalysis loadByName(String city){
+        String hql = "FROM AreaAnalysis Where area=:area";
         Map<String,Object> hs = new HashMap<>();
         hs.put("area",city);
-        return (Area) baseDao.uniqueResult(hql,hs);
+        return (AreaAnalysis) baseDao.uniqueResult(hql,hs);
     }
 
     public String mapJobType(String jobType) {
