@@ -28,11 +28,11 @@
     <!-- 画廊图像 -->
     <div class="carousel-inner" style="background-color: #333333">
         <div class="item active" style="height: 100%;">
-            <div id="areaAnalysis-count" style="width: 100%;height: 100%;"></div>
+            <div id="area-count" style="width: 100%;height: 100%;"></div>
         </div>
 
         <div class="item" style="height: 100%;">
-            <div id="areaAnalysis-salary" style="width: 100%;height: 100%;"></div>
+            <div id="area-salary" style="width: 100%;height: 100%;"></div>
         </div>
 
         <div class="item" style="background-color: #333333;height:auto">
@@ -148,19 +148,19 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.js"></script>
 <script src="${pageContext.request.contextPath}/js/echarts.js"></script>
 <script src="${pageContext.request.contextPath}/js/dark.js"></script>
-<script src="${pageContext.request.contextPath}/js/option/areaAnalysis-option.js"></script>
+<script src="${pageContext.request.contextPath}/js/option/area-option.js"></script>
 <script src="${pageContext.request.contextPath}/js/base.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         //区域名:数量 键值对
         var countData = [
-            <c:forEach items="${areaAnalysises}" var="areaAnalysis" varStatus="stat">
+            <c:forEach items="${areas}" var="area" varStatus="stat">
             <c:choose>
             <c:when test="${!stat.last}">
-            {name: '${areaAnalysis.areaAnalysis}', value: ${areaAnalysis.count}},
+            {name: '${area.area}', value: ${area.count}},
             </c:when>
                 <c:otherwise>{
-                name: '${areaAnalysis.areaAnalysis}', value: ${areaAnalysis.count}
+                name: '${area.area}', value: ${area.count}
             }
             </c:otherwise>
             </c:choose>
@@ -169,13 +169,13 @@
 
         //区域名:平均薪水 键值对
         var salaryData = [
-            <c:forEach items="${areaAnalysises}" var="areaAnalysis" varStatus="stat">
+            <c:forEach items="${areas}" var="area" varStatus="stat">
             <c:choose>
             <c:when test="${!stat.last}">
-            {name: '${areaAnalysis.areaAnalysis}', value: ${areaAnalysis.avgSalary}},
+            {name: '${area.area}', value: ${area.avgSalary}},
             </c:when>
                 <c:otherwise>{
-                name: '${areaAnalysis.areaAnalysis}', value: ${areaAnalysis.avgSalary}
+                name: '${area.area}', value: ${area.avgSalary}
             }
             </c:otherwise>
             </c:choose>
@@ -368,9 +368,9 @@
 
         $.get('${pageContext.request.contextPath}/js/china.json', function (chinaJson) {
             echarts.registerMap('china', chinaJson);
-            countChart = echarts.init(document.getElementById('areaAnalysis-count'), 'dark');
+            countChart = echarts.init(document.getElementById('area-count'), 'dark');
             countChart.setOption(countOption);
-            salaryChart = echarts.init(document.getElementById('areaAnalysis-salary'), 'dark');
+            salaryChart = echarts.init(document.getElementById('area-salary'), 'dark');
             salaryChart.setOption(salaryOption);
 
             //初始化.必须进行resize否则echarts会出现大小问题
@@ -704,7 +704,7 @@
 
 
         $('#search').click(function () {
-            $.get("${pageContext.request.contextPath}/areaAnalysis/detail/" + $('#detail-city').val(), function (data, status) {
+            $.get("${pageContext.request.contextPath}/area/detail/" + $('#detail-city').val(), function (data, status) {
                 if (status) {
                     if (data) {
                         jobTypeCountChart = echarts.init(document.getElementById('job-type-count'), 'dark');
@@ -719,7 +719,7 @@
 
                         //preview
                         $('#preview').html('<table class="table table-bordered"><thead><tr><th style="color: #FFFFFF;text-align: center">城市</th> <th style="color: #FFFFFF;text-align: center">需求数量(份)</th> <th style="color: #FFFFFF;text-align: center">平均薪水(k/月)</th> </tr> </thead> <tbody id="preview-body"> </tbody> </table>');
-                        $('#preview-body').html('<tr><td class="text-center" style="background: rgb(111,30,27);color: #FFFFFF;">' + data.areaAnalysis + '</td><td class="text-center" style="background: rgb(174,47,43);color: #FFFFFF;">' + data.count + '</td><td class="text-center" style="background: #DD6B66;color: #FFFFFF;">' + data.avgSalary + '</td></tr>');
+                        $('#preview-body').html('<tr><td class="text-center" style="background: rgb(111,30,27);color: #FFFFFF;">' + data.area + '</td><td class="text-center" style="background: rgb(174,47,43);color: #FFFFFF;">' + data.count + '</td><td class="text-center" style="background: #DD6B66;color: #FFFFFF;">' + data.avgSalary + '</td></tr>');
 
                         //标题渲染
                         $('#job-type-preview').html('<h1 class="analysis-h1">工作类型分析 <small>JOB TYPE ANALYSIS</small></h1> <hr/>');

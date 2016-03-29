@@ -158,7 +158,7 @@
 
                     <div class="panel panel-default">
                         <div>
-                            <a href="${pageContext.request.contextPath}/areaAnalysis-index" title="地区分析">
+                            <a href="${pageContext.request.contextPath}/area-index" title="地区分析">
                                 <img src="${pageContext.request.contextPath}/img/chengshi.jpg"
                                      class="img-responsive"/></a>
                         </div>

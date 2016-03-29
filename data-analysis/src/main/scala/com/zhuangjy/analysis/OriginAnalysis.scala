@@ -26,9 +26,7 @@ object OriginAnalysis {
     val section = AnalysisDao.loadSection
     val origins: ArrayBuffer[Origin] = calcNormal(section(0), section(1), sc)
     calcDetail(section(0), section(1), sc, origins)
-    for (s <- origins) {
-      AnalysisDao.insertOriginAnalysis(s)
-    }
+    origins.foreach(s => AnalysisDao.insertOriginAnalysis(s))
   }
 
   def calcNormal(min: Long, max: Long, sc: SparkContext): ArrayBuffer[Origin] = {
@@ -43,13 +41,13 @@ object OriginAnalysis {
       r => (r.getString("origin"), r.getLong("count"), r.getFloat("salary"))
     ).cache()
     var origins: ArrayBuffer[Origin] = ArrayBuffer()
-    for (s <- rdd.collect()) {
+    rdd.collect().iterator.foreach(s => {
       val origin = new Origin()
       origin.setOrigin(s._1)
       origin.setCount(s._2)
       origin.setSalary(s._3)
       origins += origin
-    }
+    })
     origins
   }
 
@@ -65,27 +63,27 @@ object OriginAnalysis {
       r => (r.getString("jobName"), r.getString("origin"), r.getInt("jobType"))
     ).cache()
 
-    for (origin <- origins) {
+    origins.foreach(origin => {
       var jobTypeMap: Map[String, (Long, Map[String, Long])] = Map()
       val specificRdd = rdd.filter(_._2.toUpperCase.contains(origin.getOrigin.toUpperCase))
 
-      for (s: Int <- JobEnum.listAllTypeIndex()) {
+      for (s: Integer <- JobEnum.listAllTypeIndex().asScala) {
         val specificTypeRdd = specificRdd.filter(_._3.==(s))
         val totalCount = specificTypeRdd.count
-        var count:Long = 0
+        var count: Long = 0
         var jobMap: Map[String, Long] = Map()
-        var other:String = null
+        var other: String = null
         //FIXME: 其他工作选项 后端其他归纳进去
-        for (key:String <- JobEnum.listKeyWords(s)){
+        JobEnum.listKeyWords(s).asScala.iterator.foreach(key=>{
           //考虑其他情况
-          if(JobEnum.getJobNameByKeyWords(key).indexOf("其他") != -1){
+          if (JobEnum.getJobNameByKeyWords(key).indexOf("其他") == -1) {
             val detailCount = specificTypeRdd.filter(_._1.toUpperCase.contains(key.toUpperCase)).count
             jobMap += (JobEnum.getJobNameByKeyWords(key) -> detailCount)
             count += detailCount
-          }else{
+          } else {
             other = JobEnum.getJobNameByKeyWords(key)
           }
-        }
+        })
         count = totalCount - count
         jobMap += (other -> count)
         jobTypeMap += (JobTypeMap.getJobTypeName(s) -> (totalCount -> jobMap))
@@ -93,6 +91,6 @@ object OriginAnalysis {
       val strWriter = new StringWriter
       mapper.writeValue(strWriter, jobTypeMap)
       origin.setDetailCount(strWriter.toString)
-    }
+    })
   }
 }

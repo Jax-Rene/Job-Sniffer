@@ -5,6 +5,7 @@ import java.sql.DriverManager
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import com.zhuangjy.entity.AreaAnalysis
 import com.zhuangjy.common.{JobEnum, JobType}
 import com.zhuangjy.dao.AnalysisDao
@@ -13,12 +14,13 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.{JdbcRDD, RDD}
 
 import scala.collection.JavaConverters._
+import scala.util.control.Breaks
 
 /**
   * Created by zhuangjy on 2016/2/17.
   */
 object AreaAnalysis {
-  val mapper = new ObjectMapper
+  val mapper = new ObjectMapper() with ScalaObjectMapper
   mapper.registerModule(DefaultScalaModule)
 
   def main(args: Array[String]) {
@@ -30,12 +32,16 @@ object AreaAnalysis {
     val industryField: Array[String] = classPathProperties("company_type").split(",")
     val financeStage: Array[String] = classPathProperties("finance_stage").split(",")
     //初始化地区分析Map
-    for (s <- areas)
-      areaMap += (s -> new AreaAnalysis(s))
+    areas.foreach(i => areaMap += (i -> new AreaAnalysis(i)))
     calcArea(section(0), section(1), sc, areas, industryField, financeStage, areaMap)
-    for (s <- areaMap.values) {
-      AnalysisDao.insertAreaAnalysis(s)
-    }
+    val loop = new Breaks
+    areaMap.values.iterator.foreach(i => {
+      loop.breakable {
+        if (i.getCount == 0)
+          loop.break()
+        AnalysisDao.insertAreaAnalysis(i)
+      }
+    })
     sc.stop()
   }
 
@@ -56,87 +62,77 @@ object AreaAnalysis {
         r.getString("education"), r.getString("finance_stage"), r.getString("industry_field"))
     ).cache()
 
-    for (s <- areas) {
-      val specificAreaRdd = rdd.filter(line => line._3.toUpperCase.contains(s.toUpperCase)).cache()
-      //所有地区对比
-      //1.所有地区需求量
-      val count = specificAreaRdd.count()
-      map(s).setCount(count)
-      //2.所有地区平均薪水
-      //TODO 求平均值大数据会越界
-      val avgSalar = specificAreaRdd.map(line => line._4).reduce((a, b) => (a + b))
-      map(s).setAvgSalary(avgSalar / count)
-
-      //具体地区内部对比
-      //1.指定地区工作类型的数量分布
-      val typeCountMap = specificAreaRdd.map(line => (line._2, 1)).reduceByKey((a, b) => a + b).collect().toMap
-      var strWriter = new StringWriter
-      mapper.writeValue(strWriter, typeCountMap)
-      map(s).setJobTypeCount(strWriter.toString)
-      //2.指定地区工作类型平均薪水
-      val typeSalary = specificAreaRdd.map(line => (line._2, line._4)).reduceByKey((a, b) => a + b).collect()
-      val typeSalaryMap = typeSalary.map(i => (i._1, i._2 / typeCountMap(i._1))).toMap
-      strWriter = new StringWriter
-      mapper.writeValue(strWriter, typeSalaryMap)
-      map(s).setJobTypeSalary(strWriter.toString)
-      //3.指定地区公司类型分布
-      var industryMap: Map[String, Long] = Map()
-      for (s <- industrys) {
-        val count = specificAreaRdd.filter(_._7.toUpperCase.contains(s.toUpperCase)).count()
-        industryMap += (s -> count)
-      }
-      strWriter = new StringWriter
-      mapper.writeValue(strWriter, industryMap)
-      map(s).setIndustryField(strWriter.toString)
-      //4.指定地区公司规模（投资轮)分布
-      var financeStageMap: Map[String, Long] = Map()
-      for (s <- financeStage) {
-        val count = specificAreaRdd.filter(_._6.toUpperCase.contains(s.toUpperCase)).count()
-        financeStageMap += (s -> count)
-      }
-      strWriter = new StringWriter
-      mapper.writeValue(strWriter, financeStageMap)
-      map(s).setFinanceStage(strWriter.toString)
-
-      //5.指定地区各个工作数量分布
-      var jobDetailCountMap: Map[Integer, Map[String, Long]] = Map()
-      var jobDetailSalaryMap: Map[Integer, Map[String, Float]] = Map()
-      for (typeIndex: Integer <- JobEnum.listAllTypeIndex().asScala) {
-        var jobDetailCount: Map[String, Long] = Map()
-        val jobTypeRdd = specificAreaRdd.filter(_._2.equals(typeIndex))
-        var sum = jobTypeRdd.count()
-        var other = ""
-        for (s: String <- JobEnum.listKeyWords(typeIndex).asScala) {
-          if (JobEnum.getJobNameByKeyWords(s).indexOf("其他") == -1) {
-            val count = jobTypeRdd.filter(_._1.toUpperCase.contains(s.toUpperCase)).count()
-            jobDetailCount += (JobEnum.getJobNameByKeyWords(s) -> count)
-            sum -= count
-          } else {
-            other = s
-          }
+    areas.iterator.foreach(s => {
+        val specificAreaRdd = rdd.filter(line => line._3.toUpperCase.contains(s.toUpperCase)).cache()
+        val count = specificAreaRdd.count()
+        //所有地区需求量
+        map(s).setCount(count)
+        //所有地区平均薪水
+        //TODO 求平均值大数据会越界
+        try {
+          val avgSalar = specificAreaRdd.map(line => line._4).reduce((a, b) => (a + b))
+          map(s).setAvgSalary(avgSalar / map(s).getCount)
+        } catch {
+          case ex: Exception => print(s)
         }
-        jobDetailCount += (JobEnum.getJobNameByKeyWords(other) -> sum)
-        jobDetailCountMap += (typeIndex -> jobDetailCount)
-        strWriter = new StringWriter
-        mapper.writeValue(strWriter, jobDetailCountMap)
-        map(s).setJobDetailCount(strWriter.toString)
-        val jobDetailSalary = jobTypeRdd.map(line => (JobEnum.getKeyWordsByName(line._1,typeIndex), line._4)).reduceByKey((a, b) => a + b).collect().map(i => (JobEnum.getJobNameByKeyWords(i._1), i._2)).filter((key: (String, Float)) => jobDetailCount.contains(key._1) && !key._1.contains("其他"))
-        var jobDetailSalaryTemp = jobDetailSalary.map(i => (i._1, i._2 / jobDetailCount(i._1))).toMap
-        var total:Float = 0.0f
-        var c = 0
-        jobDetailSalaryTemp.foreach(i => {
-          total += i._2
-          c += 1
+        //指定地区工作类型的数量分布
+        val typeCountMap = specificAreaRdd.map(line => (line._2, 1)).reduceByKey((a, b) => a + b).collect().toMap
+        map(s).setJobTypeCount(outPutJson(typeCountMap))
+        //指定地区工作类型平均薪水
+        val typeSalaryMap = specificAreaRdd.map(line => (line._2, line._4)).reduceByKey((a, b) => a + b).collect().map(i => (i._1, i._2 / typeCountMap(i._1))).toMap
+        map(s).setJobTypeSalary(outPutJson(typeSalaryMap))
+        //指定地区公司类型分布
+        var industryMap: Map[String, Long] = Map()
+        industrys.foreach(s => {
+          val count = specificAreaRdd.filter(_._7.toUpperCase.contains(s.toUpperCase)).count()
+          industryMap += (s -> count)
         })
-        if(typeSalaryMap.contains(typeIndex)) {
-          jobDetailSalaryTemp += (JobEnum.getOther(typeIndex) -> (typeSalaryMap(typeIndex) * (c + 1) - total))
-        }
-        jobDetailSalaryMap += (typeIndex -> jobDetailSalaryTemp)
-        strWriter = new StringWriter
-        mapper.writeValue(strWriter, jobDetailSalaryMap)
-        map(s).setJobDetailSalary(strWriter.toString)
-      }
-    }
+        map(s).setIndustryField(outPutJson(industryMap))
+        //指定地区公司规模（投资轮)分布
+        var financeStageMap: Map[String, Long] = Map()
+        financeStage.foreach(s => financeStageMap += (s -> specificAreaRdd.filter(_._6.toUpperCase.contains(s.toUpperCase)).count()))
+        map(s).setFinanceStage(outPutJson(financeStageMap))
+        //指定地区各个工作数量分布
+        var jobDetailCountMap: Map[Integer, Map[String, Long]] = Map()
+        var jobDetailSalaryMap: Map[Integer, Map[String, Float]] = Map()
+        JobEnum.listAllTypeIndex().asScala.iterator.foreach(typeIndex => {
+          var jobDetailCount: Map[String, Long] = Map()
+          val jobTypeRdd = specificAreaRdd.filter(_._2.equals(typeIndex))
+          var sum = jobTypeRdd.count()
+          var other = ""
+          JobEnum.listKeyWords(typeIndex).asScala.iterator.foreach(s => {
+            if (JobEnum.getJobNameByKeyWords(s).indexOf("其他") == -1) {
+              val count = jobTypeRdd.filter(_._1.toUpperCase.contains(s.toUpperCase)).count()
+              jobDetailCount += (JobEnum.getJobNameByKeyWords(s) -> count)
+              sum -= count
+            } else {
+              other = s
+            }
+          })
+          jobDetailCount += (JobEnum.getJobNameByKeyWords(other) -> sum)
+          jobDetailCountMap += (typeIndex -> jobDetailCount)
+          map(s).setJobDetailCount(outPutJson(jobDetailCountMap))
+          val jobDetailSalary = jobTypeRdd.map(line => (JobEnum.getKeyWordsByName(line._1, typeIndex), line._4)).reduceByKey((a, b) => a + b).collect().map(i => (JobEnum.getJobNameByKeyWords(i._1), i._2)).filter((key: (String, Float)) => jobDetailCount.contains(key._1) && !key._1.contains("其他"))
+          var jobDetailSalaryTemp = jobDetailSalary.map(i => (i._1, i._2 / jobDetailCount(i._1))).toMap
+          var total: Float = 0.0f
+          var c = 0
+          jobDetailSalaryTemp.foreach(i => {
+            total += i._2
+            c += 1
+          })
+          if (typeSalaryMap.contains(typeIndex))
+            jobDetailSalaryTemp += (JobEnum.getOther(typeIndex) -> (typeSalaryMap(typeIndex) * (c + 1) - total))
+          jobDetailSalaryMap += (typeIndex -> jobDetailSalaryTemp)
+          map(s).setJobDetailSalary(outPutJson(jobDetailSalaryMap))
+        })
+    })
     map
+  }
+
+
+  def outPutJson(attr: Any): String = {
+    val stringWriter = new StringWriter()
+    mapper.writeValue(stringWriter, attr)
+    stringWriter.toString
   }
 }

@@ -261,7 +261,6 @@ public enum JobEnum {
         return list;
     }
 
-
     public String getName() {
         return name;
     }
