@@ -25,34 +25,36 @@ object AnalysisDao {
     pstmt.setString(6, areaAnalysis.getJobTypeCount)
     pstmt.setString(7, areaAnalysis.getJobDetailCount)
     pstmt.setString(8, areaAnalysis.getJobDetailSalary)
-    pstmt.setString(9,areaAnalysis.getFinanceStage)
+    pstmt.setString(9, areaAnalysis.getFinanceStage)
     println(pstmt.toString)
     pstmt.execute()
   }
 
 
-  def insertJobAnalysis(jobAnalysis: JobAnalysis):Unit={
-    val sql = "INSERT INTO `job_analysis` (`job_name`,`count`,`avg_salary`,`education`,`work_year`,`industry_field`,`finance_stage`,`company_size`) VALUES(?,?,?,?,?,?,?)"
+  def insertJobAnalysis(jobAnalysis: JobAnalysis): Unit = {
+    val sql = "INSERT INTO `job_analysis` (`job_name`,`count`,`avg_salary`,`education`,`work_year`,`industry_field`,`finance_stage`,`company_size`,`area_count`,`area_salary`) VALUES(?,?,?,?,?,?,?,?,?,?)"
     val pstmt = conn.prepareStatement(sql)
-    pstmt.setString(1,jobAnalysis.getJobName)
-    pstmt.setLong(2,jobAnalysis.getCount)
-    pstmt.setFloat(3,jobAnalysis.getAvgSalary)
-    pstmt.setString(4,jobAnalysis.getEducation)
-    pstmt.setString(5,jobAnalysis.getWorkYear)
-    pstmt.setString(6,jobAnalysis.getIndustryField)
-    pstmt.setString(7,jobAnalysis.getFinanceStage)
-    pstmt.setString(8,jobAnalysis.getCompanySize)
+    pstmt.setString(1, jobAnalysis.getJobName)
+    pstmt.setLong(2, jobAnalysis.getCount)
+    pstmt.setFloat(3, jobAnalysis.getAvgSalary)
+    pstmt.setString(4, jobAnalysis.getEducation)
+    pstmt.setString(5, jobAnalysis.getWorkYear)
+    pstmt.setString(6, jobAnalysis.getIndustryField)
+    pstmt.setString(7, jobAnalysis.getFinanceStage)
+    pstmt.setString(8, jobAnalysis.getCompanySize)
+    pstmt.setString(9,jobAnalysis.getAreaCount)
+    pstmt.setString(10,jobAnalysis.getAreaSalary)
     println(pstmt.toString)
     pstmt.execute()
   }
 
-  def insertOriginAnalysis(origin:Origin):Unit={
+  def insertOriginAnalysis(origin: Origin): Unit = {
     val sql = "INSERT INTO `origin` (`origin`,`count`,`salary`,`detail_count`) VALUES (?,?,?,?)"
     val pstmt = conn.prepareStatement(sql)
-    pstmt.setString(1,origin.getOrigin)
-    pstmt.setLong(2,origin.getCount)
-    pstmt.setFloat(3,origin.getSalary)
-    pstmt.setString(4,origin.getDetailCount)
+    pstmt.setString(1, origin.getOrigin)
+    pstmt.setLong(2, origin.getCount)
+    pstmt.setFloat(3, origin.getSalary)
+    pstmt.setString(4, origin.getDetailCount)
     println(pstmt.toString)
     pstmt.execute()
   }
@@ -75,14 +77,14 @@ object AnalysisDao {
     res
   }
 
-  def loadAreaAnalysis(area:String):AreaAnalysis = {
+  def loadAreaAnalysis(area: String): AreaAnalysis = {
     val pstmt = conn.prepareStatement("SELECT * FROM `area_analysis` WHERE `area` = ?")
-    pstmt.setString(1,area)
+    pstmt.setString(1, area)
     val rs = pstmt.executeQuery()
-    var res:AreaAnalysis = null
-    if(rs.next())
-      res = new AreaAnalysis(rs.getString("area"),rs.getLong("count"),rs.getFloat("avg_salary"),rs.getString("industry_field"),
-        rs.getString("job_type_salary"),rs.getString("job_type_count"),rs.getString("job_detail_count"),rs.getString("job_detail_salary"),rs.getString("finance_stage"))
+    var res: AreaAnalysis = null
+    if (rs.next())
+      res = new AreaAnalysis(rs.getString("area"), rs.getLong("count"), rs.getFloat("avg_salary"), rs.getString("industry_field"),
+        rs.getString("job_type_salary"), rs.getString("job_type_count"), rs.getString("job_detail_count"), rs.getString("job_detail_salary"), rs.getString("finance_stage"))
     res
   }
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+    <settings cacheModelsEnabled="true" errorTracingEnabled="true" enhancementEnabled="true" maxTransactions="20"
+              maxRequests="50" maxSessions="20" useStatementNamespaces="true" />
+
+    <typeAlias alias="hs" type="java.util.HashMap" />
+    <typeAlias alias="string" type="java.lang.String" />
+    <!--
+    <typeHandler jdbcType="BLOB" javaType="[B" callback="org.springframework.orm.ibatis.support.BlobByteArrayTypeHandler"/>
+    <typeHandler jdbcType="CLOB" javaType="java.lang.String" callback="org.springframework.orm.ibatis.support.ClobStringTypeHandler"/>
+    -->
+   <!-- <sqlMap url="file:///c:/etc/eagle/ibatis/eagle-sqlmap.xml" />-->
+    <sqlMap resource="ibatis/job.xml"></sqlMap>
+
+</sqlMapConfig>

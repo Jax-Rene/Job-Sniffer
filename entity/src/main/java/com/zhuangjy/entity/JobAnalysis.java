@@ -31,8 +31,12 @@ public class JobAnalysis {
     private String financeStage;
     @Column(name = "company_size")
     private String companySize;
+    @Column(name = "area_count")
+    private String areaCount;
+   @Column(name = "area_salary")
+   private String areaSalary;
 
-    public JobAnalysis(String jobName, Long count, Float avgSalary, String education, String workYear, String industryField, String financeStage, String companySize) {
+    public JobAnalysis(String jobName, Long count, Float avgSalary, String education, String workYear, String industryField, String financeStage, String companySize, String areaCount, String areaSalary) {
         this.jobName = jobName;
         this.count = count;
         this.avgSalary = avgSalary;
@@ -41,6 +45,8 @@ public class JobAnalysis {
         this.industryField = industryField;
         this.financeStage = financeStage;
         this.companySize = companySize;
+        this.areaCount = areaCount;
+        this.areaSalary = areaSalary;
     }
 
     public JobAnalysis(String jobName){
@@ -121,5 +127,29 @@ public class JobAnalysis {
 
     public void setCompanySize(String companySize) {
         this.companySize = companySize;
+    }
+
+    public String getAreaState() {
+        return areaCount;
+    }
+
+    public void setAreaState(String areaCount) {
+        this.areaCount = areaCount;
+    }
+
+    public String getAreaCount() {
+        return areaCount;
+    }
+
+    public void setAreaCount(String areaCount) {
+        this.areaCount = areaCount;
+    }
+
+    public String getAreaSalary() {
+        return areaSalary;
+    }
+
+    public void setAreaSalary(String areaSalary) {
+        this.areaSalary = areaSalary;
     }
 }
