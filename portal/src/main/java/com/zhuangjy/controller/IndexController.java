@@ -27,6 +27,7 @@ public class IndexController {
     private AreaService areaService;
     @Autowired
     private OriginService originService;
+    @Autowired
     private static final Logger LOGGER = LogManager.getLogger(IndexController.class);
     private static ObjectMapper objectMapper = new ObjectMapper();
 

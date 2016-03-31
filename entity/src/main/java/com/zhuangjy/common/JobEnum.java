@@ -274,6 +274,10 @@ public enum JobEnum {
     }
 
     public static void main(String[] args) {
-        System.out.println(getKeyWordsByName("功能测试".toUpperCase()));
+        String s = "";
+        for(JobEnum j:JobEnum.values()){
+            s += "\"" + j.name + "\",";
+        }
+        System.out.println(s);
     }
 }

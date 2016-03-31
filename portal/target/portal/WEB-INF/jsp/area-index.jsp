@@ -28,17 +28,19 @@
     <!-- 画廊图像 -->
     <div class="carousel-inner" style="background-color: #333333">
         <div class="item active" style="height: 100%;">
+            <div class="divider"></div>
             <div id="area-count" style="width: 100%;height: 100%;"></div>
         </div>
 
         <div class="item" style="height: 100%;">
+            <div class="divider"></div>
             <div id="area-salary" style="width: 100%;height: 100%;"></div>
         </div>
 
         <div class="item" style="background-color: #333333;height:auto">
             <div class="container">
                 <div class="row">
-                    <div class="text-center" style="margin-top: 4%;">
+                    <div class="text-center" style="margin-top:10%;">
                         <input type="text" id="detail-city" class="form-control" style="display:inline;width:40%"
                                placeholder="请输入要查询的城市"/>&nbsp;
                         <input type="button" id="search" class="btn analysis-btn" value="查询" style="display:inline"/>
