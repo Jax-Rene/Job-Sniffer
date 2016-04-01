@@ -152,4 +152,6 @@ public class JobAnalysis {
     public void setAreaSalary(String areaSalary) {
         this.areaSalary = areaSalary;
     }
+
+
 }

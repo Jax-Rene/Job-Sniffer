@@ -4,6 +4,7 @@ package com.zhuangjy.common;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.orm.jpa.persistenceunit.PersistenceUnitManager;
 
+import javax.print.attribute.standard.JobName;
 import java.util.*;
 
 /**
@@ -132,12 +133,13 @@ public enum JobEnum {
 
     /**
      * 通过NAME 获取对应的TYPE
+     *
      * @param name
      * @return
      */
-    public static int getTypeByName(String name){
-        for(JobEnum j:JobEnum.values()){
-            if(j.name.equals(name)){
+    public static int getTypeByName(String name) {
+        for (JobEnum j : JobEnum.values()) {
+            if (j.name.equals(name)) {
                 return j.typeIndex;
             }
         }
@@ -148,17 +150,18 @@ public enum JobEnum {
 
     /**
      * 通过JOBNAME来获取对应的TYPE,匹配最长名称
+     *
      * @param jobName
      * @return
      */
-    public static int judgeTypeByName(String jobName){
+    public static int judgeTypeByName(String jobName) {
         jobName = jobName.toUpperCase();
         int index = 10;
         int maxLen = 0;
-        for(JobEnum j : JobEnum.values()){
-            if(jobName.indexOf(j.keyWord.toUpperCase())!=-1){
+        for (JobEnum j : JobEnum.values()) {
+            if (jobName.indexOf(j.keyWord.toUpperCase()) != -1) {
                 //匹配最长
-                if(maxLen < j.keyWord.length()){
+                if (maxLen < j.keyWord.length()) {
                     maxLen = j.keyWord.length();
                     index = j.typeIndex;
                 }
@@ -169,15 +172,32 @@ public enum JobEnum {
 
     /**
      * 返回该类型的所有KEY WORDS
+     *
      * @param index
      * @return
      */
-    public static List<String> listKeyWords(int index){
+    public static List<String> listKeyWords(int index) {
         List<String> list = new ArrayList<>();
-        for(JobEnum j:JobEnum.values()){
-            if(j.typeIndex == index){
+        for (JobEnum j : JobEnum.values()) {
+            if (j.typeIndex == index) {
                 list.add(j.keyWord);
             }
+        }
+        return list;
+    }
+
+
+    /**
+     * 返回该类型所对应的JobName
+     *
+     * @param index
+     * @return
+     */
+    public static List<String> listJobName(int index) {
+        List<String> list = new ArrayList<>();
+        for (JobEnum j : JobEnum.values()) {
+            if (j.getTypeIndex() == index)
+                list.add(j.getName());
         }
         return list;
     }
@@ -186,47 +206,47 @@ public enum JobEnum {
         jobName = jobName.toUpperCase();
         String keyWords = "其他";
         int maxLen = 0;
-        for(JobEnum j : JobEnum.values()){
-            if(jobName.indexOf(j.keyWord.toUpperCase())!=-1){
+        for (JobEnum j : JobEnum.values()) {
+            if (jobName.indexOf(j.keyWord.toUpperCase()) != -1) {
                 //匹配最长
-                if(maxLen < j.keyWord.length()){
+                if (maxLen < j.keyWord.length()) {
                     maxLen = j.keyWord.length();
                     keyWords = j.keyWord;
                 }
             }
         }
-        if(keyWords.equals("其他")){
+        if (keyWords.equals("其他")) {
             System.out.println("getKeyWordsByName找不到: " + jobName);
         }
         return keyWords;
     }
 
 
-    public static String getKeyWordsByName(String jobName,int index) {
+    public static String getKeyWordsByName(String jobName, int index) {
         jobName = jobName.toUpperCase();
         String keyWords = null;
         int maxLen = 0;
-        for(JobEnum j : JobEnum.values()){
-            if(j.typeIndex!=index)
+        for (JobEnum j : JobEnum.values()) {
+            if (j.typeIndex != index)
                 continue;
-            if(jobName.indexOf(j.keyWord.toUpperCase())!=-1){
+            if (jobName.indexOf(j.keyWord.toUpperCase()) != -1) {
                 //匹配最长
-                if(maxLen < j.keyWord.length()){
+                if (maxLen < j.keyWord.length()) {
                     maxLen = j.keyWord.length();
                     keyWords = j.keyWord;
                 }
             }
         }
-        if(StringUtils.isEmpty(keyWords)){
+        if (StringUtils.isEmpty(keyWords)) {
             return getOther(index);
         }
         return keyWords;
     }
 
-    public static String getJobNameByKeyWords(String keyWord){
+    public static String getJobNameByKeyWords(String keyWord) {
         keyWord = keyWord.toUpperCase();
-        for(JobEnum j :JobEnum.values()){
-            if(j.keyWord.toUpperCase().equals(keyWord)){
+        for (JobEnum j : JobEnum.values()) {
+            if (j.keyWord.toUpperCase().equals(keyWord)) {
                 return j.name;
             }
         }
@@ -234,28 +254,28 @@ public enum JobEnum {
         return null;
     }
 
-    public static List<Integer> listAllTypeIndex(){
+    public static List<Integer> listAllTypeIndex() {
         Set<Integer> set = new HashSet<>();
-        for(JobEnum j :JobEnum.values()){
+        for (JobEnum j : JobEnum.values()) {
             set.add(j.typeIndex);
         }
         return new ArrayList<>(set);
     }
 
-    public static String getOther(int index){
-        for (JobEnum j:JobEnum.values()){
-            if(j.typeIndex != index)
+    public static String getOther(int index) {
+        for (JobEnum j : JobEnum.values()) {
+            if (j.typeIndex != index)
                 continue;
-            if(j.name.indexOf("其他")!=-1)
+            if (j.name.indexOf("其他") != -1)
                 return j.name;
         }
         return null;
     }
 
 
-    public static List<String> listJobNames(){
+    public static List<String> listJobNames() {
         List<String> list = new ArrayList<>();
-        for(JobEnum j:JobEnum.values()){
+        for (JobEnum j : JobEnum.values()) {
             list.add(j.name);
         }
         return list;
@@ -275,7 +295,7 @@ public enum JobEnum {
 
     public static void main(String[] args) {
         String s = "";
-        for(JobEnum j:JobEnum.values()){
+        for (JobEnum j : JobEnum.values()) {
             s += "\"" + j.name + "\",";
         }
         System.out.println(s);

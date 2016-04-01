@@ -30,7 +30,7 @@ public class AreaService {
     }
 
     public AreaAnalysis loadByName(String city){
-        String hql = "FROM AreaAnalysis Where area=:area";
+        String hql = "FROM AreaAnalysis where area=:area";
         Map<String,Object> hs = new HashMap<>();
         hs.put("area",city);
         return (AreaAnalysis) baseDao.uniqueResult(hql,hs);

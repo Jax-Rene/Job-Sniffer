@@ -769,7 +769,6 @@
 
                         detailJobChart.on('click', function (params) {
                             //具体工作数目
-                            var t = JSON.parse(data.jobDetailCount);
                             datas = datasPushValueEqIter(JSON.parse(data.jobDetailCount), 'name', 'value', params.name);
                             detailJobCountOption.legend.data = [];
                             detailJobCountOption.series[0].data = [];
