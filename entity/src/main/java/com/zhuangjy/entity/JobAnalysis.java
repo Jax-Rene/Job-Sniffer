@@ -1,8 +1,6 @@
 package com.zhuangjy.entity;
 
-import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Proxy;
-
 import javax.persistence.*;
 
 /**

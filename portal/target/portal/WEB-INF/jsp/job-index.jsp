@@ -41,19 +41,69 @@
     </div>
     <div class="row">
         <div class="divider"></div>
-        <div class="row" id="type-compare-preview"></div>
+        <div id="type-compare-preview"></div>
+    </div>
 
 
-        <div class="row">
-            <div class="divider"></div>
-            <div class="col-md-6">
-                <div id="job-type-count" style="width: 100%;height: 100%;"></div>
-            </div>
-            <div class="col-md-6">
-                <div id="job-type-salary" style="width: 100%;height: 100%;"></div>
-            </div>
+    <div class="row">
+        <div class="divider"></div>
+        <div class="col-md-6">
+            <div id="job-type-count" style="width: 100%;height: 100%;"></div>
+        </div>
+        <div class="col-md-6">
+            <div id="job-type-salary" style="width: 100%;height: 100%;"></div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="divider"></div>
+        <div id="job-require-preview"></div>
+    </div>
+
+    <div class="row">
+        <div class="divider"></div>
+        <div class="col-md-6">
+            <div id="education" style="width: 100%;height: 100%;"></div>
+        </div>
+        <div class="col-md-6">
+            <div id="work-year" style="width: 100%;height: 100%;"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="divider"></div>
+        <div id="company-analysis-preview"></div>
+    </div>
+
+    <div class="row">
+        <div class="divider"></div>
+        <div class="col-md-6">
+            <div id="industry" style="width: 100%;height: 100%;"></div>
+        </div>
+        <div class="col-md-6">
+            <div id="finance" style="width: 100%;height: 100%;"></div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="divider"></div>
+        <div id="area-analysis-preview"></div>
+    </div>
+
+    <div class="row">
+        <div class="divider"></div>
+        <div class="col-md-6">
+            <div id="area-count" style="width: 100%;height: 100%;"></div>
+        </div>
+        <div class="col-md-6">
+            <div id="area-salary" style="width: 100%;height: 100%;"></div>
+        </div>
+    </div>
+</div>
+
+
+</div>
 </div>
 <script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/jquery-ui.min.js"></script>
@@ -65,6 +115,11 @@
     $(document).ready(function () {
         var jobTypeCountChart = undefined;
         var jobTypeSalaryChart = undefined;
+        var educationChart = undefined;
+        var workYearChart = undefined;
+        var areaCount = undefined;
+        var areaSalary = undefined;
+
         var jobTypeCountOption = {
             tooltip: {
                 trigger: 'item',
@@ -147,6 +202,372 @@
             ]
         };
 
+        educationOption = {
+            title: {
+                text: '学历分布',
+                x: 'center'
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data: []
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    mark: {show: true},
+                    dataView: {show: true, readOnly: false},
+                    magicType: {
+                        show: true,
+                        type: ['pie', 'funnel']
+                    },
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            calculable: true,
+            series: [
+                {
+                    name: '公司数目',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '30',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    center: ['center', 300],
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: []
+                }
+            ]
+        };
+
+        workYearOption = {
+            title: {
+                text: '平均要求工龄分布',
+                x: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: []
+            },
+            series: [
+                {
+                    name: '平均工龄对应数目',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['center', 300],
+                    data: [],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+
+        industryOption = {
+            title: {
+                text: '工作产业分析',
+                x: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: []
+            },
+            series: [
+                {
+                    name: '产业数量',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['center', 300],
+                    data: [],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+
+        financeOption = {
+            title: {
+                text: '公司投资轮分布',
+                x: 'center'
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data: []
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    mark: {show: true},
+                    dataView: {show: true, readOnly: false},
+                    magicType: {
+                        show: true,
+                        type: ['pie', 'funnel']
+                    },
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            calculable: true,
+            series: [
+                {
+                    name: '公司数目',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '30',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    center: ['center', 300],
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: []
+                }
+            ]
+        };
+
+
+        //需求薪水比例城市分布
+        var countSalaryDatas = [
+            [1,55,1,"良"],
+            [2,25,1,"优"]
+        ];
+
+        var schema = [
+            {name: 'salary', index: 0, text: '平均薪水'},
+            {name: 'count', index: 1, text: '需求量'},
+        ];
+
+
+        var itemStyle = {
+            normal: {
+                opacity: 0.8,
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowOffsetY: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+        };
+
+        option = {
+            backgroundColor: '#333',
+            color: [
+                '#dd4444', '#fec42c', '#80F1BE'
+            ],
+            legend: {
+                y: 'top',
+                data: ['城市'],
+                textStyle: {
+                    color: '#fff',
+                    fontSize: 16
+                }
+            },
+            grid: {
+                x: '10%',
+                x2: 150,
+                y: '18%',
+                y2: '10%'
+            },
+            tooltip: {
+                padding: 10,
+                backgroundColor: '#222',
+                borderColor: '#777',
+                borderWidth: 1,
+                formatter: function (obj) {
+                    var value = obj.value;
+                    return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'
+                            + '城市：' + value[2] + '<br>'
+                            + '</div>'
+                            + schema[0].text + '：' + value[0] + '<br>'
+                            + schema[1].text + '：' + value[1] + '<br>'
+                }
+            },
+            xAxis: {
+                type: 'value',
+                name: '平均薪水',
+                nameGap: 16,
+                nameTextStyle: {
+                    color: '#fff',
+                    fontSize: 14
+                },
+                max: 31,
+                splitLine: {
+                    show: false
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: '#777'
+                    }
+                },
+                axisTick: {
+                    lineStyle: {
+                        color: '#777'
+                    }
+                },
+                axisLabel: {
+                    formatter: '{value}',
+                    textStyle: {
+                        color: '#fff'
+                    }
+                }
+            },
+            yAxis: {
+                type: 'value',
+                name: '需求量',
+                nameLocation: 'end',
+                nameGap: 20,
+                nameTextStyle: {
+                    color: '#fff',
+                    fontSize: 16
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: '#777'
+                    }
+                },
+                axisTick: {
+                    lineStyle: {
+                        color: '#777'
+                    }
+                },
+                splitLine: {
+                    show: false
+                },
+                axisLabel: {
+                    textStyle: {
+                        color: '#fff'
+                    }
+                }
+            },
+            visualMap: [
+                {
+                    left: 'right',
+                    top: '10%',
+                    dimension: 2,
+                    min: 0,
+                    max: 250,
+                    itemWidth: 30,
+                    itemHeight: 120,
+                    calculable: true,
+                    precision: 0.1,
+                    text: ['圆形大小：PM2.5'],
+                    textGap: 30,
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    inRange: {
+                        symbolSize: [10, 70]
+                    },
+                    outOfRange: {
+                        symbolSize: [10, 70],
+                        color: ['rgba(255,255,255,.2)']
+                    },
+                    controller: {
+                        inRange: {
+                            color: ['#c23531']
+                        },
+                        outOfRange: {
+                            color: ['#444']
+                        }
+                    }
+                },
+                {
+                    left: 'right',
+                    bottom: '5%',
+                    dimension: 6,
+                    min: 0,
+                    max: 50,
+                    itemHeight: 120,
+                    calculable: true,
+                    precision: 0.1,
+                    text: ['明暗：二氧化硫'],
+                    textGap: 30,
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    inRange: {
+                        colorLightness: [1, 0.5]
+                    },
+                    outOfRange: {
+                        color: ['rgba(255,255,255,.2)']
+                    },
+                    controller: {
+                        inRange: {
+                            color: ['#c23531']
+                        },
+                        outOfRange: {
+                            color: ['#444']
+                        }
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: '城市',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: countSalaryDatas
+                }
+            ]
+        };
+
+
         var availableTags = ["Java", "Python", "PHP", ".NET", "C/C++/C#", "VB", "Delphi", "Perl", "Ruby", "Hadoop", "Node.js", "数据挖掘", "自然语言处理", "搜索算法", "精准推荐", "全栈工程师", "Go", "ASP", "Shell", "后端开发其他", "Android", "IOS", "WP", "移动开发其他", "web前端", "Flash", "html5", "JavaScript", "U3D", "COCOS2D-X", "前端开发其他", "测试工程师", "自动化测试", "功能测试", "性能测试", "测试开发", "游戏测试", "白盒测试", "灰盒测试", "黑盒测试", "手机测试", "硬件测试", "测试经理", "测试其他", "运维工程师", "运维开发工程师", "网络工程师", "系统工程师", "IT支持", "IDC", "CDN", "F5", "病毒分析", "WEB安全", "网络安全", "系统安全", "运维经理", "运维其他", "MySQL", "SQLServer", "Oracle", "DB2", "MongoDB", "ETL", "Hive", "数据仓库", "DBA其他", "项目经理", "项目助理", "项目类其他", "嵌入式", "自动化", "单片机", "电路设计", "驱动开发", "系统集成", "FPGA开发", "DSP开发", "ARM开发", "PCB工艺", "模具设计", "热传导", "材料工程师", "精益工程师", "射频工程师", "硬件开发其他", "实施工程师", "售前工程师", "售后工程师", "BI工程师", "QA", "企业类其他"];
         $("#job-name").autocomplete({
             source: availableTags
@@ -155,6 +576,12 @@
         $('#search').click(function () {
             jobTypeCountChart = echarts.init(document.getElementById('job-type-count'), 'dark');
             jobTypeSalaryChart = echarts.init(document.getElementById('job-type-salary'), 'dark');
+            educationChart = echarts.init(document.getElementById('education'), 'dark');
+            workYearChart = echarts.init(document.getElementById('work-year'), 'dark');
+            industryChart = echarts.init(document.getElementById('industry'), 'dark');
+            financeChart = echarts.init(document.getElementById('finance'), 'dark');
+            areaCountChart = echarts.init(document.getElementById('area-count'), 'dark');
+            areaSalaryChart = echarts.init(document.getElementById('area-salary'), 'dark');
 
             $.post("${pageContext.request.contextPath}/job/detail", {
                 job: $('#job-name').val()
@@ -212,8 +639,30 @@
                             xAxis: minAndIndex[0],
                             yAxis: Math.round(minAndIndex[1])
                         });
+
+                        //工作要求
+                        $('#job-require-preview').html('<h1 class="analysis-h1">工作要求 <small>JOB REQUIRE</small></h1> <hr/>')
+                        educationOption.series[0].data = datasPushMapArray(JSON.parse(data.job.education), 'name', 'value');
+                        educationOption.legend.data = datasPushArray(JSON.parse(data.job.education), 0);
+                        workYearOption.series[0].data = datasPushMapArray(JSON.parse(data.job.workYear), 'name', 'value');
+                        workYearOption.legend.data = datasPushArray(JSON.parse(data.job.workYear), 0);
+                        educationChart.setOption(educationOption);
+                        workYearChart.setOption(workYearOption);
                         jobTypeSalaryChart.setOption(jobTypeSalaryOption);
                         jobTypeCountChart.setOption(jobTypeCountOption);
+
+                        //公司分布
+                        $('#company-analysis-preview').html('<h1 class="analysis-h1">公司分布 <small>COMPANY DISTRIBUTION</small></h1> <hr/>');
+                        industryOption.series[0].data = datasPushMapArray(JSON.parse(data.job.industryField));
+                        financeOption.legend.data = datasPushArray(JSON.parse(data.job.financeStage), 0);
+                        financeOption.series[0].data = datasPushMapArray(JSON.parse(data.job.financeStage), 'name', 'value');
+                        financeChart.setOption(financeOption);
+                        industryChart.setOption(industryOption);
+
+                        //特定工作的地区分布
+                        $('#area-analysis-preview').html('<h1 class="analysis-h1">地区分布 <small>AREA DISTRIBUTION</small></h1> <hr/>');
+
+
                     }
                 }
             });
