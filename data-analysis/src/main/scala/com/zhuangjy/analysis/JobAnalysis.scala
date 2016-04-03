@@ -87,7 +87,6 @@ object JobAnalysis {
           financeStageMap += (s -> count)
         }
         jobAnalysis.setFinanceStage(outPutJson(financeStageMap))
-        //公司人数
 
         //工作在不同城市的不同需求
         var areaCountMap: Map[String, Long] = Map()

@@ -29,6 +29,9 @@ public class JobController {
     @RequestMapping(value = "/detail",method = RequestMethod.POST)
     public Map<String,Object> detailJob(String job){
         Map<String,Object> map = new HashMap<>();
+        JobAnalysis jobAnalysis = jobService.loadByName(job);
+        if(jobAnalysis == null)
+            return null;
         List<Origin> origins = originService.currentOrigin();
         long sum = 0l;
         double sumAvg = 0.0;
@@ -37,7 +40,6 @@ public class JobController {
             sumAvg += o.getSalary();
         }
         sumAvg /= origins.size();
-        JobAnalysis jobAnalysis = jobService.loadByName(job);
         List<Map<String,Object>> typeCompare = jobService.jobTypeCountCompare(job);
         map.put("job",jobAnalysis);
         map.put("sum",sum);

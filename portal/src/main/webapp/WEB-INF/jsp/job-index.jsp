@@ -93,11 +93,32 @@
 
     <div class="row">
         <div class="divider"></div>
-        <div class="col-md-6">
-            <div id="area-count" style="width: 100%;height: 100%;"></div>
+        <div class="col-md-12">
+            <div id="area-count-salary" style="width: 100%;height: 100%;"></div>
         </div>
-        <div class="col-md-6">
-            <div id="area-salary" style="width: 100%;height: 100%;"></div>
+    </div>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        警告
+                    </h4>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -119,6 +140,7 @@
         var workYearChart = undefined;
         var areaCount = undefined;
         var areaSalary = undefined;
+        var countSalaryChart = undefined;
 
         var jobTypeCountOption = {
             tooltip: {
@@ -187,7 +209,7 @@
             ],
             series: [
                 {
-                    name: '平均工资',
+                    name: '平均薪水',
                     type: 'bar',
                     data: [],
                     markPoint: {
@@ -285,7 +307,7 @@
                         emphasis: {
                             shadowBlur: 10,
                             shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            shadowColor: 'HSL(0, 0%, 20%)'
                         }
                     }
                 }
@@ -385,8 +407,8 @@
 
         //需求薪水比例城市分布
         var countSalaryDatas = [
-            [1,55,1,"良"],
-            [2,25,1,"优"]
+            [1, 55, 1, "良"],
+            [2, 25, 1, "优"]
         ];
 
         var schema = [
@@ -401,12 +423,11 @@
                 shadowBlur: 10,
                 shadowOffsetX: 0,
                 shadowOffsetY: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                shadowColor: '#EEE8AA'
             }
         };
 
-        option = {
-            backgroundColor: '#333',
+        var countSalaryOption = {
             color: [
                 '#dd4444', '#fec42c', '#80F1BE'
             ],
@@ -432,7 +453,7 @@
                 formatter: function (obj) {
                     var value = obj.value;
                     return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'
-                            + '城市：' + value[2] + '<br>'
+                            + '城市：' + value[3] + '<br>'
                             + '</div>'
                             + schema[0].text + '：' + value[0] + '<br>'
                             + schema[1].text + '：' + value[1] + '<br>'
@@ -440,13 +461,13 @@
             },
             xAxis: {
                 type: 'value',
-                name: '平均薪水',
+                name: '需求量',
                 nameGap: 16,
                 nameTextStyle: {
                     color: '#fff',
                     fontSize: 14
                 },
-                max: 31,
+                max: 3000,
                 splitLine: {
                     show: false
                 },
@@ -469,9 +490,10 @@
             },
             yAxis: {
                 type: 'value',
-                name: '需求量',
+                name: '平均薪水',
                 nameLocation: 'end',
                 nameGap: 20,
+                max:30,
                 nameTextStyle: {
                     color: '#fff',
                     fontSize: 16
@@ -506,7 +528,7 @@
                     itemHeight: 120,
                     calculable: true,
                     precision: 0.1,
-                    text: ['圆形大小：PM2.5'],
+                    text: ['圆形大小：需求量与薪水比例'],
                     textGap: 30,
                     textStyle: {
                         color: '#fff'
@@ -516,35 +538,6 @@
                     },
                     outOfRange: {
                         symbolSize: [10, 70],
-                        color: ['rgba(255,255,255,.2)']
-                    },
-                    controller: {
-                        inRange: {
-                            color: ['#c23531']
-                        },
-                        outOfRange: {
-                            color: ['#444']
-                        }
-                    }
-                },
-                {
-                    left: 'right',
-                    bottom: '5%',
-                    dimension: 6,
-                    min: 0,
-                    max: 50,
-                    itemHeight: 120,
-                    calculable: true,
-                    precision: 0.1,
-                    text: ['明暗：二氧化硫'],
-                    textGap: 30,
-                    textStyle: {
-                        color: '#fff'
-                    },
-                    inRange: {
-                        colorLightness: [1, 0.5]
-                    },
-                    outOfRange: {
                         color: ['rgba(255,255,255,.2)']
                     },
                     controller: {
@@ -574,20 +567,20 @@
         });
 
         $('#search').click(function () {
-            jobTypeCountChart = echarts.init(document.getElementById('job-type-count'), 'dark');
-            jobTypeSalaryChart = echarts.init(document.getElementById('job-type-salary'), 'dark');
-            educationChart = echarts.init(document.getElementById('education'), 'dark');
-            workYearChart = echarts.init(document.getElementById('work-year'), 'dark');
-            industryChart = echarts.init(document.getElementById('industry'), 'dark');
-            financeChart = echarts.init(document.getElementById('finance'), 'dark');
-            areaCountChart = echarts.init(document.getElementById('area-count'), 'dark');
-            areaSalaryChart = echarts.init(document.getElementById('area-salary'), 'dark');
-
             $.post("${pageContext.request.contextPath}/job/detail", {
                 job: $('#job-name').val()
             }, function (data, status) {
                 if (status) {
+                    debugger;
                     if (data) {
+                        jobTypeCountChart = echarts.init(document.getElementById('job-type-count'), 'dark');
+                        jobTypeSalaryChart = echarts.init(document.getElementById('job-type-salary'), 'dark');
+                        educationChart = echarts.init(document.getElementById('education'), 'dark');
+                        workYearChart = echarts.init(document.getElementById('work-year'), 'dark');
+                        industryChart = echarts.init(document.getElementById('industry'), 'dark');
+                        financeChart = echarts.init(document.getElementById('finance'), 'dark');
+                        areaCountSalaryChart = echarts.init(document.getElementById('area-count-salary'), 'dark');
+
                         //previewa
                         $('#preview').html('<table class="table table-bordered"><thead><tr><th style="color: #FFFFFF;text-align: center">工作名</th> <th style="color: #FFFFFF;text-align: center">总数量(份)</th> <th style="color: #FFFFFF;text-align: center">平均薪水(k/月)</th> </tr> </thead> <tbody id="preview-body"> </tbody> </table>');
                         $('#preview-body').html('<tr><td class="text-center" style="background: rgb(111,30,27);color: #FFFFFF;">' + data.job.jobName + '</td><td class="text-center" style="background: rgb(174,47,43);color: #FFFFFF;">' + data.job.count + '</td><td class="text-center" style="background: #DD6B66;color: #FFFFFF;">' + data.job.avgSalary + '</td></tr>');
@@ -646,24 +639,45 @@
                         educationOption.legend.data = datasPushArray(JSON.parse(data.job.education), 0);
                         workYearOption.series[0].data = datasPushMapArray(JSON.parse(data.job.workYear), 'name', 'value');
                         workYearOption.legend.data = datasPushArray(JSON.parse(data.job.workYear), 0);
-                        educationChart.setOption(educationOption);
-                        workYearChart.setOption(workYearOption);
-                        jobTypeSalaryChart.setOption(jobTypeSalaryOption);
-                        jobTypeCountChart.setOption(jobTypeCountOption);
 
                         //公司分布
                         $('#company-analysis-preview').html('<h1 class="analysis-h1">公司分布 <small>COMPANY DISTRIBUTION</small></h1> <hr/>');
                         industryOption.series[0].data = datasPushMapArray(JSON.parse(data.job.industryField));
                         financeOption.legend.data = datasPushArray(JSON.parse(data.job.financeStage), 0);
                         financeOption.series[0].data = datasPushMapArray(JSON.parse(data.job.financeStage), 'name', 'value');
-                        financeChart.setOption(financeOption);
-                        industryChart.setOption(industryOption);
 
                         //特定工作的地区分布
                         $('#area-analysis-preview').html('<h1 class="analysis-h1">地区分布 <small>AREA DISTRIBUTION</small></h1> <hr/>');
-
-
+                        datas = [];
+                        $.each(JSON.parse(data.job.areaCount), function (k, v) {
+                            var arr = new Array();
+                            arr.push(v);
+                            datas.push(arr);
+                        });
+                        var i = 0;
+                        $.each(JSON.parse(data.job.areaSalary), function (k, v) {
+                            datas[i].push(v, datas[i++][0] / v , k);
+                        });
+                        countSalaryOption.series[0].data = datas;
+                        financeChart.setOption(financeOption);
+                        industryChart.setOption(industryOption);
+                        educationChart.setOption(educationOption);
+                        workYearChart.setOption(workYearOption);
+                        jobTypeSalaryChart.setOption(jobTypeSalaryOption);
+                        jobTypeCountChart.setOption(jobTypeCountOption);
+                        debugger;
+                        areaCountSalaryChart.setOption(countSalaryOption);
+                    }else{
+                        $('.modal-body').html('<h4>很抱歉,目前尚没有该工作的分析数据!</h4>');
+                        $('#myModal').modal({
+                            keyboard: true
+                        });
                     }
+                }else{
+                    $('.modal-body').html('<h4>网络加载失败!</h4>');
+                    $('#myModal').modal({
+                        keyboard: true
+                    });
                 }
             });
         });
