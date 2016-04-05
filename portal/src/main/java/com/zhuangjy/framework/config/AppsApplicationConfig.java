@@ -4,7 +4,6 @@ import com.zhuangjy.framework.spring.SpringContextHolder;
 import com.zhuangjy.framework.spring.SpringContextUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;

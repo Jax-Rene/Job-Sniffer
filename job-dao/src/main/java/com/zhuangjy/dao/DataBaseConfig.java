@@ -88,7 +88,6 @@ public class DataBaseConfig implements TransactionManagementConfigurer {
         config.setIdleMaxAge(5, TimeUnit.MINUTES);//mysql的wati_timeout默认为28800
         config.setIdleConnectionTestPeriod(1, TimeUnit.MINUTES);
         db = new BoneCPDataSource(config); // setup the connection pool
-//        System.out.println(c3p0_driver);
         db.setDriverClass("com.mysql.jdbc.Driver");
         logger.info("gen data-source for url [" + c3p0_url + "] success");
         return db;
@@ -99,7 +98,6 @@ public class DataBaseConfig implements TransactionManagementConfigurer {
         logger.info("gen sessionFactory start");
         LocalSessionFactoryBean session = new LocalSessionFactoryBean();
         session.setPackagesToScan(new String[]{"com.zhuangjy.entity"});
-//        session.setPackagesToScan(new String[]{"com.cnc.**.entity", "com.cnc.**.bean", "com.cnc.**.model"});
         session.setDataSource(dataSource());
         InputStream cr = this.getClass().getResourceAsStream("/hibernate.properties");
         Properties hiberanteProperties = new Properties();

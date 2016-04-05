@@ -1,11 +1,11 @@
 package com.zhuangjy.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhuangjy.common.JobEnum;
 import com.zhuangjy.dao.BaseDao;
 import com.zhuangjy.entity.JobAnalysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
