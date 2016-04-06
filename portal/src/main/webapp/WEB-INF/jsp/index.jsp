@@ -192,7 +192,7 @@
 
                     <div class="panel panel-default">
                         <div>
-                            <a href="#" title="关系分析">
+                            <a href="${pageContext.request.contextPath}/relation-index" title="关系分析">
                                 <img src="${pageContext.request.contextPath}/img/guanxi.jpg" class="img-responsive"></a>
                         </div>
                         <div class="panel-body">

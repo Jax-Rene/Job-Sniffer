@@ -571,7 +571,6 @@
                 job: $('#job-name').val()
             }, function (data, status) {
                 if (status) {
-                    debugger;
                     if (data) {
                         jobTypeCountChart = echarts.init(document.getElementById('job-type-count'), 'dark');
                         jobTypeSalaryChart = echarts.init(document.getElementById('job-type-salary'), 'dark');

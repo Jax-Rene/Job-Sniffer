@@ -216,3 +216,16 @@ var getProperty = function (data, n) {
     }
     return res;
 }
+
+
+var datasPushObjsArray = function (data,properties) {
+    var res = [];
+    for(var i=0;i<data.length;i++){
+        var col = [];
+        for(var j=0;j<properties.length;j++){
+            col.push(data[i][properties[j]]);
+        }
+        res.push(col);
+    }
+    return res;
+}

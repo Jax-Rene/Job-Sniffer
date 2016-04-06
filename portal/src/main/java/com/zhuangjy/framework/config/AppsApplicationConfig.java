@@ -17,6 +17,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
+import javax.annotation.PostConstruct;
 import javax.xml.transform.Source;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -69,5 +70,4 @@ public class AppsApplicationConfig {
     public SpringContextHolder contextHolder() {
         return new SpringContextHolder();
     }
-
 }

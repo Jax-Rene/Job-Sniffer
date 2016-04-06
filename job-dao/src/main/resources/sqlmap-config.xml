@@ -7,11 +7,6 @@
 
     <typeAlias alias="hs" type="java.util.HashMap" />
     <typeAlias alias="string" type="java.lang.String" />
-    <!--
-    <typeHandler jdbcType="BLOB" javaType="[B" callback="org.springframework.orm.ibatis.support.BlobByteArrayTypeHandler"/>
-    <typeHandler jdbcType="CLOB" javaType="java.lang.String" callback="org.springframework.orm.ibatis.support.ClobStringTypeHandler"/>
-    -->
-   <!-- <sqlMap url="file:///c:/etc/eagle/ibatis/eagle-sqlmap.xml" />-->
     <sqlMap resource="ibatis/job.xml"></sqlMap>
 
 </sqlMapConfig>

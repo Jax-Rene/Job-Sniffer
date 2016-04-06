@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhuangjy.entity.AreaAnalysis;
 import com.zhuangjy.entity.Origin;
 import com.zhuangjy.service.AreaService;
+import com.zhuangjy.service.CacheService;
 import com.zhuangjy.service.OriginService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +28,8 @@ public class IndexController {
     private AreaService areaService;
     @Autowired
     private OriginService originService;
+    @Autowired
+    private CacheService cacheService;
     @Autowired
     private static final Logger LOGGER = LogManager.getLogger(IndexController.class);
     private static ObjectMapper objectMapper = new ObjectMapper();
@@ -69,8 +72,15 @@ public class IndexController {
     }
 
     @RequestMapping("/job-index")
-    public String jobIndex(Model model){
+    public String jobIndex(){
         return "job-index";
+    }
+
+    @RequestMapping("/relation-index")
+    public String relationIndex(Model model){
+        Integer count = cacheService.getRelationCount();
+        model.addAttribute("count",count);
+        return "relation-index";
     }
 
 }
