@@ -8,7 +8,8 @@
         finance_stage AS finance,
         industry_field AS industry,
         work_year AS workYear,
-        salary AS salary
+        salary AS salary,
+        company_size AS companySize
         FROM job WHERE 1=1
     </select>
 

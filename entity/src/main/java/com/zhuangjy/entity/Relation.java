@@ -9,13 +9,15 @@ public class Relation  {
     private String finance;
     private Float workYear;
     private String industry;
+    private Integer companySize;
 
-    public Relation(String education, String finance, String industry, Float workYear, Float salary) {
+    public Relation(Float salary, String education, String finance, Float workYear, String industry, Integer companySize) {
+        this.salary = salary;
         this.education = education;
         this.finance = finance;
-        this.industry = industry;
         this.workYear = workYear;
-        this.salary = salary;
+        this.industry = industry;
+        this.companySize = companySize;
     }
 
     public String getEducation() {
@@ -56,5 +58,13 @@ public class Relation  {
 
     public void setSalary(Float salary) {
         this.salary = salary;
+    }
+
+    public Integer getCompanySize() {
+        return companySize;
+    }
+
+    public void setCompanySize(Integer companySize) {
+        this.companySize = companySize;
     }
 }

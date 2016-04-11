@@ -2,8 +2,6 @@ package com.zhuangjy.framework.config;
 
 import com.zhuangjy.framework.spring.SpringContextHolder;
 import com.zhuangjy.framework.spring.SpringPropertyPlaceholderConfigurer;
-import org.apache.http.conn.HttpClientConnectionManager;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -68,15 +66,6 @@ public class RestApplicationConfig {
         converters.add(jconfig);
         return converters;
     }
-
-    @Bean
-    public HttpClientConnectionManager multiThreadedConnectionManager() {
-        PoolingHttpClientConnectionManager manager = new PoolingHttpClientConnectionManager();
-        manager.setDefaultMaxPerRoute(3);
-        manager.setMaxTotal(30);
-        return manager;
-    }
-
 
     @Bean
     @Qualifier("springContextHolder")

@@ -218,6 +218,12 @@ var getProperty = function (data, n) {
 }
 
 
+/**
+ * 将对象的多个属性插入成数组
+ * @param data
+ * @param properties
+ * @returns {Array}   [[1,1],[2,2]]
+ */
 var datasPushObjsArray = function (data,properties) {
     var res = [];
     for(var i=0;i<data.length;i++){

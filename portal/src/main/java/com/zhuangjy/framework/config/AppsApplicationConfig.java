@@ -3,7 +3,7 @@ package com.zhuangjy.framework.config;
 import com.zhuangjy.framework.spring.SpringContextHolder;
 import com.zhuangjy.framework.spring.SpringContextUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -17,24 +17,18 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
-import javax.annotation.PostConstruct;
 import javax.xml.transform.Source;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Author:王旗
- * Date:2014/9/12 11:37
- * Description:
- */
 @Configuration
+@EnableAutoConfiguration
 @EnableWebMvc
 @EnableAsync
 @EnableScheduling
-@PropertySource(ignoreResourceNotFound = true, value = {"classpath:service.properties", "file:d:\\etc\\eagle\\eagle.properties", "file:d:\\etc\\eagle\\service.properties", "file:d:\\etc\\eagle\\eagle-apps\\service.properties"})
+@PropertySource(ignoreResourceNotFound = true, value = {"classpath:service.properties"})
 @ComponentScan(basePackages = {"com.zhuangjy"})
-@ImportResource(value = {"classpath*:/applicationContext.xml", "classpath*:/spring.xml", "classpath*:/spring-*.xml"}, reader = XmlBeanDefinitionReader.class)
 public class AppsApplicationConfig {
 
     @Bean

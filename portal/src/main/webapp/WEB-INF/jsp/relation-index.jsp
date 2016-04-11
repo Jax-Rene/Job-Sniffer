@@ -34,8 +34,17 @@
             <input type="text" id="search-number" class="form-control popover-show" placeholder="请输入要加载的数据量" title="提示"
                    data-container="body" data-toggle="popover" data-placement="top" data-content="总数据量:${count}条"/>
         </div>
-        <div class="col-md-1">
-            <input type="button" id="load" class="btn analysis-btn" value="加载"/>
+        <div class="col-md-1 btn-group">
+            <button type="button" class="btn analysis-btn dropdown-toggle" data-toggle="dropdown">选择查询关系类型<span
+                    class="caret"></span></button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="javascript:void(0)" id="total-relation" class="relation">总体关系预览</a></li>
+                <li><a href="javascript:void(0)" id="education-relation" class="relation">学历与薪水</a></li>
+                <li><a href="javascript:void(0)" id="finance-relation" class="relation">公司规模与薪水</a></li>
+                <li><a href="javascript:void(0)" id="year-relation" class="relation">工作经验与薪水</a></li>
+                <%--<li><a href="javascript:void(0)" id="industry-relation" class="relation">公司类型与薪水</a></li>--%>
+                <li><a href="javascript:void(0)" id="people-relation" class="relation">公司人数与薪水</a></li>
+            </ul>
         </div>
     </div>
 
@@ -45,9 +54,12 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12">
-            <div id="whole-relation" style="width: 100%;height: 100%;"></div>
-        </div>
+            <div id="relation" style="width: 100%;height: 100%;"></div>
+    </div>
+
+    <div class="row">
+        <div class="divider"></div>
+        <div class="divider"></div>
     </div>
 
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
@@ -93,7 +105,7 @@
         });
 
 
-        var wholeRelationChart = undefined;
+        var relationChart = undefined;
         var data = [];
         var schema = [
             {name: 'salary', index: 0, text: '薪水'},
@@ -130,7 +142,7 @@
             visualMap: {
                 show: false,
                 min: 0,
-                max: 50,
+                max: 'dataMax',
                 dimension: 0,
                 inRange: {
                     color: ['#d94e5d', '#eac736', '#50a3ba'].reverse(),
@@ -143,7 +155,6 @@
                 bottom: 100,
                 parallelAxisDefault: {
                     type: 'value',
-                    name: 'AQI指数',
                     nameLocation: 'end',
                     nameGap: 20,
                     nameTextStyle: {
@@ -181,19 +192,122 @@
         };
 
 
-        $('#load').click(function () {
+        detailOption = {
+            title: {
+                text: '',
+                left: 'center'
+            },
+            grid: {
+                left: 2,
+                bottom: 10,
+                right: 10,
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value',
+                min: '0',
+                max: 'dataMax',
+                boundaryGap: false,
+                splitLine: {
+                    show: true,
+                    lineStyle: {
+                        color: '#ddd',
+                        type: 'dashed'
+                    }
+                },
+                axisLine: {
+                    show: false
+                }
+            },
+            yAxis: {
+                type: 'category',
+                data: undefined,
+                axisLine: {
+                    show: false
+                }
+            },
+            series: [{
+                type: 'scatter',
+                symbolSize: 10,
+                data: undefined
+            }]
+        };
+
+        $('.relation').click(function () {
+            var id = this.id;
             if ($('#search-number').val() > ${count}) {
                 $('.modal-body').html('<h4>加载条数不能大于总条数!</h4>');
                 $('#myModal').modal({
                     keyboard: true
                 });
-            } else {
+            } else if (!($('#search-number').val() > 0)) {
+                $('.modal-body').html('<h4>输入不合法!请重新输入</h4>');
+                $('#myModal').modal({
+                    keyboard: true
+                });
+            }
+            else {
                 $.get('${pageContext.request.contextPath}/relation/whole/' + $('#search-number').val(), function (val, status) {
                     if (status) {
                         if (val) {
-                            wholeRelationOption.series[0].data = datasPushObjsArray(val,['salary','education','finance','workYear']);
-                            wholeRelationChart = echarts.init(document.getElementById('whole-relation'), 'dark');
-                            wholeRelationChart.setOption(wholeRelationOption);
+                            relationChart = echarts.init(document.getElementById('relation'), 'dark');
+                            switch (id) {
+                                case "total-relation":
+                                    wholeRelationOption.series[0].data = datasPushObjsArray(val, ['salary', 'education', 'finance', 'workYear']);
+                                    relationChart.setOption(wholeRelationOption);
+                                    break;
+                                case "education-relation":
+                                    detailOption.title.text = '薪水与学历的关系'
+                                    detailOption.yAxis.type = 'category';
+                                    var items = ['大专', '本科', '硕士', '博士', '学历不限'];
+                                    detailOption.yAxis.data = items;
+                                    var data = datasPushObjsArray(val, ['salary', 'education']);
+                                    data = data.map(function (s) {
+                                        for (var i = 0; i < items.length; i++) {
+                                            if (s[1] === items[i])
+                                                return [s[0], i];
+                                        }
+                                        return [0, 0];
+                                    });
+                                    detailOption.series[0].data = data;
+                                    relationChart.setOption(detailOption);
+                                    break;
+                                case "finance-relation":
+                                    detailOption.title.text = '薪水与公司规模的关系'
+                                    detailOption.yAxis.type = 'category';
+                                    var items = ['成长型(A轮)', '成熟型(不需要融资)', '初创型(未融资)', '上市公司', '成熟型(C轮)', '成熟型(D轮及以上)', '初创型(天使轮)', '成长型(B轮)', '初创型(不需要融资)', '成长型(不需要融资)'];
+                                    detailOption.yAxis.data = items;
+                                    var data = datasPushObjsArray(val, ['salary', 'finance']);
+                                    data = data.map(function (s) {
+                                        for (var i = 0; i < items.length; i++) {
+                                            if (s[1] === items[i])
+                                                return [s[0], i];
+                                        }
+                                        return [0, 0];
+                                    });
+                                    detailOption.series[0].data = data;
+                                    relationChart.setOption(detailOption);
+                                    break;
+                                case "year-relation":
+                                    detailOption.title.text = '薪水与工作经验的关系'
+                                    detailOption.yAxis.type = 'value';
+                                    detailOption.yAxis.name = "单位:年"
+                                    detailOption.series[0].data = datasPushObjsArray(val, ['salary', 'workYear']);
+                                    relationChart.setOption(detailOption);
+                                    break;
+                                //TODO 薪水与公司类型的关系
+//                                case "industry-relation":
+//                                    break;
+                                case "people-relation":
+                                    detailOption.title.text = '薪水与公司人数的关系'
+                                    detailOption.yAxis.type = 'value';
+                                    detailOption.yAxis.name = "单位:人"
+                                    detailOption.series[0].data = datasPushObjsArray(val, ['salary', 'companySize']);
+                                    relationChart.setOption(detailOption);
+                                    break;
+                                default:
+                                    alert('异常');
+                            }
                         } else {
                             $('.modal-body').html('<h4>很抱歉,当前没有加载数据请稍后重试</h4>');
                             $('#myModal').modal({

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by johnny on 16/4/6.
@@ -20,10 +21,13 @@ public class RelationController {
     private CacheService cacheService;
 
     @RequestMapping(value = "/whole/{count}")
-    public List<Relation> loadRelation(@PathVariable Integer count){
+    public List<Relation> loadRelation(@PathVariable Integer count) {
         List<Relation> relations = cacheService.getRelationCache();
-        if(count > relations.size())
+        int s = relations.size() - count;
+        if (s < 0)
             return null;
-        return relations.subList(0,count);
+        Random random = new Random();
+        int index = random.nextInt(s);
+        return relations.subList(index, index + count);
     }
 }
