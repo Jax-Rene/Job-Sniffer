@@ -42,7 +42,7 @@
                 <li><a href="javascript:void(0)" id="education-relation" class="relation">学历与薪水</a></li>
                 <li><a href="javascript:void(0)" id="finance-relation" class="relation">公司规模与薪水</a></li>
                 <li><a href="javascript:void(0)" id="year-relation" class="relation">工作经验与薪水</a></li>
-                <%--<li><a href="javascript:void(0)" id="industry-relation" class="relation">公司类型与薪水</a></li>--%>
+                <li><a href="javascript:void(0)" id="industry-relation" class="relation">公司类型与薪水</a></li>
                 <li><a href="javascript:void(0)" id="people-relation" class="relation">公司人数与薪水</a></li>
             </ul>
         </div>
@@ -54,7 +54,7 @@
     </div>
 
     <div class="row">
-            <div id="relation" style="width: 100%;height: 100%;"></div>
+        <div id="relation" style="width: 100%;height: 100%;"></div>
     </div>
 
     <div class="row">
@@ -257,8 +257,9 @@
                                     relationChart.setOption(wholeRelationOption);
                                     break;
                                 case "education-relation":
-                                    detailOption.title.text = '薪水与学历的关系'
+                                    detailOption.title.text = '薪水与学历的关系';
                                     detailOption.yAxis.type = 'category';
+                                    detailOption.yAxis.name = "学历";
                                     var items = ['大专', '本科', '硕士', '博士', '学历不限'];
                                     detailOption.yAxis.data = items;
                                     var data = datasPushObjsArray(val, ['salary', 'education']);
@@ -273,35 +274,47 @@
                                     relationChart.setOption(detailOption);
                                     break;
                                 case "finance-relation":
-                                    detailOption.title.text = '薪水与公司规模的关系'
+                                    detailOption.title.text = '薪水与公司规模的关系';
                                     detailOption.yAxis.type = 'category';
                                     var items = ['成长型(A轮)', '成熟型(不需要融资)', '初创型(未融资)', '上市公司', '成熟型(C轮)', '成熟型(D轮及以上)', '初创型(天使轮)', '成长型(B轮)', '初创型(不需要融资)', '成长型(不需要融资)'];
                                     detailOption.yAxis.data = items;
+                                    detailOption.yAxis.name = "公司规模";
                                     var data = datasPushObjsArray(val, ['salary', 'finance']);
                                     data = data.map(function (s) {
-                                        for (var i = 0; i < items.length; i++) {
-                                            if (s[1] === items[i])
-                                                return [s[0], i];
-                                        }
-                                        return [0, 0];
+                                        return [s[0],$.inArray(s[1],items)];
                                     });
                                     detailOption.series[0].data = data;
                                     relationChart.setOption(detailOption);
                                     break;
                                 case "year-relation":
-                                    detailOption.title.text = '薪水与工作经验的关系'
+                                    detailOption.title.text = '薪水与工作经验的关系';
                                     detailOption.yAxis.type = 'value';
-                                    detailOption.yAxis.name = "单位:年"
+                                    detailOption.yAxis.name = "单位:年";
                                     detailOption.series[0].data = datasPushObjsArray(val, ['salary', 'workYear']);
                                     relationChart.setOption(detailOption);
                                     break;
-                                //TODO 薪水与公司类型的关系
-//                                case "industry-relation":
-//                                    break;
+                                case "industry-relation":
+                                    detailOption.title.text = '薪水与公司类型的关系';
+                                    detailOption.yAxis.type = 'category';
+                                    data = [];
+                                    var items = ['数据服务','医疗健康','其他','电子商务','招聘','硬件','广告营销','信息安全','社交网络','生活服务','移动互联网','O2O','企业服务','分类信息','社交','游戏','金融','移动互联网','文化娱乐','金融互联网','旅游','教育'];
+                                    detailOption.yAxis.name = "公司类型";
+                                    for (var i = 0; i < val.length; i++) {
+                                        var temp = val[i].industry.split(' · ');
+                                        for (var j = 0; j < temp.length; j++) {
+                                            if($.inArray(temp[j],items) == -1)
+                                                    alert(temp[j]);
+                                            data.push([val[i].salary, $.inArray(temp[j],items)]);
+                                        }
+                                    }
+                                    detailOption.yAxis.data = items;
+                                    detailOption.series[0].data = data;
+                                    relationChart.setOption(detailOption);
+                                    break;
                                 case "people-relation":
-                                    detailOption.title.text = '薪水与公司人数的关系'
+                                    detailOption.title.text = '薪水与公司人数的关系';
                                     detailOption.yAxis.type = 'value';
-                                    detailOption.yAxis.name = "单位:人"
+                                    detailOption.yAxis.name = "单位:人";
                                     detailOption.series[0].data = datasPushObjsArray(val, ['salary', 'companySize']);
                                     relationChart.setOption(detailOption);
                                     break;

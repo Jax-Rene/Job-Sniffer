@@ -42,7 +42,7 @@ public class IndexController {
     }
 
     @RequestMapping("/login")
-    public String admin(){
+    public String login(){
         return "login";
     }
 
@@ -82,5 +82,4 @@ public class IndexController {
         model.addAttribute("count",count);
         return "relation-index";
     }
-
 }
