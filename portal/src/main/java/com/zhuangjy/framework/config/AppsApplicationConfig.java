@@ -3,6 +3,7 @@ package com.zhuangjy.framework.config;
 import com.zhuangjy.framework.spring.SpringContextHolder;
 import com.zhuangjy.framework.spring.SpringContextUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
@@ -20,16 +21,35 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import javax.xml.transform.Source;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @EnableAutoConfiguration
 @EnableWebMvc
 @EnableAsync
-@EnableScheduling
-@PropertySource(ignoreResourceNotFound = true, value = {"classpath:service.properties"})
 @ComponentScan(basePackages = {"com.zhuangjy"})
+@PropertySource(ignoreResourceNotFound = true, value = {"classpath:analysis.properties"})
 public class AppsApplicationConfig {
+    @Value("${area}")
+    private String area;
+    @Value("${company_type}")
+    private String companyType;
+    @Value("${finance_stage}")
+    private String financeStage;
+    @Value("${education}")
+    private String education;
+    @Value("${username}")
+    private String userName;
+    @Value("${password}")
+    private String passWord;
+
+    @Bean
+    public PropertiesMap propertiesMap(){
+        PropertiesMap p = new PropertiesMap(area,companyType,financeStage,education,userName,passWord);
+        return p;
+    }
 
     @Bean
     public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {

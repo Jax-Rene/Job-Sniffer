@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
@@ -43,26 +44,30 @@
                         </div>
                     </div>
                     <div class="form-bottom">
-                        <form role="form" action="${pageContext.request.contextPath}/admin" method="post" class="login-form">
+                        <form role="form" action="${pageContext.request.contextPath}/admin" method="post"
+                              class="login-form" id="form">
                             <div class="form-group">
                                 <label class="sr-only" for="form-username">Username</label>
-                                <input type="text" name="userName" placeholder="Username..."
+                                <input type="text" placeholder="Username..."
                                        class="form-username form-control" id="form-username">
+                                <input type="hidden" id="user-name" name="userName"/>
                             </div>
                             <div class="form-group">
                                 <label class="sr-only" for="form-password">Password</label>
-                                <input type="password" name="passWord" placeholder="Password..."
+                                <input type="password" placeholder="Password..."
                                        class="form-password form-control" id="form-password">
+                                <input type="hidden" id="pass-word" name="passWord"/>
                             </div>
-                            <button type="submit" class="btn" style="background-color: #DD6B66">Sign in</button>
-                            <p class="text-center" style="color: red;"><c:if test="${not empty error}">密码错误,请重新输入!</c:if> </p>
+                            <button type="submit" class="btn" style="background-color: #DD6B66">Sign in
+                            </button>
+                            <p class="text-center" style="color: red;">${loginError}</p>
                         </form>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-6 col-sm-offset-3 social-login">
-                    <h4>if you are not Administrator,please not try to login!</h3>
+                    <h4>if you are not Administrator,please not try to login!</h4>
                 </div>
             </div>
         </div>
@@ -74,10 +79,19 @@
 <script src="${pageContext.request.contextPath}/js/bootstrap.js"></script>
 <script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/jquery.backstretch.js"></script>
+<script src="${pageContext.request.contextPath}/js/md5.min.js"></script>
 
 <script>
-    $.backstretch(["${pageContext.request.contextPath}/img/login-back/1.jpg",
-        "${pageContext.request.contextPath}/img/login-back/2.jpg"],{duration:4000,fade:1000});
+    $(function () {
+        $.backstretch(["${pageContext.request.contextPath}/img/login-back/1.jpg",
+            "${pageContext.request.contextPath}/img/login-back/2.jpg"], {duration: 4000, fade: 1000});
+        $('#form').submit(function () {
+                    $('#user-name').val(md5($('#form-username').val()));
+                    $('#pass-word').val(md5($('#form-password').val()));
+                }
+        );
+    });
+
 </script>
 
 

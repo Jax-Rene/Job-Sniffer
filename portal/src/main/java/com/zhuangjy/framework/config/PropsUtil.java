@@ -21,11 +21,6 @@ import java.util.Map;
 
 /**
  * 获取配置文件的值，供Java调用。值从PortalPropertyPlaceholderConfigurer注入。
- * 
- * @author 刘圳
- * @version 1.1 2011-9-7
- * @since 1.0
- * @see PortalPropertyPlaceholderConfigurer
  */
 public class PropsUtil {
 

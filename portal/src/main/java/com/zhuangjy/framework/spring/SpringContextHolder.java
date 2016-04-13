@@ -24,10 +24,6 @@ import java.util.Map;
 
 /**
  * 以静态变量保存Spring ApplicationContext,可在任意代码中取出ApplicaitonContext.
- * 
- * @author 刘圳
- * @version 1.1 2011-9-14
- * @since 1.0
  */
 public class SpringContextHolder implements ApplicationContextAware {
 

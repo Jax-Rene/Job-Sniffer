@@ -2,11 +2,6 @@ package com.zhuangjy.framework.config;
 
 import org.springframework.validation.DefaultMessageCodesResolver;
 
-/**
- * Author:王旗
- * Date:2014/11/17 9:49
- * Description:
- */
 public class MyMessageCodesResolver extends DefaultMessageCodesResolver {
 
     /**

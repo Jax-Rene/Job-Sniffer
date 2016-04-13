@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -42,13 +43,11 @@ public class IndexController {
     }
 
     @RequestMapping("/login")
-    public String login(){
+    public String login(HttpSession session){
+        Object s = session.getAttribute("admin");
+        if(session.getAttribute("admin") != null)
+            return "admin";
         return "login";
-    }
-
-    @RequestMapping(value = "/login-admin" , method = RequestMethod.POST)
-    public String login(String userName,String passWord){
-        return null;
     }
 
     @RequestMapping(value = "/area-index")
