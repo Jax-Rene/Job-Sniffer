@@ -664,7 +664,6 @@
                         workYearChart.setOption(workYearOption);
                         jobTypeSalaryChart.setOption(jobTypeSalaryOption);
                         jobTypeCountChart.setOption(jobTypeCountOption);
-                        debugger;
                         areaCountSalaryChart.setOption(countSalaryOption);
                     }else{
                         $('.modal-body').html('<h4>很抱歉,目前尚没有该工作的分析数据!</h4>');

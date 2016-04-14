@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 
@@ -26,5 +27,11 @@ public class AdminController {
             model.addAttribute("loginError","密码错误,请重新输入!");
             return "login";
         }
+    }
+
+    @RequestMapping(value = "/load-properties" , method = RequestMethod.GET)
+    @ResponseBody
+    public PropertiesMap loadProperties(){
+        return propertiesMap;
     }
 }

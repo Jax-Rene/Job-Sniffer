@@ -6,6 +6,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.*;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
@@ -14,23 +18,20 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
 import org.springframework.http.converter.xml.SourceHttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import javax.xml.transform.Source;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Configuration
 @EnableAutoConfiguration
 @EnableWebMvc
 @EnableAsync
 @ComponentScan(basePackages = {"com.zhuangjy"})
-@PropertySource(ignoreResourceNotFound = true, value = {"classpath:analysis.properties"})
+@PropertySource(value = {"file:/Users/johnny/Desktop/JobsAnalysis/analysis.properties"})
 public class AppsApplicationConfig {
     @Value("${area}")
     private String area;
@@ -44,12 +45,16 @@ public class AppsApplicationConfig {
     private String userName;
     @Value("${password}")
     private String passWord;
+    @Value("${time}")
+    private String time;
+
 
     @Bean
     public PropertiesMap propertiesMap(){
-        PropertiesMap p = new PropertiesMap(area,companyType,financeStage,education,userName,passWord);
+        PropertiesMap p = new PropertiesMap(area,companyType,financeStage,education,userName,passWord,time);
         return p;
     }
+
 
     @Bean
     public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {

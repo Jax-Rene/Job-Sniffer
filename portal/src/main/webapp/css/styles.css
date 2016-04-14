@@ -257,3 +257,27 @@ section {
     color: #FFFFFF;
 }
 
+.admin-h1{
+    font-size:4rem;
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin-top:4%;
+}
+
+.admin-title{
+    font-size:20px;
+    font-family:monospace;
+    margin-top:4%;
+}
+
+.admin-text{
+    width:100%;
+    height: 80%;
+}
+
+.admin-btn{
+    width:100px;
+    float:right;
+    margin-top:10px;
+    background-color: #DD6B66;
+    color: #FFFFFF;
+}

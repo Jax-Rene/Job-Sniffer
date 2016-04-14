@@ -10,14 +10,16 @@ public class PropertiesMap {
     private String education;
     private String userName;
     private String passWord;
+    private String time;
 
-    public PropertiesMap(String area, String companyType, String financeStage, String education, String userName, String passWord) {
+    public PropertiesMap(String area, String companyType, String financeStage, String education, String userName, String passWord,String time) {
         this.area = area;
         this.companyType = companyType;
         this.financeStage = financeStage;
         this.education = education;
         this.userName = userName;
         this.passWord = passWord;
+        this.time = time;
     }
 
     public String getArea() {
@@ -66,5 +68,13 @@ public class PropertiesMap {
 
     public void setPassWord(String passWord) {
         this.passWord = passWord;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }
