@@ -3,12 +3,14 @@ package com.zhuangjy.framework.config;
 import com.zhuangjy.framework.spring.SpringContextHolder;
 import com.zhuangjy.framework.spring.SpringPropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -17,8 +19,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
 import org.springframework.http.converter.xml.SourceHttpMessageConverter;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import java.nio.charset.Charset;
@@ -28,10 +29,9 @@ import java.util.List;
 
 @Configuration
 @EnableAutoConfiguration
-@EnableScheduling
+@EnableAsync
 @ComponentScan(basePackages = {"com.zhuangjy"})
 public class RestApplicationConfig {
-
     @Bean
     public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {
         RequestMappingHandlerAdapter bean = new RequestMappingHandlerAdapter();
@@ -47,8 +47,7 @@ public class RestApplicationConfig {
         configurer.setSystemPropertiesMode(PropertyPlaceholderConfigurer.SYSTEM_PROPERTIES_MODE_OVERRIDE);
         configurer.setLocations(
                 new Resource[]{
-                        new ClassPathResource("database.properties"),
-                        new ClassPathResource("job.properties")
+                        new FileSystemResource("/Users/johnny/Desktop/JobsAnalysis/analysis.properties")
                 }
         );
         return configurer;

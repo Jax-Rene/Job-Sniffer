@@ -78,7 +78,7 @@ public class LaGouRobotWorker extends BaseWorker {
                 i++;
                 awaitTime = 0;
                 //降低获取频率防止屏蔽
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.SECONDS.sleep(3);
             } catch (JsonParseException e) {
                 LOGGER.error("解析错误,跳过: ", e);
                 i++;

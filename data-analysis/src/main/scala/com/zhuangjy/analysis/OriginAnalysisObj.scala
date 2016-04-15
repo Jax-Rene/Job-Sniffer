@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.zhuangjy.common.{JobEnum, JobType, JobTypeMap}
 import com.zhuangjy.entity.Origin
-import com.zhuangjy.dao.AnalysisDao
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.JdbcRDD
 
@@ -17,17 +16,9 @@ import scala.collection.JavaConverters._
 /**
   * Created by johnny on 16/3/8.
   */
-object OriginAnalysis {
+object OriginAnalysisObj {
   val mapper = new ObjectMapper
   mapper.registerModule(DefaultScalaModule)
-
-  def main(args: Array[String]) {
-    val sc = new SparkContext("local", "mysql")
-    val section = AnalysisDao.loadSection
-    val origins: ArrayBuffer[Origin] = calcNormal(section(0), section(1), sc)
-    calcDetail(section(0), section(1), sc, origins)
-    origins.foreach(s => AnalysisDao.insertOriginAnalysis(s))
-  }
 
   def calcNormal(min: Long, max: Long, sc: SparkContext): ArrayBuffer[Origin] = {
     val rdd = new JdbcRDD(

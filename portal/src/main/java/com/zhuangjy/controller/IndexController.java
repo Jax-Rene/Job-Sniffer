@@ -3,6 +3,8 @@ package com.zhuangjy.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhuangjy.entity.AreaAnalysis;
 import com.zhuangjy.entity.Origin;
+import com.zhuangjy.entity.PropertiesMap;
+import com.zhuangjy.service.AdminService;
 import com.zhuangjy.service.AreaService;
 import com.zhuangjy.service.CacheService;
 import com.zhuangjy.service.OriginService;
@@ -26,12 +28,13 @@ import java.util.Map;
 @Controller
 public class IndexController {
     @Autowired
+    private AdminService adminService;
+    @Autowired
     private AreaService areaService;
     @Autowired
     private OriginService originService;
     @Autowired
     private CacheService cacheService;
-    @Autowired
     private static final Logger LOGGER = LogManager.getLogger(IndexController.class);
     private static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -39,12 +42,12 @@ public class IndexController {
     public String index(Model model){
         List<Origin> origins = originService.currentOrigin();
         model.addAttribute("origins",origins);
+        model.addAttribute("config",adminService.currentConfig());
         return "index";
     }
 
     @RequestMapping("/login")
     public String login(HttpSession session){
-        Object s = session.getAttribute("admin");
         if(session.getAttribute("admin") != null)
             return "admin";
         return "login";

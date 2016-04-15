@@ -1,7 +1,12 @@
 package com.zhuangjy.controller;
 
-import com.zhuangjy.framework.config.PropertiesMap;
+import com.zhuangjy.entity.PropertiesMap;
+import com.zhuangjy.service.AdminService;
+import com.zhuangjy.util.ShellUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,13 +18,23 @@ import javax.servlet.http.HttpSession;
 /**
  * Created by johnny on 16/4/12.
  */
+@RequestMapping("/admin")
 @Controller
+@PropertySource(value = {"file:/Users/johnny/Desktop/JobsAnalysis/analysis.properties"})
+@Configuration
 public class AdminController {
+    @Value("${worker_cmd}")
+    private String workerCmd;
+    @Value("${analysis_cmd")
+    private String analysisCmd;
+
     @Autowired
-    private PropertiesMap propertiesMap;
-    @RequestMapping(value = "/admin",method = RequestMethod.POST)
+    private AdminService adminService;
+
+    @RequestMapping(value = "",method = RequestMethod.POST)
     public String admin(Model model, String userName, String passWord,HttpSession session){
-        if(userName.equalsIgnoreCase(propertiesMap.getUserName()) && passWord.equalsIgnoreCase(propertiesMap.getPassWord())) {
+        PropertiesMap properties = adminService.currentConfig();
+        if(userName.equalsIgnoreCase(properties.getUserName()) && passWord.equalsIgnoreCase(properties.getPassWord())) {
             session.setAttribute("admin",true);
             return "admin";
         }
@@ -32,6 +47,33 @@ public class AdminController {
     @RequestMapping(value = "/load-properties" , method = RequestMethod.GET)
     @ResponseBody
     public PropertiesMap loadProperties(){
-        return propertiesMap;
+        return adminService.currentConfig();
+    }
+
+    @RequestMapping(value = "/update-properties",method = RequestMethod.POST)
+    @ResponseBody
+    public boolean updateProperties(PropertiesMap p){
+        adminService.updateConfig(p);
+        return true;
+    }
+
+    @RequestMapping(value = "/run" , method = RequestMethod.POST)
+    @ResponseBody
+    public boolean runService(String service,HttpSession session){
+        //防止恶意post
+        if(session.getAttribute("admin")==null){
+            return false;
+        }
+        String cmd = null;
+        switch (service){
+            case "worker":
+                cmd = workerCmd;
+                break;
+            case "analysis":
+                cmd = analysisCmd;
+                break;
+        }
+        ShellUtil.runShell(cmd);
+        return true;
     }
 }

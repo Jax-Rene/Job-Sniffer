@@ -1,15 +1,12 @@
 package com.zhuangjy.framework.config;
 
+import com.zhuangjy.entity.PropertiesMap;
 import com.zhuangjy.framework.spring.SpringContextHolder;
 import com.zhuangjy.framework.spring.SpringContextUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.*;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
@@ -33,25 +30,16 @@ import java.util.List;
 @ComponentScan(basePackages = {"com.zhuangjy"})
 @PropertySource(value = {"file:/Users/johnny/Desktop/JobsAnalysis/analysis.properties"})
 public class AppsApplicationConfig {
-    @Value("${area}")
-    private String area;
-    @Value("${company_type}")
-    private String companyType;
-    @Value("${finance_stage}")
-    private String financeStage;
-    @Value("${education}")
-    private String education;
     @Value("${username}")
     private String userName;
     @Value("${password}")
     private String passWord;
-    @Value("${time}")
-    private String time;
-
 
     @Bean
     public PropertiesMap propertiesMap(){
-        PropertiesMap p = new PropertiesMap(area,companyType,financeStage,education,userName,passWord,time);
+        PropertiesMap p = new PropertiesMap();
+        p.setUserName(userName);
+        p.setPassWord(passWord);
         return p;
     }
 
@@ -68,11 +56,10 @@ public class AppsApplicationConfig {
         converters.add(new ByteArrayHttpMessageConverter());
         converters.add(new StringHttpMessageConverter(Charset.forName("UTF-8"))); //default 为ISO, 中文会乱码
         converters.add(new ResourceHttpMessageConverter());
-        converters.add(new SourceHttpMessageConverter<Source>());
+        converters.add(new SourceHttpMessageConverter<>());
         converters.add(new AllEncompassingFormHttpMessageConverter());
         MappingJackson2HttpMessageConverter jconfig = new MappingJackson2HttpMessageConverter();
         jconfig.setPrettyPrint(true);
-//        jconfig.getObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_EMPTY);//过滤empty str/collections
         converters.add(jconfig);
         return converters;
     }

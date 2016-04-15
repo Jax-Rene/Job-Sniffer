@@ -1,7 +1,6 @@
 package com.zhuangjy.service;
 
 import com.zhuangjy.common.JobEnum;
-import com.zhuangjy.common.JobType;
 import com.zhuangjy.dao.BaseDao;
 import com.zhuangjy.entity.Job;
 import com.zhuangjy.worker.LaGouRobotWorker;
@@ -25,7 +24,6 @@ public class WorkService {
     @Value("${lagou.url}")
     private String laGouUrl;
 
-//    @Scheduled(cron="${scheduled.time}")
     @PostConstruct
     public void grepData(){
         LOGGER.info("start grep data...");

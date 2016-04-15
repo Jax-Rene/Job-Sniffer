@@ -17,7 +17,7 @@ import scala.util.control._
 /**
   * Created by johnny on 16/2/28.
   */
-object JobAnalysis {
+object JobAnalysisObj {
   val mapper = new ObjectMapper() with ScalaObjectMapper
   mapper.registerModule(DefaultScalaModule)
 

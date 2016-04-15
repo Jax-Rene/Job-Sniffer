@@ -3,8 +3,6 @@ package com.zhuangjy.worker;
 import com.zhuangjy.dao.BaseDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.codehaus.jackson.JsonLocation;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -22,7 +20,8 @@ public abstract class BaseWorker implements Runnable {
     protected BaseDao baseDao;
 
     static {
-        calendar.set(2016, 01, 01);
+        calendar.set(Calendar.MONTH,01);
+        calendar.set(Calendar.DATE,01);
         objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
     }
 

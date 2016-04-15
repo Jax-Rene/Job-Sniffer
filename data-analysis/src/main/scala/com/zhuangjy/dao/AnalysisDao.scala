@@ -2,7 +2,7 @@ package com.zhuangjy.dao
 
 import java.sql.{DriverManager, ResultSet}
 
-import com.zhuangjy.entity.{AreaAnalysis, JobAnalysis, Origin}
+import com.zhuangjy.entity.{AreaAnalysis, JobAnalysis, Origin, PropertiesMap}
 import com.zhuangjy.util.ReadProperties
 
 
@@ -11,7 +11,8 @@ import com.zhuangjy.util.ReadProperties
   */
 object AnalysisDao {
   classOf[com.mysql.jdbc.Driver]
-  val conn = DriverManager.getConnection(ReadProperties.readFromClassPath("database.properties", "url"))
+  val dataBase = ReadProperties.readFromClassPathMultiplePro("database.properties", Array("url", "username", "password"))
+  val conn = DriverManager.getConnection(dataBase("url"),dataBase("username"),dataBase("password"))
 
 
   def insertAreaAnalysis(areaAnalysis: AreaAnalysis): Unit = {
@@ -59,10 +60,6 @@ object AnalysisDao {
     pstmt.execute()
   }
 
-
-  /**
-    * 获取Job表 id区间
-    */
   def loadSection: Array[Long] = {
     val res = new Array[Long](2)
     val statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)
@@ -85,6 +82,15 @@ object AnalysisDao {
     if (rs.next())
       res = new AreaAnalysis(rs.getString("area"), rs.getLong("count"), rs.getFloat("avg_salary"), rs.getString("industry_field"),
         rs.getString("job_type_salary"), rs.getString("job_type_count"), rs.getString("job_detail_count"), rs.getString("job_detail_salary"), rs.getString("finance_stage"))
+    res
+  }
+
+  def loadConfig:PropertiesMap = {
+    val pstmt = conn.prepareStatement("SELECT * FROM `config`")
+    val rs = pstmt.executeQuery()
+    var res:PropertiesMap = null
+    if(rs.next())
+      res = new PropertiesMap (rs.getString("area"), rs.getString("company_type"), rs.getString("finance_stage"), rs.getString("education"), rs.getString("time"),rs.getString("job"))
     res
   }
 }

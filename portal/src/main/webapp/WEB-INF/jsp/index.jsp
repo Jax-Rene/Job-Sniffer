@@ -106,7 +106,7 @@
         <div class="col-sm-10 col-sm-offset-1">
             <div class="page-header text-center">
                 <h1>Last Data</h1>
-                <span style="color:#777">Last Updata Finished At 2015-10-10 10:12:13</span>
+                <span style="color:#777">Last Update Finished At 2015-10-10 10:12:13</span>
             </div>
 
             <div class="table-responsive">
@@ -242,29 +242,72 @@
                         <h3 class="panel-title">搜索的城市</h3>
                     </div>
                     <div class="panel-body">
-                        上海,广州
+                        ${config.area}
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="panel panel-info">
                     <div class="panel-heading">
                         <h3 class="panel-title">搜索的工作</h3>
                     </div>
                     <div class="panel-body">
-                        Java,Ios
+                        ${config.job}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="divider"></div>
+                <div class="divider"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-offset-1 col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">公司类型</h3>
+                    </div>
+                    <div class="panel-body">
+                        ${config.companyType}
                     </div>
                 </div>
             </div>
 
             <div class="col-md-2">
-                <div class="panel panel-warning">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">公司规模</h3>
+                    </div>
+                    <div class="panel-body">
+                        ${config.financeStage}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">学历</h3>
+                    </div>
+                    <div class="panel-body">
+                        ${config.education}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="panel panel-info">
                     <div class="panel-heading">
                         <h3 class="panel-title">自动化频率</h3>
                     </div>
                     <div class="panel-body">
-                        * * * * /10
+                        ${config.time}
                     </div>
                 </div>
             </div>
@@ -428,7 +471,7 @@
                     });
                 });
                 $('#total-detail').modal('toggle');
-            }else{
+            } else {
                 $('.modal-body').html('<h4>网络加载失败!</h4>');
                 $('#myModal').modal({
                     keyboard: true

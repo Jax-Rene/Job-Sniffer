@@ -6,54 +6,27 @@ import java.sql.DriverManager
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
-import com.zhuangjy.entity.AreaAnalysis
+import com.zhuangjy.entity.{AreaAnalysis, PropertiesMap}
 import com.zhuangjy.common.{JobEnum, JobType}
-import com.zhuangjy.dao.AnalysisDao
-import com.zhuangjy.util.ReadProperties
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.{JdbcRDD, RDD}
 
 import scala.collection.JavaConverters._
-import scala.util.control.Breaks
 
 /**
   * Created by zhuangjy on 2016/2/17.
   */
-object AreaAnalysis {
+object AreaAnalysisObj {
   val mapper = new ObjectMapper() with ScalaObjectMapper
   mapper.registerModule(DefaultScalaModule)
 
-  def main(args: Array[String]) {
-    val sc = new SparkContext("local", "mysql")
-    val section = AnalysisDao.loadSection
-    var areaMap: Map[String, AreaAnalysis] = Map()
-    val classPathProperties = ReadProperties.readFromClassPathMultiplePro("analysis.properties", Array("area", "company_type", "finance_stage"))
-    val areas: Array[String] = classPathProperties("area").split(",")
-    val industryField: Array[String] = classPathProperties("company_type").split(",")
-    val financeStage: Array[String] = classPathProperties("finance_stage").split(",")
-    //初始化地区分析Map
-    areas.foreach(i => areaMap += (i -> new AreaAnalysis(i)))
-    calcArea(section(0), section(1), sc, areas, industryField, financeStage, areaMap)
-    val loop = new Breaks
-    areaMap.values.iterator.foreach(i => {
-      loop.breakable {
-        if (i.getCount == 0)
-          loop.break()
-        AnalysisDao.insertAreaAnalysis(i)
-      }
-    })
-    sc.stop()
-  }
-
-
-  def calcArea(min: Long, max: Long, sc: SparkContext, areas: Array[String],
-               industrys: Array[String], financeStage: Array[String],
-               map: Map[String, AreaAnalysis]): Map[String, AreaAnalysis] = {
+  def calcArea(min: Long, max: Long, sc: SparkContext, properties: PropertiesMap, jdbcUrl: String, userName: String,
+               passWord: String, map: Map[String, AreaAnalysis]): Map[String, AreaAnalysis] = {
     val rdd = new JdbcRDD(
       sc,
       () => {
         Class.forName("com.mysql.jdbc.Driver").newInstance()
-        DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/jobs", "root", "")
+        DriverManager.getConnection(jdbcUrl, userName, passWord)
       },
       "SELECT `job_name`,`job_type`,`company_city`,`salary`,`education`,`finance_stage`,`industry_field`" +
         " FROM job WHERE id >= ? AND id <= ?",
@@ -61,8 +34,7 @@ object AreaAnalysis {
       r => (r.getString("job_name"), r.getInt("job_type"), r.getString("company_city"), r.getFloat("salary"),
         r.getString("education"), r.getString("finance_stage"), r.getString("industry_field"))
     ).cache()
-
-    areas.iterator.foreach(s => {
+    properties.getArea.split(",").iterator.foreach(s => {
       val specificAreaRdd = rdd.filter(line => line._3.toUpperCase.contains(s.toUpperCase)).cache()
       val count = specificAreaRdd.count()
       //所有地区需求量
@@ -83,14 +55,14 @@ object AreaAnalysis {
       map(s).setJobTypeSalary(outPutJson(typeSalaryMap))
       //指定地区公司类型分布
       var industryMap: Map[String, Long] = Map()
-      industrys.foreach(s => {
+      properties.getCompanyType.split(",").foreach(s => {
         val count = specificAreaRdd.filter(_._7.toUpperCase.contains(s.toUpperCase)).count()
         industryMap += (s -> count)
       })
       map(s).setIndustryField(outPutJson(industryMap))
       //指定地区公司规模（投资轮)分布
       var financeStageMap: Map[String, Long] = Map()
-      financeStage.foreach(s => financeStageMap += (s -> specificAreaRdd.filter(_._6.toUpperCase.contains(s.toUpperCase)).count()))
+      properties.getFinanceStage.split(",").foreach(s => financeStageMap += (s -> specificAreaRdd.filter(_._6.toUpperCase.contains(s.toUpperCase)).count()))
       map(s).setFinanceStage(outPutJson(financeStageMap))
       //指定地区各个工作数量分布
       var jobDetailCountMap: Map[Integer, Map[String, Long]] = Map()
@@ -131,7 +103,6 @@ object AreaAnalysis {
     })
     map
   }
-
 
   def outPutJson(attr: Any): String = {
     val stringWriter = new StringWriter()
