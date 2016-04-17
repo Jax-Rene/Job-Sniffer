@@ -55,7 +55,7 @@
                     <div class="container">
                         <div class="carousel-caption">
                             <h2>Correlation Analysis</h2>
-                            <p>充分分析各种就业因素之前的关联关系,方便调研</p>
+                            <p>充分分析各种就业因素之间的关联关系,方便调研</p>
                         </div>
                     </div>
                 </div>
@@ -106,7 +106,7 @@
         <div class="col-sm-10 col-sm-offset-1">
             <div class="page-header text-center">
                 <h1>Last Data</h1>
-                <span style="color:#777">Last Updata Finished At 2015-10-10 10:12:13</span>
+                <span style="color:#777">Last Update Finished At 2015-10-10 10:12:13</span>
             </div>
 
             <div class="table-responsive">
@@ -185,14 +185,13 @@
 
                         </div>
                     </div>
-                    <!--/panel--> </div>
-                <!--/col-->
+                </div>
 
                 <div class="col-sm-4 col-xs-6">
 
                     <div class="panel panel-default">
                         <div>
-                            <a href="#" title="关系分析">
+                            <a href="${pageContext.request.contextPath}/relation-index" title="关系分析">
                                 <img src="${pageContext.request.contextPath}/img/guanxi.jpg" class="img-responsive"></a>
                         </div>
                         <div class="panel-body">
@@ -201,8 +200,7 @@
 
                         </div>
                     </div>
-                    <!--/panel--> </div>
-                <!--/col-->
+                </div>
 
                 <div class="col-sm-4 col-xs-6">
 
@@ -217,14 +215,27 @@
 
                         </div>
                     </div>
-                    <!--/panel--> </div>
-                <!--/col-->
+                </div>
 
-                <!--/col--> </div>
-            <!--/row--> </div>
-        <!--/container--> </div>
+                <div class="col-sm-4 col-xs-6">
+
+                    <div class="panel panel-default">
+                        <div>
+                            <a href="${pageContext.request.contextPath}/login" title="自动化配置">
+                                <img src="${pageContext.request.contextPath}/img/shezhi.jpg" class="img-responsive"></a>
+                        </div>
+                        <div class="panel-body">
+                            <p class="text-center">后台配置</p>
+                            <p></p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="divider"></div>
-
 
     <section class="bg-2">
         <div class="col-sm-6 col-sm-offset-3 text-center">
@@ -242,29 +253,72 @@
                         <h3 class="panel-title">搜索的城市</h3>
                     </div>
                     <div class="panel-body">
-                        上海,广州
+                        ${config.area}
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="panel panel-info">
                     <div class="panel-heading">
                         <h3 class="panel-title">搜索的工作</h3>
                     </div>
                     <div class="panel-body">
-                        Java,Ios
+                        ${config.job}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="divider"></div>
+                <div class="divider"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-offset-1 col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">公司类型</h3>
+                    </div>
+                    <div class="panel-body">
+                        ${config.companyType}
                     </div>
                 </div>
             </div>
 
             <div class="col-md-2">
-                <div class="panel panel-warning">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">公司规模</h3>
+                    </div>
+                    <div class="panel-body">
+                        ${config.financeStage}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">学历</h3>
+                    </div>
+                    <div class="panel-body">
+                        ${config.education}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="panel panel-info">
                     <div class="panel-heading">
                         <h3 class="panel-title">自动化频率</h3>
                     </div>
                     <div class="panel-body">
-                        * * * * /10
+                        ${config.time}
                     </div>
                 </div>
             </div>
@@ -377,7 +431,32 @@
     </div>
 </div>
 
-<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    警告
+                </h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.js"></script>
 <script src="${pageContext.request.contextPath}/js/scripts.js"></script>
 
@@ -403,8 +482,12 @@
                     });
                 });
                 $('#total-detail').modal('toggle');
-            }else{
-                alert('网络加载失败!');
+            } else {
+                $('#myModalLabel').html('警告');
+                $('.modal-body').html('<h4>网络加载失败!</h4>');
+                $('#myModal').modal({
+                    keyboard: true
+                });
             }
         });
     });
@@ -416,6 +499,45 @@
             return v.toString(16);
         });
     }
+
+
+    $('#subscribe').click(function () {
+        var email = $('#email').val();
+        var rex = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
+        if (rex.test(email)) {
+            $.post('${pageContext.request.contextPath}/subscribe', {
+                mail:email
+            }, function (data, status) {
+                if(status){
+                    if(data){
+                        $('#myModalLabel').html('成功');
+                        $('.modal-body').html('<h4>订阅成功!</h4>');
+                        $('#myModal').modal({
+                            keyboard: true
+                        });
+                    }else{
+                        $('#myModalLabel').html('警告');
+                        $('.modal-body').html('<h4>订阅失败,请联系管理员!</h4>');
+                        $('#myModal').modal({
+                            keyboard: true
+                        });
+                    }
+                }else{
+                    $('#myModalLabel').html('警告');
+                    $('.modal-body').html('<h4>网络加载失败!</h4>');
+                    $('#myModal').modal({
+                        keyboard: true
+                    });
+                }
+            });
+        } else {
+            $('.modal-body').html('<h4>邮箱格式不合法请重新输入!</h4>');
+            $('#myModal').modal({
+                keyboard: true
+            });
+        }
+
+    });
 </script>
 </body>
 </html>

@@ -55,7 +55,7 @@
                     <div class="container">
                         <div class="carousel-caption">
                             <h2>Correlation Analysis</h2>
-                            <p>充分分析各种就业因素之前的关联关系,方便调研</p>
+                            <p>充分分析各种就业因素之间的关联关系,方便调研</p>
                         </div>
                     </div>
                 </div>
@@ -185,8 +185,7 @@
 
                         </div>
                     </div>
-                    <!--/panel--> </div>
-                <!--/col-->
+                </div>
 
                 <div class="col-sm-4 col-xs-6">
 
@@ -201,8 +200,7 @@
 
                         </div>
                     </div>
-                    <!--/panel--> </div>
-                <!--/col-->
+                </div>
 
                 <div class="col-sm-4 col-xs-6">
 
@@ -217,14 +215,27 @@
 
                         </div>
                     </div>
-                    <!--/panel--> </div>
-                <!--/col-->
+                </div>
 
-                <!--/col--> </div>
-            <!--/row--> </div>
-        <!--/container--> </div>
+                <div class="col-sm-4 col-xs-6">
+
+                    <div class="panel panel-default">
+                        <div>
+                            <a href="${pageContext.request.contextPath}/login" title="自动化配置">
+                                <img src="${pageContext.request.contextPath}/img/shezhi.jpg" class="img-responsive"></a>
+                        </div>
+                        <div class="panel-body">
+                            <p class="text-center">后台配置</p>
+                            <p></p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="divider"></div>
-
 
     <section class="bg-2">
         <div class="col-sm-6 col-sm-offset-3 text-center">
@@ -472,6 +483,7 @@
                 });
                 $('#total-detail').modal('toggle');
             } else {
+                $('#myModalLabel').html('警告');
                 $('.modal-body').html('<h4>网络加载失败!</h4>');
                 $('#myModal').modal({
                     keyboard: true
@@ -487,6 +499,45 @@
             return v.toString(16);
         });
     }
+
+
+    $('#subscribe').click(function () {
+        var email = $('#email').val();
+        var rex = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
+        if (rex.test(email)) {
+            $.post('${pageContext.request.contextPath}/subscribe', {
+                mail:email
+            }, function (data, status) {
+                if(status){
+                    if(data){
+                        $('#myModalLabel').html('成功');
+                        $('.modal-body').html('<h4>订阅成功!</h4>');
+                        $('#myModal').modal({
+                            keyboard: true
+                        });
+                    }else{
+                        $('#myModalLabel').html('警告');
+                        $('.modal-body').html('<h4>订阅失败,请联系管理员!</h4>');
+                        $('#myModal').modal({
+                            keyboard: true
+                        });
+                    }
+                }else{
+                    $('#myModalLabel').html('警告');
+                    $('.modal-body').html('<h4>网络加载失败!</h4>');
+                    $('#myModal').modal({
+                        keyboard: true
+                    });
+                }
+            });
+        } else {
+            $('.modal-body').html('<h4>邮箱格式不合法请重新输入!</h4>');
+            $('#myModal').modal({
+                keyboard: true
+            });
+        }
+
+    });
 </script>
 </body>
 </html>

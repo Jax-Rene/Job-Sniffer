@@ -119,7 +119,6 @@
         <span class="glyphicon glyphicon-chevron-right"></span>
     </a>
 
-    <!-- 模态框（Modal） -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
          aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -140,8 +139,8 @@
                             data-dismiss="modal">关闭
                     </button>
                 </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal -->
+            </div>
+        </div>
     </div>
 </div>
 
@@ -202,8 +201,7 @@
         var countOption = {
             title: {
                 text: '全国就业需求分布散点图',
-                subtext: 'data from Job Sniffer',
-                sublink: '${pageContext.request.contextPath}',
+                subtext: '数据来源: 拉勾网',
                 left: 'center',
                 top: '7%',
                 textStyle: {
@@ -230,6 +228,15 @@
             },
             geo: {
                 map: 'china',
+            },
+            toolbox: {
+                show: true,
+                right:'10%',
+                top:'5%',
+                feature: {
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
             },
             series: [
                 {
@@ -294,14 +301,22 @@
         var salaryOption = {
             title: {
                 text: '全国平均薪水分布',
-                subtext: 'data from Job Sniffer',
-                sublink: '${pageContext.request.contextPath}',
+                subtext: '数据来源: 拉勾网',
                 left: 'center',
                 top: '7%',
                 textStyle: {
                     fontSize: '20',
                     color: '#fff',
                     fontFamily: 'monospace'
+                }
+            },
+            toolbox: {
+                show: true,
+                right:'10%',
+                top:'5%',
+                feature: {
+                    restore: {show: true},
+                    saveAsImage: {show: true}
                 }
             },
             tooltip: {
@@ -405,6 +420,13 @@
                     colorLightness: [0, 1]
                 }
             },
+            toolbox: {
+                show: true,
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    saveAsImage: {show: true}
+                }
+            },
             series: [
                 {
                     name: '需求数量',
@@ -478,6 +500,16 @@
                     type: 'value'
                 }
             ],
+            toolbox: {
+                show: true,
+                right:'10%',
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
             series: [
                 {
                     name: '平均薪水(单位:k/月)',
@@ -518,7 +550,13 @@
                     }
                 }
             }],
-
+            toolbox: {
+                show: true,
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    saveAsImage: {show: true}
+                }
+            },
             series: [{         // 驱动图表生成的数据内容数组，数组中每一项为一个系列的选项及数据
                 name: '投资轮',
                 type: 'radar',
@@ -552,6 +590,14 @@
                 orient: 'vertical',
                 x: 'left',
                 data: []
+            },
+            toolbox: {
+                show: true,
+                right: '10%',
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    saveAsImage: {show: true}
+                }
             },
             series: [
                 {
@@ -592,6 +638,14 @@
                 x: 'left',
                 data: []
             },
+            toolbox: {
+                show: true,
+                right: '10%',
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    saveAsImage: {show: true}
+                }
+            },
             series: [
                 {
                     name: '岗位数量',
@@ -631,6 +685,13 @@
                 orient: 'vertical',
                 x: 'left',
                 data: []
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    saveAsImage: {show: true}
+                }
             },
             series: [
                 {

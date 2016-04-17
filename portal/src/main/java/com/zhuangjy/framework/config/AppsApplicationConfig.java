@@ -14,14 +14,14 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
 import org.springframework.http.converter.xml.SourceHttpMessageConverter;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
-
-import javax.xml.transform.Source;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 @Configuration
 @EnableAutoConfiguration
@@ -34,7 +34,26 @@ public class AppsApplicationConfig {
     private String userName;
     @Value("${password}")
     private String passWord;
+    @Value("${email_name}")
+    private String emailName;
+    @Value("${email_pass}")
+    private String emailPass;
+    @Value("${email_host}")
+    private String emailHost;
 
+    @Bean
+    public JavaMailSenderImpl mailSender(){
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setDefaultEncoding("UTF-8");
+        mailSender.setHost(emailHost);
+        mailSender.setUsername(emailName);
+        mailSender.setPassword(emailPass);
+        Properties prop = new Properties();
+        prop.put("mail.smtp.auth","true");
+        prop.put("mail.smtp.timeout","25000");
+        mailSender.setJavaMailProperties(prop);
+        return mailSender;
+    }
     @Bean
     public PropertiesMap propertiesMap(){
         PropertiesMap p = new PropertiesMap();

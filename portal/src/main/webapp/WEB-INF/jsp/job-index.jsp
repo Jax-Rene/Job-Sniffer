@@ -152,6 +152,13 @@
                 x: 'left',
                 data: []
             },
+            toolbox: {
+                show: true,
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    saveAsImage: {show: true}
+                }
+            },
             series: [
                 {
                     name: '工作数量',
@@ -241,13 +248,7 @@
             toolbox: {
                 show: true,
                 feature: {
-                    mark: {show: true},
                     dataView: {show: true, readOnly: false},
-                    magicType: {
-                        show: true,
-                        type: ['pie', 'funnel']
-                    },
-                    restore: {show: true},
                     saveAsImage: {show: true}
                 }
             },
@@ -296,6 +297,13 @@
                 left: 'left',
                 data: []
             },
+            toolbox: {
+                show: true,
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    saveAsImage: {show: true}
+                }
+            },
             series: [
                 {
                     name: '平均工龄对应数目',
@@ -328,6 +336,13 @@
                 left: 'left',
                 data: []
             },
+            toolbox: {
+                show: true,
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    saveAsImage: {show: true}
+                }
+            },
             series: [
                 {
                     name: '产业数量',
@@ -359,19 +374,6 @@
             tooltip: {
                 trigger: 'item',
                 formatter: "{a} <br/>{b} : {c} ({d}%)"
-            },
-            toolbox: {
-                show: true,
-                feature: {
-                    mark: {show: true},
-                    dataView: {show: true, readOnly: false},
-                    magicType: {
-                        show: true,
-                        type: ['pie', 'funnel']
-                    },
-                    restore: {show: true},
-                    saveAsImage: {show: true}
-                }
             },
             calculable: true,
             series: [

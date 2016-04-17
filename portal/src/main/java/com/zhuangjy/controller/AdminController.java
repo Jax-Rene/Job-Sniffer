@@ -2,6 +2,7 @@ package com.zhuangjy.controller;
 
 import com.zhuangjy.entity.PropertiesMap;
 import com.zhuangjy.service.AdminService;
+import com.zhuangjy.service.MailService;
 import com.zhuangjy.util.ShellUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 
 /**
  * Created by johnny on 16/4/12.
@@ -30,6 +32,8 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private MailService mailService;
 
     @RequestMapping(value = "",method = RequestMethod.POST)
     public String admin(Model model, String userName, String passWord,HttpSession session){
@@ -65,15 +69,19 @@ public class AdminController {
             return false;
         }
         String cmd = null;
+        String content = null;
         switch (service){
             case "worker":
                 cmd = workerCmd;
+                content = "Job-Sniffer 开始执行新一轮的数据爬取 ... " + new Date();
                 break;
             case "analysis":
                 cmd = analysisCmd;
+                content = "Job-Sniffer 开始执行新一轮的数据分析 ... " + new Date();
                 break;
         }
         ShellUtil.runShell(cmd);
+        mailService.sendEmails("任务报告",content);
         return true;
     }
 }

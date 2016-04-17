@@ -3,13 +3,11 @@ package com.zhuangjy.framework.config;
 import com.zhuangjy.framework.spring.SpringContextHolder;
 import com.zhuangjy.framework.spring.SpringPropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
@@ -47,7 +45,8 @@ public class RestApplicationConfig {
         configurer.setSystemPropertiesMode(PropertyPlaceholderConfigurer.SYSTEM_PROPERTIES_MODE_OVERRIDE);
         configurer.setLocations(
                 new Resource[]{
-                        new FileSystemResource("/Users/johnny/Desktop/JobsAnalysis/analysis.properties")
+                        new FileSystemResource("/Users/johnny/Desktop/JobsAnalysis/analysis.properties"),
+                        new FileSystemResource("/Users/johnny/Desktop/JobsAnalysis/database.properties")
                 }
         );
         return configurer;

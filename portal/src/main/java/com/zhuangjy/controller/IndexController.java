@@ -2,12 +2,10 @@ package com.zhuangjy.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhuangjy.entity.AreaAnalysis;
+import com.zhuangjy.entity.Mail;
 import com.zhuangjy.entity.Origin;
 import com.zhuangjy.entity.PropertiesMap;
-import com.zhuangjy.service.AdminService;
-import com.zhuangjy.service.AreaService;
-import com.zhuangjy.service.CacheService;
-import com.zhuangjy.service.OriginService;
+import com.zhuangjy.service.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +33,8 @@ public class IndexController {
     private OriginService originService;
     @Autowired
     private CacheService cacheService;
+    @Autowired
+    private MailService mailService;
     private static final Logger LOGGER = LogManager.getLogger(IndexController.class);
     private static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -83,5 +83,19 @@ public class IndexController {
         Integer count = cacheService.getRelationCount();
         model.addAttribute("count",count);
         return "relation-index";
+    }
+
+    @RequestMapping(value = "/subscribe",method = RequestMethod.POST)
+    @ResponseBody
+    public boolean subscribe(Mail mail){
+        mailService.subscribe(mail);
+        return true;
+    }
+
+    @RequestMapping(value = "/unsubscribe" , method = RequestMethod.POST)
+    @ResponseBody
+    public String unsubscribe(String mail){
+        mailService.unSubscribe(mail);
+        return "解除订阅购成功!";
     }
 }

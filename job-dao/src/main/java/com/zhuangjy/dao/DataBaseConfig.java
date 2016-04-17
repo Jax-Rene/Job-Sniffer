@@ -27,8 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableTransactionManagement
-//@PropertySource(ignoreResourceNotFound = true, value = {"classpath:database.properties", "file:/etc/job-analysis/database.properties"})
-@PropertySource(ignoreResourceNotFound = true, value = {"classpath:database.properties"})
+@PropertySource(ignoreResourceNotFound = true, value = {"file:/Users/johnny/Desktop/JobsAnalysis/database.properties"})
 public class DataBaseConfig implements TransactionManagementConfigurer {
 
 
