@@ -27,7 +27,7 @@ import java.util.Date;
 public class AdminController {
     @Value("${worker_cmd}")
     private String workerCmd;
-    @Value("${analysis_cmd")
+    @Value("${analysis_cmd}")
     private String analysisCmd;
 
     @Autowired
@@ -80,8 +80,16 @@ public class AdminController {
                 content = "Job-Sniffer 开始执行新一轮的数据分析 ... " + new Date();
                 break;
         }
-        ShellUtil.runShell(cmd);
         mailService.sendEmails("任务报告",content);
+        final String finalCmd = cmd;
+        mailService.sendEmails("任务报告", "任务结束,结束时间为: " + new Date());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ShellUtil.runShell4Result(finalCmd);
+            }
+        }).start();
+
         return true;
     }
 }

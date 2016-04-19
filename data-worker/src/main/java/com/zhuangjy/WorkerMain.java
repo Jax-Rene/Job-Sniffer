@@ -1,3 +1,5 @@
+package com.zhuangjy;
+
 import com.zhuangjy.framework.config.RestApplicationConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +21,7 @@ public class WorkerMain {
     }
 
     public void init(String[] args) throws Exception {
-        LOGGER.info("execute init(args) method!");
+        LOGGER.info("executp'ri'n'ge init(args) method!");
     }
 
     public void start() throws Exception {

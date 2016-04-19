@@ -1,4 +1,4 @@
-package com.zhuangjy.util;
+package com.zhuangjy.framework.utils;
 
 /**
  * Created by johnny on 16/4/15.
@@ -7,13 +7,13 @@ package com.zhuangjy.util;
  *
  */
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class ShellUtil {
 
@@ -152,7 +152,6 @@ public class ShellUtil {
             while (line != null) {
                 result += line + "\n";
                 line = in.readLine();
-                System.out.println(line);
             }
             p.waitFor();
 

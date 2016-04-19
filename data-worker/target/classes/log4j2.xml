@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="OFF">
     <appenders>
-        <RollingFile name="RollingFile" fileName="/usr/local/alarmInfoSync/logs/proxy.log" filePattern="logs/alarmInfoSync.log.%d{yyyy-MM-dd}">
+        <RollingFile name="RollingFile" fileName="Job-Worker" filePattern="/usr/local/log/Job-Sniffer/job.log.%d{yyyy-MM-dd}">
             <PatternLayout pattern="%highlight{%d{MM-dd HH:mm:ss} [%-5level] %l - %msg%n}{FATAL=red, ERROR=red}"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>

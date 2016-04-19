@@ -72,13 +72,13 @@ public class LaGouRobotWorker extends BaseWorker {
                     String industryField = (String) map.get("industryField");
                     String companySize = (String) map.get("companySize");
                     String positionName = (String) map.get("positionName");
-                    Job job = new Job(positionName, jobType, companyCity, companyName, calcAvg(workYear), calcAvg(salary), education, financeStage, industryField, calcAvg(companySize),origin);
+                    Job job = new Job(positionName, jobType, companyCity, companyName, calcAvg(workYear), calcAvg(salary), education, financeStage, industryField, calcAvg(companySize), origin);
                     baseDao.save(job);
                 }
                 i++;
                 awaitTime = 0;
                 //降低获取频率防止屏蔽
-                TimeUnit.SECONDS.sleep(3);
+                TimeUnit.SECONDS.sleep(5);
             } catch (JsonParseException e) {
                 LOGGER.error("解析错误,跳过: ", e);
                 i++;
@@ -86,7 +86,7 @@ public class LaGouRobotWorker extends BaseWorker {
             } catch (Exception e) {
                 awaitTime++;
                 //如果连续失败5次直接该条
-                if (awaitTime == 5) {
+                if (awaitTime == 10) {
                     LOGGER.error("失败超过5次,跳过url: " + dest);
                     awaitTime = 0;
                     i++;
@@ -94,7 +94,6 @@ public class LaGouRobotWorker extends BaseWorker {
                 LOGGER.error("当前失败次数: " + awaitTime + "\n", e);
             }
         }
-
         LOGGER.info(jobName + "线程grep数据完毕!");
     }
 }

@@ -5,6 +5,8 @@ import com.zhuangjy.framework.spring.SpringPropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
+import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +19,6 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
 import org.springframework.http.converter.xml.SourceHttpMessageConverter;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import java.nio.charset.Charset;
@@ -27,7 +28,6 @@ import java.util.List;
 
 @Configuration
 @EnableAutoConfiguration
-@EnableAsync
 @ComponentScan(basePackages = {"com.zhuangjy"})
 public class RestApplicationConfig {
     @Bean
@@ -69,5 +69,12 @@ public class RestApplicationConfig {
     @Qualifier("springContextHolder")
     public SpringContextHolder contextHolder() {
         return new SpringContextHolder();
+    }
+
+    @Bean
+    public EmbeddedServletContainerFactory servletContainer() {
+        TomcatEmbeddedServletContainerFactory factory = new TomcatEmbeddedServletContainerFactory();
+        factory.setPort(9001);
+        return factory;
     }
 }
