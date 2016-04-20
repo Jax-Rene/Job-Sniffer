@@ -10,8 +10,12 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.PostConstruct;
 import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -26,13 +30,29 @@ public class WorkService {
     @Value("${lagou.url}")
     private String laGouUrl;
 
-    public void grepData(){
+    @PostConstruct
+    public void grepData() {
         LOGGER.info("start grep data...");
         try {
-            for(String job: JobEnum.listAllJobs()){
-                new Thread(new LaGouRobotWorker(job,laGouUrl,baseDao)).start();
+            List<Thread> list = new ArrayList<>();
+            for (String job : JobEnum.listAllJobs()) {
+                Thread thread = new Thread(new LaGouRobotWorker(job, laGouUrl, baseDao));
+                list.add(thread);
+                thread.start();
             }
-//            ShellUtil.runShell("kill -9 " + ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
+            //每一分钟检测一次是否全部运行完成
+            while (true) {
+                TimeUnit.MINUTES.sleep(1);
+                boolean flag = true;
+                for (Thread s : list) {
+                    if (s.isAlive()) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag)
+                    ShellUtil.runShell("kill -9 " + ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
+            }
         } catch (Exception e) {
             LOGGER.error(e);
         }

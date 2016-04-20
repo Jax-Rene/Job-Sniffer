@@ -8,18 +8,63 @@
     <artifactId>data-analysis</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <parent>
-        <artifactId>JobsAnalysis</artifactId>
-        <groupId>JobAnalysis</groupId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
+    <properties>
+        <scala.version>2.10.5</scala.version>
+    </properties>
+
+    <!--<parent>-->
+    <!--<artifactId>JobsAnalysis</artifactId>-->
+    <!--<groupId>JobAnalysis</groupId>-->
+    <!--<version>1.0-SNAPSHOT</version>-->
+    <!--</parent>-->
 
     <build>
         <plugins>
             <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>**/*.scala</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <!--<plugin>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-maven-plugin</artifactId>-->
+            <!--<version>1.1.5.RELEASE</version>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<configuration>|-->
+            <!--<mainClass>com.zhuangjy.Main</mainClass>-->
+            <!--</configuration>-->
+            <!--<goals>-->
+            <!--<goal>repackage</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
+            <!--</executions>-->
+            <!--</plugin>-->
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>1.4</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -32,11 +77,26 @@
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.zhuangjy.Main</mainClass>
                                 </transformer>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>reference.conf</resource>
+                                </transformer>
                             </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 
@@ -44,8 +104,14 @@
     <dependencies>
         <dependency>
             <groupId>org.scala-lang</groupId>
+            <artifactId>scala-compiler</artifactId>
+            <version>${scala.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
-            <version>2.10.5</version>
+            <version>${scala.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -55,22 +121,40 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!--<dependency>-->
+        <!--<groupId>mysql</groupId>-->
+        <!--<artifactId>mysql-connector-java</artifactId>-->
+        <!--<version>${mysql.version}</version>-->
+        <!--</dependency>-->
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
+            <version>5.1.31</version>
         </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>org.apache.spark</groupId>-->
+        <!--<artifactId>spark-core_2.10</artifactId>-->
+        <!--<version>${spark.version}</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_2.10</artifactId>
-            <version>${spark.version}</version>
+            <version>1.6.0</version>
         </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>org.apache.spark</groupId>-->
+        <!--<artifactId>spark-sql_2.10</artifactId>-->
+        <!--<version>${spark.version}</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-sql_2.10</artifactId>
-            <version>${spark.version}</version>
+            <version>1.6.0</version>
         </dependency>
 
         <dependency>

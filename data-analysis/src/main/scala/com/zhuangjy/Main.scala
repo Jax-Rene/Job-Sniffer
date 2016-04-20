@@ -1,22 +1,18 @@
 package com.zhuangjy
 
-import java.lang.management.ManagementFactory
-
 import com.zhuangjy.analysis.{AreaAnalysisObj, JobAnalysisObj, OriginAnalysisObj}
 import com.zhuangjy.dao.AnalysisDao
 import com.zhuangjy.entity.{AreaAnalysis, Origin, PropertiesMap}
-import com.zhuangjy.util.{ReadProperties, ShellUtil}
+import com.zhuangjy.util.{ReadProperties}
 import org.apache.spark.SparkContext
 
 import scala.collection.mutable.ArrayBuffer
 import scala.util.control._
-
 /**
-  * Created by johnny on 16/3/22.
+  * Created by johnny on 16/4/20.
   */
-object Main {
-
-  def start:Unit = {
+ object Main {
+  def main(args: Array[String]) {
     val sc = new SparkContext("local", "mysql")
     val section = AnalysisDao.loadSection
     val properties: PropertiesMap = AnalysisDao.loadConfig
