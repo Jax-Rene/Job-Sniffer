@@ -47,9 +47,9 @@ public class IndexController {
     }
 
     @RequestMapping("/login")
-    public String login(HttpSession session){
-        if(session.getAttribute("admin") != null)
-            return "admin";
+    public String login(String error, Model model) {
+        if (error != null)
+            model.addAttribute("loginError", "身份验证失败,请重新登录");
         return "login";
     }
 
@@ -72,6 +72,12 @@ public class IndexController {
             return null;
         }
     }
+
+    @RequestMapping("/admin")
+    public String admin(){
+        return "admin";
+    }
+
 
     @RequestMapping("/job-index")
     public String jobIndex(){

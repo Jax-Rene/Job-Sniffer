@@ -22,7 +22,7 @@
         <java.version>1.7</java.version>
         <servlet-api.version>3.1.0</servlet-api.version>
         <spring.version>4.0.7.RELEASE</spring.version>
-        <spring-security.version>3.2.4.RELEASE</spring-security.version>
+        <spring-security.version>3.2.6.RELEASE</spring-security.version>
         <hibernate.version>4.2.5.Final</hibernate.version>
         <hibernate.validation.version>5.0.1.Final</hibernate.validation.version>
         <bonecp.version>0.8.0.RELEASE</bonecp.version>

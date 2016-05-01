@@ -181,6 +181,9 @@ public class ShellUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(runShell4Result("ls ~/"));
+        String task = "* * * * */1 touch /Users/johnny/Desktop/tesssqqaaa";
+        String s = "(crontab -l 2>/dev/null | grep -Fv data; echo \"" + task +  "\") | crontab - ";
+        System.out.println(s);
+        ShellUtil.runShell(s);
     }
 }

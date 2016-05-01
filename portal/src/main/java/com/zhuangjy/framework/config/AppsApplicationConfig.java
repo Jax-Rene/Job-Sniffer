@@ -29,6 +29,7 @@ import java.util.Properties;
 @EnableAsync
 @ComponentScan(basePackages = {"com.zhuangjy"})
 @PropertySource(value = {"file:/Users/johnny/Desktop/JobsAnalysis/analysis.properties"})
+@ImportResource("classpath:spring-security.xml")
 public class AppsApplicationConfig {
     @Value("${username}")
     private String userName;

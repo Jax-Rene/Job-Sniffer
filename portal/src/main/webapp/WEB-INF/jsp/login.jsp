@@ -44,22 +44,27 @@
                         </div>
                     </div>
                     <div class="form-bottom">
-                        <form role="form" action="${pageContext.request.contextPath}/admin" method="post"
+                        <form role="form" action="${pageContext.request.contextPath}/spring_security_login"
+                              method="post"
                               class="login-form" id="form">
                             <div class="form-group">
                                 <label class="sr-only" for="form-username">Username</label>
                                 <input type="text" placeholder="Username..."
                                        class="form-username form-control" id="form-username">
-                                <input type="hidden" id="user-name" name="userName"/>
+                                <input type="hidden" id="user-name" name="j_username"/>
                             </div>
                             <div class="form-group">
                                 <label class="sr-only" for="form-password">Password</label>
                                 <input type="password" placeholder="Password..."
                                        class="form-password form-control" id="form-password">
-                                <input type="hidden" id="pass-word" name="passWord"/>
+                                <input type="hidden" id="pass-word" name="j_password"/>
                             </div>
                             <button type="submit" class="btn" style="background-color: #DD6B66">Sign in
                             </button>
+                            <div style="text-align: right;">
+                                <input id="remember_me" name="_spring_security_remember_me" type="checkbox"/>
+                                <label for="remember_me" style="display: inline;">Remember</label>
+                            </div>
                             <p class="text-center" style="color: red;">${loginError}</p>
                         </form>
                     </div>
