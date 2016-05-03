@@ -1,5 +1,6 @@
+import com.zhuangjy.entity.PropertiesMap;
 import com.zhuangjy.framework.config.AppsApplicationConfig;
-import com.zhuangjy.service.MailService;
+import com.zhuangjy.service.AdminService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,14 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @WebAppConfiguration
 public class MainTest {
     @Autowired
-    private MailService mailService;
+    private PropertiesMap propertiesMap;
+    @Autowired
+    private AdminService adminService;
 
     @Test
     public void testMail(){
-        mailService.sendEmails("test","<h1>单元测试</h1>");
+        adminService.currentConfig();
+        System.out.println(propertiesMap.getArea());
     }
 
 }

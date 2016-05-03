@@ -1,3 +1,4 @@
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%--
   Created by IntelliJ IDEA.
   User: johnny
@@ -22,6 +23,9 @@
             </li>
             <li><a href="${pageContext.request.contextPath}#section3">SETTING</a></li>
             <li><a href="${pageContext.request.contextPath}#section4">CONTACT</a></li>
+            <sec:authorize access="hasRole('ROLE_ADMIN')">
+                <li><a href="${pageContext.request.contextPath}/j_spring_security_logout_">LOGIN OUT</a></li>
+            </sec:authorize>
         </ul>
     </div>
 </nav>

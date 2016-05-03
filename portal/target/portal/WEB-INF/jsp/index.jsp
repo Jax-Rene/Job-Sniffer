@@ -221,7 +221,7 @@
 
                     <div class="panel panel-default">
                         <div>
-                            <a href="${pageContext.request.contextPath}/login" title="自动化配置">
+                            <a href="${pageContext.request.contextPath}/admin" title="自动化配置">
                                 <img src="${pageContext.request.contextPath}/img/shezhi.jpg" class="img-responsive"></a>
                         </div>
                         <div class="panel-body">

@@ -20,9 +20,8 @@ public class AdminService {
     private BaseDao<PropertiesMap> baseDao;
 
     public PropertiesMap currentConfig() {
-        PropertiesMap p = null;
         if (propertiesMap.getId() == null) {
-            p = (PropertiesMap) baseDao.loadById(1, PropertiesMap.class);
+            PropertiesMap p = (PropertiesMap) baseDao.loadById(1, PropertiesMap.class);
             propertiesMap.setId(1);
             propertiesMap.setArea(p.getArea());
             propertiesMap.setCompanyType(p.getCompanyType());
@@ -31,20 +30,20 @@ public class AdminService {
             propertiesMap.setTime(p.getTime());
             List<String> list = JobEnum.listAllJobs();
             String jobs = "";
-            for(int i=0;i<list.size() -1 ;i++)
+            for (int i = 0; i < list.size() - 1; i++)
                 jobs += list.get(i) + ",";
-            jobs += list.get(list.size()-1);
+            jobs += list.get(list.size() - 1);
             propertiesMap.setJob(jobs);
         }
         return propertiesMap;
     }
 
-    public void updateConfig(PropertiesMap p){
+    public void updateConfig(PropertiesMap p) {
         PropertiesMap currentProperties = setCurrentMap(p);
         baseDao.update(currentProperties);
     }
 
-    public PropertiesMap setCurrentMap(PropertiesMap p){
+    public PropertiesMap setCurrentMap(PropertiesMap p) {
         propertiesMap.setFinanceStage(p.getFinanceStage());
         propertiesMap.setEducation(p.getEducation());
         propertiesMap.setTime(p.getTime());
