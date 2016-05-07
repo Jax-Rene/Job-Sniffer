@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +24,13 @@ public class CacheService {
     private IBatisDao<Job> iBatisDao;
     private List<Relation> relations = new ArrayList();
     private Logger logger = LoggerFactory.getLogger(CacheService.class);
+    private Date lastDate = null;
 
     @PostConstruct
     public void loadRelationCache() {
         try {
             relations = iBatisDao.queryForList("jobSql.getRelationList");
+            lastDate = iBatisDao.queryForObject("jobSql.getLastDate");
         } catch (SQLException e) {
             logger.error("",e);
         }
@@ -46,5 +49,9 @@ public class CacheService {
             loadRelationCache();
         }
         return relations.size();
+    }
+
+    public Date getLastDate(){
+        return lastDate;
     }
 }

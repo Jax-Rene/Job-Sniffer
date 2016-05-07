@@ -65,6 +65,10 @@ public class IBatisDao<T>  {
         return this.sqlMapClient.delete(id, object);
     }
 
+    public int delete(String id) throws SQLException{
+        return this.sqlMapClient.delete(id);
+    }
+
     public <X> List<X> queryForList(String id, Object param, int offset, int size)  throws SQLException {
         return this.sqlMapClient.queryForList(id, param, offset, size);
     }

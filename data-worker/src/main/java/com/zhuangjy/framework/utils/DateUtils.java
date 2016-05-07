@@ -14,11 +14,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Author:王旗
- * Date:2015/6/8 19:19
- * Description:
- */
 public class DateUtils {
 
     public static final String[] PATTERN = new String[]{"yyyy-MM-dd HH:mm:ss.SSS", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH", "yyyy-MM-dd"};

@@ -2,11 +2,6 @@ package com.zhuangjy;
 
 import java.util.Date;
 
-/**
- * Author:王旗
- * Date:2015/6/10 10:44
- * Description:
- */
 public class DateRange {
     
     private Date start;

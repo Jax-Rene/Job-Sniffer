@@ -15,6 +15,8 @@ import javax.annotation.PostConstruct;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
@@ -34,24 +36,18 @@ public class WorkService {
     public void grepData() {
         LOGGER.info("start grep data...");
         try {
-            List<Thread> list = new ArrayList<>();
+            ExecutorService executorService = Executors.newFixedThreadPool(3);
             for (String job : JobEnum.listAllJobs()) {
-                Thread thread = new Thread(new LaGouRobotWorker(job, laGouUrl, baseDao));
-                list.add(thread);
-                thread.start();
+                executorService.execute(new LaGouRobotWorker(job, laGouUrl, baseDao));
             }
+            executorService.shutdown();
+
             //每一分钟检测一次是否全部运行完成
             while (true) {
                 TimeUnit.MINUTES.sleep(1);
-                boolean flag = true;
-                for (Thread s : list) {
-                    if (s.isAlive()) {
-                        flag = false;
-                        break;
-                    }
-                }
-                if (flag)
+                if (executorService.isTerminated()) {
                     ShellUtil.runShell("kill -9 " + ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
+                }
             }
         } catch (Exception e) {
             LOGGER.error(e);

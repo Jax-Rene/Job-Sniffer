@@ -282,3 +282,7 @@ section {
     background-color: #DD6B66;
     color: #FFFFFF;
 }
+
+.panel-body-style{
+    background-color: rgba(240, 240, 241, 0.42);
+}

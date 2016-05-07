@@ -13,4 +13,22 @@
         FROM job WHERE 1=1
     </select>
 
+    <delete id="deleteAreaAnalysis">
+        DELETE FROM area_analysis;
+    </delete>
+
+    <delete id="deleteJobAnalysis">
+        DELETE FROM job_analysis;
+    </delete>
+
+    <delete id="deleteOrigin">
+        DELETE FROM origin;
+    </delete>
+
+    <select id="getLastDate" resultClass="java.sql.Date">
+      SELECT DISTINCT `time` FROM job limit 0,1;
+    </select>
+
+
+
 </sqlMap>

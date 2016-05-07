@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.math.BigInteger;
+import java.sql.Date;
 
 /**
  * Created by zhuangjy on 2016/1/8.
@@ -18,7 +19,6 @@ public class Job {
     private BigInteger id;
 
     @Column(name= "job_name")
-    @NotBlank
     private String jobName;
 
     @Column(name = "job_type")
@@ -51,6 +51,9 @@ public class Job {
     @Column(name ="origin")
     private String origin;
 
+    @Column(name = "time")
+    private Date date;
+
 
     public Job(String jobName, Integer jobType,String companyCity, String companyName, Float workYear, Float salary, String education, String financeStage, String industryField, Float companySize,String origin) {
         this.jobName = jobName;
@@ -64,6 +67,7 @@ public class Job {
         this.industryField = industryField;
         this.companySize = companySize;
         this.origin = origin;
+        this.date = new Date(System.currentTimeMillis());
     }
 
     public String getOrigin(){
@@ -154,13 +158,8 @@ public class Job {
         this.companySize = companySize;
     }
 
-    @Override
-    public String toString(){
-        return jobName + " " + companyCity + " " + companyName + " " + workYear + " " + salary + " " + education + " " +
-                financeStage + " " + industryField + " " + companySize + "\r\n";
-    }
-
     public Job() {
+        this.date = new Date(System.currentTimeMillis());
     }
 
     public BigInteger getId() {
@@ -170,4 +169,13 @@ public class Job {
     public void setId(BigInteger id) {
         this.id = id;
     }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
 }

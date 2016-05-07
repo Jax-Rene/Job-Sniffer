@@ -14,6 +14,7 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -78,7 +79,7 @@ public class LaGouRobotWorker extends BaseWorker {
                 i++;
                 awaitTime = 0;
                 //降低获取频率防止屏蔽
-                TimeUnit.SECONDS.sleep(5);
+                TimeUnit.SECONDS.sleep(new Random().nextInt(20));
             } catch (JsonParseException e) {
                 LOGGER.error("解析错误,跳过: ", e);
                 i++;

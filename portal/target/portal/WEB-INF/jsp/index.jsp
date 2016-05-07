@@ -106,7 +106,7 @@
         <div class="col-sm-10 col-sm-offset-1">
             <div class="page-header text-center">
                 <h1>Last Data</h1>
-                <span style="color:#777">Last Update Finished At 2015-10-10 10:12:13</span>
+                <span style="color:#777">Last Update Finished At ${time} </span>
             </div>
 
             <div class="table-responsive">
@@ -165,7 +165,6 @@
                         <div class="panel-body">
                             <p class="text-center">地区维度分析</p>
                             <p></p>
-
                         </div>
                     </div>
                     <!--/panel--> </div>
@@ -249,10 +248,10 @@
         <div class="row col-md-12">
             <div class="col-md-4 col-md-offset-1">
                 <div class="panel panel-primary">
-                    <div class="panel-heading">
+                    <div class="panel-heading" style="background: #F74167;">
                         <h3 class="panel-title">搜索的城市</h3>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body panel-body-style">
                         ${config.area}
                     </div>
                 </div>
@@ -260,10 +259,10 @@
 
             <div class="col-md-6">
                 <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">搜索的工作</h3>
+                    <div class="panel-heading" style="background: HSL(188, 71%, 22%);">
+                        <h3 class="panel-title" style="color: #ffffff;">搜索的工作</h3>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body panel-body-style">
                         ${config.job}
                     </div>
                 </div>
@@ -281,10 +280,10 @@
         <div class="row">
             <div class="col-md-offset-1 col-md-4">
                 <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">公司类型</h3>
+                    <div class="panel-heading" style="background: HSL(193, 47%, 17%);">
+                        <h3 class="panel-title" style="color: #ffffff;">公司类型</h3>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body panel-body-style">
                         ${config.companyType}
                     </div>
                 </div>
@@ -292,10 +291,10 @@
 
             <div class="col-md-2">
                 <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">公司规模</h3>
+                    <div class="panel-heading" style="background: HSL(343, 42%, 44%);">
+                        <h3 class="panel-title" style="color: #ffffff;">公司规模</h3>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body panel-body-style">
                         ${config.financeStage}
                     </div>
                 </div>
@@ -303,10 +302,10 @@
 
             <div class="col-md-2">
                 <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">学历</h3>
+                    <div class="panel-heading" style="background: HSL(222, 20%, 26%);">
+                        <h3 class="panel-title" style="color: #ffffff;;">学历</h3>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body panel-body-style">
                         ${config.education}
                     </div>
                 </div>
@@ -314,10 +313,10 @@
 
             <div class="col-md-2">
                 <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">自动化频率</h3>
+                    <div class="panel-heading" style="background: #F74167;">
+                        <h3 class="panel-title" style="color: #ffffff;">自动化频率</h3>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body panel-body-style">
                         ${config.time}
                     </div>
                 </div>

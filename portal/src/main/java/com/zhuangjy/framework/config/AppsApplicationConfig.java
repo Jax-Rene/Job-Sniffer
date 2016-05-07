@@ -55,6 +55,8 @@ public class AppsApplicationConfig {
         mailSender.setJavaMailProperties(prop);
         return mailSender;
     }
+
+
     @Bean
     public PropertiesMap propertiesMap(){
         PropertiesMap p = new PropertiesMap();

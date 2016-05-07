@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -39,10 +40,11 @@ public class IndexController {
     private static ObjectMapper objectMapper = new ObjectMapper();
 
     @RequestMapping("/index")
-    public String index(Model model){
+    public String index(Model model) throws SQLException {
         List<Origin> origins = originService.currentOrigin();
         model.addAttribute("origins",origins);
         model.addAttribute("config",adminService.currentConfig());
+        model.addAttribute("time",cacheService.getLastDate());
         return "index";
     }
 

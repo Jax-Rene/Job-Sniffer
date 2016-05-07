@@ -2,10 +2,15 @@ package com.zhuangjy.service;
 
 import com.zhuangjy.common.JobEnum;
 import com.zhuangjy.dao.BaseDao;
+import com.zhuangjy.dao.IBatisDao;
+import com.zhuangjy.entity.Job;
 import com.zhuangjy.entity.PropertiesMap;
+import com.zhuangjy.util.ShellUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.print.attribute.standard.SheetCollate;
+import java.sql.SQLException;
 import java.util.List;
 
 
@@ -18,6 +23,8 @@ public class AdminService {
     private PropertiesMap propertiesMap;
     @Autowired
     private BaseDao<PropertiesMap> baseDao;
+    @Autowired
+    private IBatisDao<Job> iBatisDao;
 
     public PropertiesMap currentConfig() {
         if (propertiesMap.getId() == null) {
@@ -51,5 +58,19 @@ public class AdminService {
         propertiesMap.setArea(p.getArea());
         propertiesMap.setJob(p.getJob());
         return propertiesMap;
+    }
+
+
+    public void deleteAnalysisData() throws SQLException {
+        iBatisDao.delete("jobSql.deleteAreaAnalysis");
+        iBatisDao.delete("jobSql.deleteJobAnalysis");
+        iBatisDao.delete("jobSql.deleteOrigin");
+    }
+
+    public static void installCrontab(String cron,String workerCmd,String analysisCmd){
+        String cmd = cron + " " + workerCmd + ";" + analysisCmd;
+        String c = "(crontab -l 2>/dev/null | grep -Fv data;echo \"" + cmd + "\") | crontab - ";
+        System.out.println(c);
+        ShellUtil.runShell(c);
     }
 }
