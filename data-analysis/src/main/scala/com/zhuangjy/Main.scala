@@ -1,9 +1,11 @@
 package com.zhuangjy
 
+import java.lang.management.ManagementFactory
+
 import com.zhuangjy.analysis.{AreaAnalysisObj, JobAnalysisObj, OriginAnalysisObj}
 import com.zhuangjy.dao.AnalysisDao
 import com.zhuangjy.entity.{AreaAnalysis, Origin, PropertiesMap}
-import com.zhuangjy.util.{ReadProperties}
+import com.zhuangjy.util.{ReadProperties, ShellUtil}
 import org.apache.spark.SparkContext
 
 import scala.collection.mutable.ArrayBuffer
@@ -44,5 +46,6 @@ import scala.util.control._
       .getCompanyType.split(","), properties.getFinanceStage.split(","), properties.getEducation.split(","), areaMap)
     jobMap.values.iterator.foreach(i => AnalysisDao.insertJobAnalysis(i))
     sc.stop()
+    ShellUtil.runShell("kill -9 " + ManagementFactory.getRuntimeMXBean.getName.split("@")(0))
   }
 }

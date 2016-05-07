@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
@@ -26,9 +27,10 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-@EnableTransactionManagement
+//@EnableTransactionManagement
 @PropertySource(ignoreResourceNotFound = true, value = {"file:/Users/johnny/Desktop/JobsAnalysis/database.properties"})
-public class DataBaseConfig implements TransactionManagementConfigurer {
+//public class DataBaseConfig implements TransactionManagementConfigurer {
+public class DataBaseConfig {
 
 
     private final static Logger logger = LoggerFactory.getLogger(DataBaseConfig.class);
@@ -54,6 +56,13 @@ public class DataBaseConfig implements TransactionManagementConfigurer {
         logger.info("c3p0_password:" + c3p0_password);
     }
 
+
+//    @Bean
+//    public PlatformTransactionManager txManager(SessionFactory sessionFactory) {
+//        return new HibernateTransactionManager(sessionFactory);
+//    }
+
+    @Primary
     @Bean(name = "dataSource")
     public DataSource dataSource() {
         logger.info("gen data-source for url [" + c3p0_url + "]");
@@ -92,6 +101,7 @@ public class DataBaseConfig implements TransactionManagementConfigurer {
         return db;
     }
 
+    @Primary
     @Bean(name = "sessionFactory", destroyMethod = "destroy")
     public LocalSessionFactoryBean sessionFactory() throws IOException {
         logger.info("gen sessionFactory start");
@@ -107,33 +117,36 @@ public class DataBaseConfig implements TransactionManagementConfigurer {
         return session;
     }
 
+    @Primary
     @Bean(name = "lobHandler")
     public LobHandler lobHandler() {
         return new org.springframework.jdbc.support.lob.DefaultLobHandler();
     }
 
+    @Primary
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
-    @Bean
-    @Qualifier("txManager")
-    public PlatformTransactionManager txManager() throws IOException {
-        return new org.springframework.orm.hibernate4.HibernateTransactionManager(sessionFactory()
-                .getObject());
-    }
+//    @Primary
+//    @Bean
+//    @Qualifier("txManager")
+//    public PlatformTransactionManager txManager() throws IOException {
+//        return new org.springframework.orm.hibernate4.HibernateTransactionManager(sessionFactory()
+//                .getObject());
+//    }
 
 
-    @Override
-    public PlatformTransactionManager annotationDrivenTransactionManager() {
-        try {
-            return txManager();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    @Override
+//    public PlatformTransactionManager annotationDrivenTransactionManager() {
+//        try {
+//            return txManager();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
     @Bean
     @Qualifier("sqlMapClient")

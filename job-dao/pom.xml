@@ -90,6 +90,8 @@
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernate.validation.version}</version>
         </dependency>
+
+
     </dependencies>
 
 
