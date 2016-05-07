@@ -27,10 +27,9 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-//@EnableTransactionManagement
+@EnableTransactionManagement
 @PropertySource(ignoreResourceNotFound = true, value = {"file:/Users/johnny/Desktop/JobsAnalysis/database.properties"})
-//public class DataBaseConfig implements TransactionManagementConfigurer {
-public class DataBaseConfig {
+public class DataBaseConfig implements TransactionManagementConfigurer {
 
 
     private final static Logger logger = LoggerFactory.getLogger(DataBaseConfig.class);
@@ -56,11 +55,6 @@ public class DataBaseConfig {
         logger.info("c3p0_password:" + c3p0_password);
     }
 
-
-//    @Bean
-//    public PlatformTransactionManager txManager(SessionFactory sessionFactory) {
-//        return new HibernateTransactionManager(sessionFactory);
-//    }
 
     @Primary
     @Bean(name = "dataSource")
@@ -129,24 +123,25 @@ public class DataBaseConfig {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
-//    @Primary
-//    @Bean
-//    @Qualifier("txManager")
-//    public PlatformTransactionManager txManager() throws IOException {
-//        return new org.springframework.orm.hibernate4.HibernateTransactionManager(sessionFactory()
-//                .getObject());
-//    }
+    @Primary
 
-
-//    @Override
-//    public PlatformTransactionManager annotationDrivenTransactionManager() {
-//        try {
-//            return txManager();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
+    @Bean
+    @Qualifier("txManager")
+    public PlatformTransactionManager txManager() throws IOException {
+        return new org.springframework.orm.hibernate4.HibernateTransactionManager(sessionFactory()
+                .getObject());
+    }
+//
+//
+    @Override
+    public PlatformTransactionManager annotationDrivenTransactionManager() {
+        try {
+            return txManager();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     @Bean
     @Qualifier("sqlMapClient")
