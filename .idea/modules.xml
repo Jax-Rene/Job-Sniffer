@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/JobsAnalysis.iml" filepath="$PROJECT_DIR$/JobsAnalysis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/data-analysis/data-analysis.iml" filepath="$PROJECT_DIR$/data-analysis/data-analysis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/data-worker/data-worker.iml" filepath="$PROJECT_DIR$/data-worker/data-worker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/entity/entity.iml" filepath="$PROJECT_DIR$/entity/entity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/job-dao/job-dao.iml" filepath="$PROJECT_DIR$/job-dao/job-dao.iml" />
+      <module fileurl="file://$PROJECT_DIR$/portal/portal.iml" filepath="$PROJECT_DIR$/portal/portal.iml" />
+    </modules>
+  </component>
+</project>
