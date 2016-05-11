@@ -55,15 +55,16 @@ public class AdminController {
     public boolean runService(String service) throws SQLException{
         String cmd = null;
         String content = null;
+        //TODO 取消预订
         switch (service){
             case "worker":
                 cmd = workerCmd;
-                content = "[Job-Sniffer] 开始执行新一轮的数据爬取: " + new Date();
+                content = "[Job-Sniffer] 开始执行新一轮的数据爬取: " + new Date() + " <a href=''>取消预订</a>";
                 break;
             case "analysis":
                 cmd = analysisCmd;
                 adminService.deleteAnalysisData();
-                content = "[Job-Sniffer] 开始执行新一轮的数据分析: " + new Date();
+                content = "[Job-Sniffer] 开始执行新一轮的数据分析: " + new Date() + " <a href=''>取消预订</a>";
                 break;
         }
         mailService.sendEmails("任务报告",content);

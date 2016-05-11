@@ -43,9 +43,8 @@ public class DataBaseConfig implements TransactionManagementConfigurer {
     private String c3p0_username;
     @Value("${c3p0.password}")
     private String c3p0_password;
-    //TODO Spring注入驱动信息
-//    @Value("${c3p0.driver}")
-//    private String c3p0_driver;
+    @Value("${c3p0.driver}")
+    private String c3p0_driver;
     @PostConstruct
     public void init() {
         logger.info("database-config:");
@@ -90,7 +89,8 @@ public class DataBaseConfig implements TransactionManagementConfigurer {
         config.setIdleMaxAge(5, TimeUnit.MINUTES);//mysql的wati_timeout默认为28800
         config.setIdleConnectionTestPeriod(1, TimeUnit.MINUTES);
         db = new BoneCPDataSource(config); // setup the connection pool
-        db.setDriverClass("com.mysql.jdbc.Driver");
+        db.setDriverClass(c3p0_driver);
+        logger.info("set driver:" + c3p0_driver);
         logger.info("gen data-source for url [" + c3p0_url + "] success");
         return db;
     }
@@ -124,7 +124,6 @@ public class DataBaseConfig implements TransactionManagementConfigurer {
     }
 
     @Primary
-
     @Bean
     @Qualifier("txManager")
     public PlatformTransactionManager txManager() throws IOException {
@@ -148,7 +147,6 @@ public class DataBaseConfig implements TransactionManagementConfigurer {
     public SqlMapClientFactoryBean sqlMapClient() {
         logger.info("gen sqlMapClient start");
         SqlMapClientFactoryBean bean = new SqlMapClientFactoryBean();
-//        bean.setConfigLocation(new FileSystemResource("/etc/eagle/ibatis/sqlmap-config.xml"));
         bean.setConfigLocation(new ClassPathResource("/sqlmap-config.xml"));
         bean.setDataSource(dataSource());
         bean.setLobHandler(lobHandler());

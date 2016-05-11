@@ -200,7 +200,7 @@
 
         var countOption = {
             title: {
-                text: '全国就业需求分布散点图',
+                text: '全国就业需求分布',
                 subtext: '数据来源: 拉勾网',
                 left: 'center',
                 top: '7%',

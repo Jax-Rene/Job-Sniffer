@@ -9,7 +9,7 @@
         </RollingFile>
     </appenders>
     <loggers>
-        <root level="DEBUG">
+        <root level="ERROR">
             <appender-ref ref="RollingFile"/>
         </root>
     </loggers>

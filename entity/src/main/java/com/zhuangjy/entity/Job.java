@@ -178,4 +178,22 @@ public class Job {
         this.date = date;
     }
 
+    @Override
+    public String toString() {
+        return "Job{" +
+                "id=" + id +
+                ", jobName='" + jobName + '\'' +
+                ", jobType=" + jobType +
+                ", companyCity='" + companyCity + '\'' +
+                ", companyName='" + companyName + '\'' +
+                ", workYear=" + workYear +
+                ", salary=" + salary +
+                ", education='" + education + '\'' +
+                ", financeStage='" + financeStage + '\'' +
+                ", industryField='" + industryField + '\'' +
+                ", companySize=" + companySize +
+                ", origin='" + origin + '\'' +
+                ", date=" + date +
+                '}';
+    }
 }

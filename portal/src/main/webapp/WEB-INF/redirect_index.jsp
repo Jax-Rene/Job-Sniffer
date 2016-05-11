@@ -7,10 +7,10 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
+<meta http-equiv="Refresh" content="0;url=${pageContext.request.contextPath}/index"/>
 <head>
     <title></title>
 </head>
 <body>
-<jsp:forward page="${absoluteContextPath}/index"/>
 </body>
 </html>

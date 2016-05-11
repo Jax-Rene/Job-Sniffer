@@ -201,20 +201,6 @@
                     </div>
                 </div>
 
-                <div class="col-sm-4 col-xs-6">
-
-                    <div class="panel panel-default">
-                        <div>
-                            <a href="#" title="趋势分析">
-                                <img src="${pageContext.request.contextPath}/img/qushi.jpg" class="img-responsive"></a>
-                        </div>
-                        <div class="panel-body">
-                            <p class="text-center">趋势分析</p>
-                            <p></p>
-
-                        </div>
-                    </div>
-                </div>
 
                 <div class="col-sm-4 col-xs-6">
 
@@ -225,6 +211,36 @@
                         </div>
                         <div class="panel-body">
                             <p class="text-center">后台配置</p>
+                            <p></p>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4 col-xs-6">
+
+                    <div class="panel panel-default">
+                        <div>
+                            <a href="${pageContext.request.contextPath}/data-report" title="查看数据报表">
+                                <img src="${pageContext.request.contextPath}/img/baobiao.jpg" class="img-responsive"></a>
+                        </div>
+                        <div class="panel-body">
+                            <p class="text-center">数据报表</p>
+                            <p></p>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4 col-xs-6">
+
+                    <div class="panel panel-default">
+                        <div>
+                            <a href="#" title="敬请期待">
+                                <img src="${pageContext.request.contextPath}/img/qushi.jpg" class="img-responsive"></a>
+                        </div>
+                        <div class="panel-body">
+                            <p class="text-center">敬请期待</p>
                             <p></p>
 
                         </div>

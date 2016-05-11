@@ -6,6 +6,7 @@ import com.zhuangjy.entity.Mail;
 import com.zhuangjy.entity.Origin;
 import com.zhuangjy.entity.PropertiesMap;
 import com.zhuangjy.service.*;
+import org.apache.catalina.startup.PasswdUserDatabase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,10 +101,22 @@ public class IndexController {
         return true;
     }
 
-    @RequestMapping(value = "/unsubscribe" , method = RequestMethod.POST)
+    @RequestMapping(value = "/unsubscribe" , method = RequestMethod.GET)
     @ResponseBody
     public String unsubscribe(String mail){
         mailService.unSubscribe(mail);
         return "解除订阅购成功!";
     }
+
+   @RequestMapping(value = "/data-report",method = RequestMethod.GET)
+    public String dataReport(){
+       return "data-report";
+   }
+
+    @RequestMapping(value = "/data-report-iframe",method = RequestMethod.GET)
+    public String iframe(){
+        return "data-iframe";
+    }
+
+
 }

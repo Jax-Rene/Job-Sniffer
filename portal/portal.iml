@@ -110,5 +110,6 @@
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-web:3.2.6.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-taglibs:3.2.6.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-acl:3.2.6.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.mockito:mockito-all:1.8.5" level="project" />
   </component>
 </module>

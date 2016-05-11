@@ -285,7 +285,7 @@
 
         workYearOption = {
             title: {
-                text: '平均要求工龄分布',
+                text: '平均工龄要求分布',
                 x: 'center'
             },
             tooltip: {
@@ -324,7 +324,7 @@
 
         industryOption = {
             title: {
-                text: '工作产业分析',
+                text: '公司类型分布',
                 x: 'center'
             },
             tooltip: {
@@ -414,8 +414,8 @@
         ];
 
         var schema = [
-            {name: 'salary', index: 0, text: '平均薪水'},
-            {name: 'count', index: 1, text: '需求量'},
+            {name: 'count', index: 0, text: '需求量'},
+            {name: 'salary', index: 1, text: '平均薪水'}
         ];
 
 

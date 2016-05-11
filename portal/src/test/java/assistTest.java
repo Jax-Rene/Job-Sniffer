@@ -11,6 +11,6 @@ public class AssistTest {
     private PropertiesMap propertiesMap;
 
     public void setArea(){
-        propertiesMap.setArea("asd");
+
     }
 }
