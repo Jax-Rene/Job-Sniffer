@@ -25,7 +25,7 @@
     </div>
 
     <div class="row text-center">
-        <h1 class="analysis-h1" style="color: #000000;font-size: 5rem;">数/据/报/表</h1>
+        <h1 class="analysis-h1" style="color: #000000;font-size: 5rem;font-family: serif;">数/据/报/表</h1>
     </div>
 
     <div class="row">
@@ -33,7 +33,7 @@
     </div>
 
     <div class="row">
-        <iframe src="${pageContext.request.contextPath}/data-report-iframe" frameborder="0" width="100%" height="100%"></iframe>
+        <iframe src="${pageContext.request.contextPath}/data-report-iframe" id="iframepage" frameborder="0" width="100%" height="1000px" marginheight="0"  marginwidth="0" scrolling="no"></iframe>
     </div>
 </div>
 

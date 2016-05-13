@@ -20,6 +20,10 @@ public class JobTypeMap {
         jobTypeMap.put(9,"企业");
     }
 
+    public static Map<Integer,String> getJobTypeMap(){
+        return  jobTypeMap;
+    }
+
     public static String getJobTypeName(int index){
         return jobTypeMap.get(index);
     }

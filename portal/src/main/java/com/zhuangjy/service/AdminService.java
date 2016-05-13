@@ -67,7 +67,7 @@ public class AdminService {
         iBatisDao.delete("jobSql.deleteOrigin");
     }
 
-    public static void installCrontab(String cron,String workerCmd,String analysisCmd){
+    public void installCrontab(String cron,String workerCmd,String analysisCmd){
         String cmd = cron + " " + workerCmd + ";" + analysisCmd;
         String c = "(crontab -l 2>/dev/null | grep -Fv data;echo \"" + cmd + "\") | crontab - ";
         System.out.println(c);

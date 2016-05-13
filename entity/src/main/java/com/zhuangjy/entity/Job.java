@@ -1,5 +1,6 @@
 package com.zhuangjy.entity;
 
+import com.zhuangjy.common.JobType;
 import org.hibernate.annotations.Proxy;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -53,6 +54,10 @@ public class Job {
 
     @Column(name = "time")
     private Date date;
+
+
+    @Transient
+    private String jobTypeName;
 
 
     public Job(String jobName, Integer jobType,String companyCity, String companyName, Float workYear, Float salary, String education, String financeStage, String industryField, Float companySize,String origin) {
@@ -177,6 +182,17 @@ public class Job {
     public void setDate(Date date) {
         this.date = date;
     }
+
+
+    public String getJobTypeName() {
+        return jobTypeName;
+    }
+
+    public void setJobTypeName(String jobTypeName) {
+        this.jobTypeName = jobTypeName;
+    }
+
+
 
     @Override
     public String toString() {

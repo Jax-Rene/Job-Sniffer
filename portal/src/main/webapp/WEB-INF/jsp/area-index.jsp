@@ -231,8 +231,8 @@
             },
             toolbox: {
                 show: true,
-                right:'10%',
-                top:'5%',
+                right: '10%',
+                top: '5%',
                 feature: {
                     restore: {show: true},
                     saveAsImage: {show: true}
@@ -312,8 +312,8 @@
             },
             toolbox: {
                 show: true,
-                right:'10%',
-                top:'5%',
+                right: '10%',
+                top: '5%',
                 feature: {
                     restore: {show: true},
                     saveAsImage: {show: true}
@@ -502,7 +502,7 @@
             ],
             toolbox: {
                 show: true,
-                right:'10%',
+                right: '10%',
                 feature: {
                     dataView: {show: true, readOnly: false},
                     magicType: {show: true, type: ['line', 'bar']},

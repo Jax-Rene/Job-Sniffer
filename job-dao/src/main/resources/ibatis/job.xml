@@ -29,6 +29,61 @@
       SELECT DISTINCT `time` FROM job limit 0,1;
     </select>
 
+    <select id="loadData" resultClass="com.zhuangjy.entity.Job">
+        SELECT
+        job_name AS jobName,
+        job_type AS jobType,
+        company_city AS companyCity,
+        work_year AS workYear,
+        salary AS salary,
+        education AS education,
+        finance_stage AS financeStage,
+        industry_field AS industryField,
+        company_name AS companyName,
+        time AS date,
+        origin AS origin
+        FROM
+        job WHERE 1=1
+        <dynamic prepend="and">
+            <isNotEmpty prepend="and" property="jobName">
+                <![CDATA[UPPER(job_name) like UPPER('%$jobName$%')]]>
+            </isNotEmpty>
 
+            <isNotEmpty prepend="and" property="jobType">
+                <![CDATA[ job_type = #jobType#]]>
+            </isNotEmpty>
 
+            <isNotEmpty prepend="and" property="city">
+                <![CDATA[company_city = #city#]]>
+            </isNotEmpty>
+
+            <isNotEmpty prepend="and" property="education">
+                <![CDATA[education = #education#]]>
+            </isNotEmpty>
+
+            <isNotEmpty prepend="and" property="financeStage">
+                <![CDATA[finance_stage like '%$financeStage$%']]>
+            </isNotEmpty>
+
+            <isNotEmpty prepend="and" property="industryField">
+                <![CDATA[industry_field like '%$industryField$%']]>
+            </isNotEmpty>
+
+            <isNotEmpty prepend="and" property="workStart">
+                <![CDATA[work_year >= #workStart#]]>
+            </isNotEmpty>
+
+            <isNotEmpty prepend="and" property="workEnd">
+                <![CDATA[work_year <= #workEnd#]]>
+            </isNotEmpty>
+
+            <isNotEmpty prepend="and" property="startTime">
+                <![CDATA[ time >= '$startTime$' ]]>
+            </isNotEmpty>
+
+            <isNotEmpty prepend="and" property="endTime">
+                <![CDATA[time<='$endTime$' ]]>
+            </isNotEmpty>
+        </dynamic>
+    </select>
 </sqlMap>
