@@ -26,6 +26,7 @@
 
     <div class="row text-center">
         <h1 class="analysis-h1" style="color: #000000;font-size: 5rem;font-family: serif;">数/据/报/表</h1>
+        <p>DETAIL DATA SHOW</p>
     </div>
 
     <div class="row">

@@ -22,8 +22,8 @@
                     <%--<li><a href="${pageContext.request.contextPath}/trend-index">趋势分析</a></li>--%>
                 </ul>
             </li>
-            <li><a href="${pageContext.request.contextPath}#section3">SETTING</a></li>
-            <li><a href="${pageContext.request.contextPath}#section4">CONTACT</a></li>
+            <li><a href="${pageContext.request.contextPath}/index#section3">SETTING</a></li>
+            <li><a href="${pageContext.request.contextPath}/index#section4">CONTACT</a></li>
             <sec:authorize access="hasRole('ROLE_ADMIN')">
                 <li><a href="${pageContext.request.contextPath}/j_spring_security_logout_">LOGIN OUT</a></li>
             </sec:authorize>
